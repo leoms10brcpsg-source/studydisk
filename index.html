@@ -1,0 +1,4139 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyDisk - Organize Your Study Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary-bg: #F7F8FA;
+            --light-shadow: #FFFFFF;
+            --dark-shadow: #D1D9E6;
+            --accent-purple: #B388FF;
+            --accent-purple-dark: #9B5DE5;
+            --accent-blue: #4361EE;
+            --accent-pink: #F72585;
+            --text-color: #333333;
+            --card-radius: 20px;
+            --transition: all 0.3s ease;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --info: #2196F3;
+        }
+
+        .dark-mode {
+            --primary-bg: #1a1a2e;
+            --light-shadow: #2d2d44;
+            --dark-shadow: #0f0f1a;
+            --text-color: #e6e6e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            transition: var(--transition);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Language Toggle */
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            background: var(--primary-bg);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+            transition: var(--transition);
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Landing Page Styles */
+        #landing-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 20px;
+        }
+
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #f5f7fa, #c3cfe2, #b388ff, #9b5de5, #ff6b6b, #4ecdc4);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            overflow: hidden;
+        }
+
+        .dark-mode .animated-bg {
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483, #ff6b6b, #4ecdc4);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(179, 136, 255, 0.15), rgba(155, 93, 229, 0.15), rgba(247, 37, 133, 0.15));
+            animation: float 20s infinite ease-in-out;
+            filter: blur(2px);
+        }
+
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            top: 70%;
+            left: 80%;
+            animation-delay: 3s;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            top: 40%;
+            left: 85%;
+            animation-delay: 6s;
+        }
+
+        .shape-4 {
+            width: 180px;
+            height: 180px;
+            top: 80%;
+            left: 15%;
+            animation-delay: 9s;
+        }
+
+        .shape-5 {
+            width: 120px;
+            height: 120px;
+            top: 20%;
+            left: 70%;
+            animation-delay: 12s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            33% {
+                transform: translateY(-30px) rotate(5deg) scale(1.05);
+            }
+            66% {
+                transform: translateY(15px) rotate(-5deg) scale(0.95);
+            }
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink), #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(179, 136, 255, 0.5);
+            letter-spacing: -2px;
+        }
+
+        .logo-subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-purple);
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            line-height: 1.8;
+            color: var(--text-color);
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 30px 25px;
+            border-radius: var(--card-radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink), #4ecdc4);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--accent-purple);
+        }
+
+        .feature-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-text {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(179, 136, 255, 0.5);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+            margin-top: 30px;
+            letter-spacing: 1px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(179, 136, 255, 0.7);
+        }
+
+        .start-btn:after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+            transition: var(--transition);
+        }
+
+        .start-btn:hover:after {
+            transform: rotate(30deg) translate(20px, 20px);
+        }
+
+        /* Auth Pages Styles */
+        #auth-options {
+            display: none;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .auth-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #f5f7fa, #c3cfe2, #b388ff, #9b5de5, #ff6b6b, #4ecdc4);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            overflow: hidden;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: var(--card-radius);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+        }
+
+        .form-input {
+            background: var(--primary-bg);
+            border: none;
+            padding: 16px 20px;
+            border-radius: 14px;
+            box-shadow: inset 6px 6px 12px var(--dark-shadow), inset -6px -6px 12px var(--light-shadow);
+            color: var(--text-color);
+            width: 100%;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow), 0 0 0 3px rgba(179, 136, 255, 0.3);
+        }
+
+        .auth-btn {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(179, 136, 255, 0.4);
+        }
+
+        .google-btn {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .google-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--dark-shadow);
+        }
+
+        .divider-text {
+            padding: 0 15px;
+            opacity: 0.7;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .auth-link {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+        }
+
+        /* Dashboard Styles */
+        #dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--dark-shadow);
+        }
+
+        .dashboard-logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* User Profile Styles */
+        .user-profile {
+            position: relative;
+        }
+
+        .profile-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .profile-toggle:hover {
+            background: rgba(179, 136, 255, 0.1);
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            padding: 15px 0;
+            z-index: 1000;
+            display: none;
+        }
+
+        .profile-dropdown.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .profile-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .profile-item:hover {
+            background: rgba(179, 136, 255, 0.1);
+        }
+
+        .profile-item.logout {
+            color: var(--danger);
+            border-top: 1px solid var(--dark-shadow);
+        }
+
+        .profile-item.logout:hover {
+            background: rgba(244, 67, 54, 0.1);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--dark-shadow);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-purple);
+            color: white;
+            box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Neumorphic Card Styles */
+        .neumorphic-card {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+            transition: var(--transition);
+        }
+
+        .neumorphic-card:hover {
+            box-shadow: 12px 12px 24px var(--dark-shadow), -12px -12px 24px var(--light-shadow);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Study Planner Styles */
+        .subject-input {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+        }
+
+        .input-field {
+            background: var(--primary-bg);
+            border: none;
+            padding: 16px 20px;
+            border-radius: 14px;
+            box-shadow: inset 6px 6px 12px var(--dark-shadow), inset -6px -6px 12px var(--light-shadow);
+            color: var(--text-color);
+            width: 100%;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .input-field:focus {
+            outline: none;
+            box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow), 0 0 0 3px rgba(179, 136, 255, 0.3);
+        }
+
+        .btn {
+            background: var(--primary-bg);
+            border: none;
+            padding: 16px 26px;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+            transition: var(--transition);
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            box-shadow: 3px 3px 6px var(--dark-shadow), -3px -3px 6px var(--light-shadow);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 10px 16px;
+            font-size: 0.9rem;
+        }
+
+        .subjects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .subject-card {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 25px;
+            box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 14px 14px 28px var(--dark-shadow), -14px -14px 28px var(--light-shadow);
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .subject-name {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--accent-purple);
+        }
+
+        .subject-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .exam-info {
+            background: rgba(179, 136, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .exam-date {
+            font-weight: 500;
+        }
+
+        .days-left {
+            background: var(--accent-purple);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .chapters-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--dark-shadow);
+            border-radius: 6px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        /* Subject Details Popup */
+        .subject-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .subject-popup-content {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 95%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subject-popup-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--dark-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-popup-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+        }
+
+        .subject-popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .subject-popup-close:hover {
+            background: rgba(179, 136, 255, 0.1);
+        }
+
+        .subject-popup-body {
+            padding: 30px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .chapters-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chapter-card {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+            transition: var(--transition);
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chapter-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--accent-purple);
+        }
+
+        .chapter-status {
+            display: flex;
+            gap: 8px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-studied {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-solved {
+            background: var(--warning);
+            color: white;
+        }
+
+        .chapter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* PDF Tools Styles */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .tool-card {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 30px 25px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 14px 14px 28px var(--dark-shadow), -14px -14px 28px var(--light-shadow);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        .tool-icon {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .tool-desc {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        /* PDF Tool Interface */
+        .pdf-tool-interface {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(179, 136, 255, 0.05);
+            border-radius: var(--card-radius);
+            border: 2px dashed var(--accent-purple);
+        }
+
+        .pdf-tool-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-purple);
+            text-align: center;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--accent-purple);
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload-area:hover {
+            background: rgba(179, 136, 255, 0.1);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: var(--accent-purple);
+            margin-bottom: 15px;
+        }
+
+        .file-list {
+            margin: 20px 0;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 3px 3px 6px var(--dark-shadow), -3px -3px 6px var(--light-shadow);
+        }
+
+        .file-name {
+            font-weight: 500;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pdf-action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        /* Notes Popup Styles */
+        .notes-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .notes-popup-content {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-popup-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--dark-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notes-popup-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-purple);
+        }
+
+        .notes-popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .notes-popup-close:hover {
+            background: rgba(179, 136, 255, 0.1);
+        }
+
+        .notes-popup-body {
+            padding: 25px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .note-editor {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .note-title-input {
+            background: var(--primary-bg);
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+            color: var(--text-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .note-title-input:focus {
+            outline: none;
+            box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow), 0 0 0 2px rgba(179, 136, 255, 0.3);
+        }
+
+        .note-content-textarea {
+            background: var(--primary-bg);
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+            color: var(--text-color);
+            font-size: 1rem;
+            line-height: 1.6;
+            min-height: 300px;
+            resize: vertical;
+            flex-grow: 1;
+        }
+
+        .note-content-textarea:focus {
+            outline: none;
+            box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow), 0 0 0 2px rgba(179, 136, 255, 0.3);
+        }
+
+        .notes-popup-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--dark-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .note-tags-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .note-tag {
+            background: rgba(179, 136, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .note-tag-remove {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .add-tag-btn {
+            background: rgba(179, 136, 255, 0.1);
+            border: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Settings Styles */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .settings-card {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 25px;
+            box-shadow: 8px 8px 16px var(--dark-shadow), -8px -8px 16px var(--light-shadow);
+            transition: var(--transition);
+        }
+
+        .settings-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+        }
+
+        .settings-card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--dark-shadow);
+        }
+
+        .settings-option:last-child {
+            border-bottom: none;
+        }
+
+        .option-label {
+            font-weight: 500;
+        }
+
+        .option-description {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--dark-shadow);
+            transition: var(--transition);
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Study Partner Chat - Improved Design */
+        .study-partner-chat {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chat-toggle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(179, 136, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(179, 136, 255, 0.8);
+        }
+
+        .chat-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .chat-toggle:hover::before {
+            transform: translateX(100%);
+        }
+
+        .chat-container {
+            position: absolute;
+            bottom: 90px;
+            right: 0;
+            width: 400px;
+            height: 600px;
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid var(--accent-purple);
+        }
+
+        .chat-container.active {
+            display: flex;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .chat-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-purple);
+            transform: rotate(45deg);
+        }
+
+        .chat-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid white;
+        }
+
+        .chat-avatar::before {
+            content: '🤖';
+            font-size: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .chat-avatar::after {
+            content: '🌹';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            font-size: 12px;
+            z-index: 3;
+            transform: rotate(15deg);
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .chat-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+            position: relative;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--accent-purple);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: var(--primary-bg);
+            box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid var(--dark-shadow);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input-field {
+            flex-grow: 1;
+            background: var(--primary-bg);
+            border: none;
+            padding: 14px 18px;
+            border-radius: 25px;
+            box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .chat-input-field:focus {
+            outline: none;
+            box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow), 0 0 0 2px rgba(179, 136, 255, 0.3);
+        }
+
+        .chat-send {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
+            transition: var(--transition);
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+            box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+        }
+
+        /* New Features Styles */
+
+        /* Export Progress Styles */
+        .export-progress {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(179, 136, 255, 0.05);
+            border-radius: var(--card-radius);
+            border: 2px dashed var(--accent-purple);
+        }
+
+        .export-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* To-Do List Styles */
+        .todo-section {
+            margin-top: 30px;
+        }
+
+        .todo-container {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+            margin-top: 15px;
+        }
+
+        .todo-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .todo-input {
+            flex-grow: 1;
+            background: var(--primary-bg);
+            border: none;
+            padding: 12px 15px;
+            border-radius: 10px;
+            box-shadow: inset 3px 3px 6px var(--dark-shadow), inset -3px -3px 6px var(--light-shadow);
+            color: var(--text-color);
+        }
+
+        .todo-input:focus {
+            outline: none;
+            box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow), 0 0 0 2px rgba(179, 136, 255, 0.3);
+        }
+
+        .todo-list {
+            list-style: none;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--dark-shadow);
+        }
+
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+
+        .todo-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-bg);
+            box-shadow: inset 2px 2px 4px var(--dark-shadow), inset -2px -2px 4px var(--light-shadow);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .todo-checkbox.checked {
+            background: var(--success);
+            box-shadow: 2px 2px 4px var(--dark-shadow), -2px -2px 4px var(--light-shadow);
+        }
+
+        .todo-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        .todo-text {
+            flex-grow: 1;
+            transition: var(--transition);
+        }
+
+        .todo-text.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .todo-delete {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .todo-delete:hover {
+            background: rgba(244, 67, 54, 0.1);
+        }
+
+        .clear-todos {
+            margin-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Study Partner Assistant Styles */
+        .study-partner-assistant {
+            margin-top: 30px;
+        }
+
+        .assistant-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .assistant-card {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .assistant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 8px 8px 16px var(--dark-shadow), -8px -8px 16px var(--light-shadow);
+        }
+
+        .assistant-card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .assistant-card-content {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        /* Chapter Naming Styles */
+        .chapter-naming {
+            margin-top: 20px;
+        }
+
+        .chapter-name-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .chapter-color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 4px var(--dark-shadow), -2px -2px 4px var(--light-shadow);
+        }
+
+        /* Responsive Design - Improved for Mobile */
+        @media (max-width: 1200px) {
+            .subject-input {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 3.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.3rem;
+                padding: 0 10px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 10px;
+            }
+            
+            .feature {
+                padding: 25px 20px;
+            }
+            
+            .auth-container {
+                padding: 30px 20px;
+            }
+            
+            .dashboard-logo {
+                font-size: 1.8rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-tabs {
+                overflow-x: auto;
+                padding-bottom: 5px;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .tab-btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+            
+            .subject-input {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            
+            .subjects-container, .notes-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-container {
+                width: 90vw;
+                height: 70vh;
+                right: 5vw;
+                bottom: 80px;
+            }
+            
+            .subject-popup-content,
+            .notes-popup-content {
+                width: 95%;
+                max-width: none;
+            }
+            
+            .chapters-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .pdf-action-buttons {
+                flex-direction: column;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .neumorphic-card {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .assistant-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .export-options {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.8rem;
+            }
+            
+            .tagline {
+                font-size: 1.1rem;
+            }
+            
+            .feature {
+                width: 100%;
+            }
+            
+            .subject-input {
+                grid-template-columns: 1fr;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-container {
+                width: 95vw;
+                right: 2.5vw;
+                height: 75vh;
+            }
+            
+            .chat-toggle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .header-controls {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .btn {
+                padding: 14px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .subject-card {
+                padding: 20px;
+            }
+            
+            .subject-name {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .gap-10 {
+            gap: 10px;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-shadow);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-purple-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Toggle -->
+    <div class="language-toggle">
+        <button class="lang-btn" id="lang-toggle">
+            <i class="fas fa-language"></i>
+            <span id="lang-text">EN</span>
+        </button>
+    </div>
+
+    <!-- Study Partner Chat - Hidden on Landing and Auth Pages -->
+    <div class="study-partner-chat" id="study-partner-chat" style="display: none;">
+        <button class="chat-toggle" id="chat-toggle">
+            <i class="fas fa-robot"></i>
+        </button>
+        <div class="chat-container" id="chat-container">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <div class="chat-avatar"></div>
+                    <span id="chat-title">Study Partner</span>
+                </div>
+                <button class="chat-close" id="chat-close">&times;</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot" id="welcome-message">
+                    Hello! I'm your Study Partner. I can help you analyze your study data and answer questions about your subjects, progress, and exams. How can I assist you today?
+                    <div class="message-time" id="welcome-time"></div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" class="chat-input-field" id="chat-input" placeholder="Ask me about your studies...">
+                <button class="chat-send" id="chat-send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subject Details Popup -->
+    <div class="subject-popup" id="subject-popup">
+        <div class="subject-popup-content">
+            <div class="subject-popup-header">
+                <div class="subject-popup-title" id="subject-popup-title">Subject Details</div>
+                <button class="subject-popup-close" id="subject-popup-close">&times;</button>
+            </div>
+            <div class="subject-popup-body">
+                <div class="chapters-container" id="chapters-container">
+                    <!-- Chapters will be dynamically added here -->
+                </div>
+                <div class="todo-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-tasks"></i>
+                        <span id="todo-title">To-Do List</span>
+                    </h3>
+                    <div class="todo-container">
+                        <div class="todo-input-container">
+                            <input type="text" class="todo-input" id="todo-input" placeholder="Add a new task...">
+                            <button class="btn btn-primary btn-sm" id="add-todo">
+                                <i class="fas fa-plus"></i>
+                                <span id="add-todo-text">Add</span>
+                            </button>
+                        </div>
+                        <ul class="todo-list" id="todo-list">
+                            <!-- To-do items will be dynamically added here -->
+                        </ul>
+                        <div class="clear-todos">
+                            <button class="btn btn-danger btn-sm" id="clear-todos">
+                                <i class="fas fa-trash"></i>
+                                <span id="clear-todos-text">Clear All</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-info">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="subject-progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text text-center mt-20" id="subject-progress-text">0% Complete</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Popup -->
+    <div class="notes-popup" id="notes-popup">
+        <div class="notes-popup-content">
+            <div class="notes-popup-header">
+                <div class="notes-popup-title" id="notes-popup-title">Edit Note</div>
+                <button class="notes-popup-close" id="notes-popup-close">&times;</button>
+            </div>
+            <div class="notes-popup-body">
+                <div class="note-editor">
+                    <input type="text" class="note-title-input" id="note-title-input" placeholder="Note Title">
+                    <textarea class="note-content-textarea" id="note-content-textarea" placeholder="Start typing your note here..."></textarea>
+                </div>
+            </div>
+            <div class="notes-popup-footer">
+                <div class="note-tags-container" id="note-tags-container">
+                    <!-- Tags will be added here -->
+                </div>
+                <div class="flex gap-10">
+                    <button class="btn" id="add-tag-btn">
+                        <i class="fas fa-tag"></i>
+                        <span id="add-tag-text">Add Tag</span>
+                    </button>
+                    <button class="btn btn-primary" id="save-note-btn">
+                        <i class="fas fa-save"></i>
+                        <span id="save-note-text">Save Note</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Landing Page -->
+    <section id="landing-page">
+        <div class="animated-bg">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+            <div class="floating-shape shape-4"></div>
+            <div class="floating-shape shape-5"></div>
+        </div>
+        
+        <div class="logo-container">
+            <h1 class="logo">StudyDisk</h1>
+            <div class="logo-subtitle" id="logo-subtitle">Your Study Companion</div>
+        </div>
+        
+        <p class="tagline" id="tagline">Organize your study, master your materials, and stay productive. A comprehensive platform that combines smart planning, PDF tools, and organized notes.</p>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📚</div>
+                <div class="feature-title" id="feature1-title">Interactive Study Planner</div>
+                <div class="feature-text" id="feature1-text">Plan your subjects, track chapters, and monitor your progress with an intuitive study planner.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🛠️</div>
+                <div class="feature-title" id="feature2-title">Complete PDF Toolkit</div>
+                <div class="feature-text" id="feature2-text">Merge, convert, compress, and create PDFs with our comprehensive set of tools.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📝</div>
+                <div class="feature-title" id="feature3-title">Smart & Organized Notes</div>
+                <div class="feature-text" id="feature3-text">Take notes, organize them with tags, and access them anytime with our smart notes system.</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title" id="feature4-title">Progress Tracking</div>
+                <div class="feature-text" id="feature4-text">Monitor your study progress with visual indicators and get reminders for neglected subjects.</div>
+            </div>
+        </div>
+        
+        <button class="start-btn" id="start-btn">
+            <span id="start-btn-text">Start Now</span> <i class="fas fa-arrow-right"></i>
+        </button>
+    </section>
+
+    <!-- Auth Options -->
+    <section id="auth-options">
+        <div class="auth-bg">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+            <div class="floating-shape shape-4"></div>
+            <div class="floating-shape shape-5"></div>
+        </div>
+        
+        <!-- Sign Up Form -->
+        <div class="auth-container" id="signup-container">
+            <h2 class="auth-title" id="signup-title">Create Account</h2>
+            <p class="auth-subtitle" id="signup-subtitle">Join StudyDisk to organize your study journey</p>
+            
+            <form class="auth-form" id="signup-form">
+                <div class="form-group">
+                    <label class="form-label" for="full-name">Full Name</label>
+                    <input type="text" class="form-input" id="full-name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="signup-email">Email</label>
+                    <input type="email" class="form-input" id="signup-email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="signup-password">Password</label>
+                    <input type="password" class="form-input" id="signup-password" placeholder="Create a password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="confirm-password">Confirm Password</label>
+                    <input type="password" class="form-input" id="confirm-password" placeholder="Confirm your password" required>
+                </div>
+                
+                <button type="submit" class="auth-btn" id="signup-btn">
+                    <span id="signup-btn-text">Create Account</span>
+                </button>
+            </form>
+            
+            <div class="divider">
+                <span class="divider-text" id="or-text">Or</span>
+            </div>
+            
+            <button class="google-btn" id="google-signup">
+                <i class="fab fa-google"></i>
+                <span id="google-signup-text">Sign up with Google</span>
+            </button>
+            
+            <div class="auth-switch">
+                <span id="have-account-text">Already have an account?</span>
+                <a class="auth-link" id="login-link">Log in</a>
+            </div>
+        </div>
+        
+        <!-- Login Form -->
+        <div class="auth-container hidden" id="login-container">
+            <h2 class="auth-title" id="login-title">Welcome Back</h2>
+            <p class="auth-subtitle" id="login-subtitle">Sign in to your StudyDisk account</p>
+            
+            <form class="auth-form" id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Email</label>
+                    <input type="email" class="form-input" id="login-email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Password</label>
+                    <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="forgot-password">
+                    <a class="auth-link" id="forgot-password-link">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="auth-btn" id="login-btn">
+                    <span id="login-btn-text">Log In</span>
+                </button>
+            </form>
+            
+            <div class="divider">
+                <span class="divider-text" id="or-text-login">Or</span>
+            </div>
+            
+            <button class="google-btn" id="google-login">
+                <i class="fab fa-google"></i>
+                <span id="google-login-text">Sign in with Google</span>
+            </button>
+            
+            <div class="auth-switch">
+                <span id="no-account-text">Don't have an account?</span>
+                <a class="auth-link" id="signup-link">Sign up</a>
+            </div>
+        </div>
+        
+        <!-- Forgot Password Form -->
+        <div class="auth-container hidden" id="forgot-password-container">
+            <h2 class="auth-title" id="forgot-password-title">Reset Password</h2>
+            <p class="auth-subtitle" id="forgot-password-subtitle">Enter your email to reset your password</p>
+            
+            <form class="auth-form" id="forgot-password-form">
+                <div class="form-group">
+                    <label class="form-label" for="reset-email">Email</label>
+                    <input type="email" class="form-input" id="reset-email" placeholder="Enter your email" required>
+                </div>
+                
+                <button type="submit" class="auth-btn" id="reset-password-btn">
+                    <span id="reset-password-btn-text">Reset Password</span>
+                </button>
+            </form>
+            
+            <div class="auth-switch">
+                <a class="auth-link" id="back-to-login">Back to Log In</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard">
+        <div class="header">
+            <h1 class="dashboard-logo">StudyDisk</h1>
+            <div class="header-controls">
+                <div class="flex items-center gap-10">
+                    <button class="btn" id="dark-mode-toggle">
+                        <i class="fas fa-moon"></i>
+                        <span id="dark-mode-text">Dark Mode</span>
+                    </button>
+                    <button class="btn" id="export-pdf">
+                        <i class="fas fa-file-pdf"></i>
+                        <span id="export-pdf-text">Export PDF</span>
+                    </button>
+                </div>
+                
+                <!-- User Profile -->
+                <div class="user-profile">
+                    <button class="profile-toggle" id="profile-toggle">
+                        <div class="profile-img" id="profile-img">U</div>
+                        <span id="user-name">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="profile-item">
+                            <i class="fas fa-user"></i>
+                            <span id="my-account-text">My Account</span>
+                        </div>
+                        <div class="profile-item logout" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span id="logout-text">Log Out</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="planner">
+                <i class="fas fa-book-open"></i>
+                <span id="planner-tab-text">Study Planner</span>
+            </button>
+            <button class="tab-btn" data-tab="pdf-tools">
+                <i class="fas fa-tools"></i>
+                <span id="pdf-tab-text">PDF Tools</span>
+            </button>
+            <button class="tab-btn" data-tab="notes">
+                <i class="fas fa-sticky-note"></i>
+                <span id="notes-tab-text">Smart Notes</span>
+            </button>
+            <button class="tab-btn" data-tab="settings">
+                <i class="fas fa-cog"></i>
+                <span id="settings-tab-text">Settings</span>
+            </button>
+        </div>
+
+        <!-- Study Planner Tab -->
+        <div class="tab-content active" id="planner">
+            <div class="neumorphic-card">
+                <h2 class="section-title">
+                    <i class="fas fa-plus-circle"></i>
+                    <span id="add-subject-title">Add New Subject</span>
+                </h2>
+                <div class="subject-input">
+                    <div class="input-group">
+                        <div class="input-label" id="subject-name-label">Subject Name</div>
+                        <input type="text" class="input-field" id="subject-name" placeholder="Enter subject name">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-label" id="chapters-count-label">Number of Chapters</div>
+                        <input type="number" class="input-field" id="chapters-count" placeholder="Number of chapters" min="1">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-label" id="exam-date-label">Exam Date</div>
+                        <input type="date" class="input-field" id="exam-date">
+                    </div>
+                    <button class="btn btn-primary" id="add-subject">
+                        <i class="fas fa-plus"></i>
+                        <span id="add-subject-text">Add Subject</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Study Partner Assistant -->
+            <div class="neumorphic-card study-partner-assistant">
+                <h2 class="section-title">
+                    <i class="fas fa-robot"></i>
+                    <span id="assistant-title">Study Partner Assistant</span>
+                </h2>
+                <div class="assistant-cards">
+                    <div class="assistant-card" id="generate-schedule">
+                        <div class="assistant-card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="schedule-title">Generate Study Schedule</span>
+                        </div>
+                        <div class="assistant-card-content" id="schedule-desc">
+                            Create a personalized study schedule based on your exam dates and subjects.
+                        </div>
+                    </div>
+                    <div class="assistant-card" id="analyze-progress">
+                        <div class="assistant-card-title">
+                            <i class="fas fa-chart-line"></i>
+                            <span id="analyze-title">Analyze Study Progress</span>
+                        </div>
+                        <div class="assistant-card-content" id="analyze-desc">
+                            Get AI-powered insights on which subjects need more attention right now.
+                        </div>
+                    </div>
+                    <div class="assistant-card" id="export-progress">
+                        <div class="assistant-card-title">
+                            <i class="fas fa-share-alt"></i>
+                            <span id="export-progress-title">Export Progress</span>
+                        </div>
+                        <div class="assistant-card-content" id="export-progress-desc">
+                            Share your study progress with friends via image or PDF.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="neumorphic-card">
+                <h2 class="section-title">
+                    <i class="fas fa-book"></i>
+                    <span id="your-subjects-title">Your Subjects</span>
+                </h2>
+                <div class="subjects-container" id="subjects-container">
+                    <!-- Subjects will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Tools Tab -->
+        <div class="tab-content" id="pdf-tools">
+            <div class="neumorphic-card">
+                <h2 class="section-title">
+                    <i class="fas fa-tools"></i>
+                    <span id="pdf-tools-title">PDF Tools</span>
+                </h2>
+                <div class="tools-grid">
+                    <div class="tool-card" id="merge-pdf">
+                        <div class="tool-icon">🧩</div>
+                        <div class="tool-name" id="merge-pdf-name">Merge PDFs</div>
+                        <div class="tool-desc" id="merge-pdf-desc">Combine multiple PDF files into a single document</div>
+                    </div>
+                    <div class="tool-card" id="convert-pdf">
+                        <div class="tool-icon">🔄</div>
+                        <div class="tool-name" id="convert-pdf-name">Convert Files</div>
+                        <div class="tool-desc" id="convert-pdf-desc">Convert between Word, Image, PPT and PDF formats</div>
+                    </div>
+                    <div class="tool-card" id="compress-pdf">
+                        <div class="tool-icon">🗜️</div>
+                        <div class="tool-name" id="compress-pdf-name">Compress PDF</div>
+                        <div class="tool-desc" id="compress-pdf-desc">Reduce PDF file size while maintaining quality</div>
+                    </div>
+                    <div class="tool-card" id="ocr-pdf">
+                        <div class="tool-icon">🧠</div>
+                        <div class="tool-name" id="ocr-pdf-name">OCR Scan</div>
+                        <div class="tool-desc" id="ocr-pdf-desc">Extract text from images and scanned documents</div>
+                    </div>
+                    <div class="tool-card" id="create-pdf">
+                        <div class="tool-icon">🖋️</div>
+                        <div class="tool-name" id="create-pdf-name">Create PDF</div>
+                        <div class="tool-desc" id="create-pdf-desc">Create new PDF documents from text and images</div>
+                    </div>
+                    <div class="tool-card" id="split-pdf">
+                        <div class="tool-icon">✂️</div>
+                        <div class="tool-name" id="split-pdf-name">Split PDF</div>
+                        <div class="tool-desc" id="split-pdf-desc">Split a PDF into multiple documents</div>
+                    </div>
+                </div>
+
+                <!-- PDF Tool Interface -->
+                <div class="pdf-tool-interface" id="pdf-tool-interface">
+                    <h3 class="pdf-tool-title" id="pdf-tool-active-title">Merge PDF Files</h3>
+                    <div class="file-upload-area" id="file-upload-area">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4 id="file-upload-text">Drag & Drop files here or click to browse</h4>
+                        <p id="file-upload-subtext">Supported formats: PDF, DOC, DOCX, PPT, PPTX, JPG, PNG</p>
+                    </div>
+                    <div class="file-list" id="file-list">
+                        <!-- Files will be listed here -->
+                    </div>
+                    <div class="pdf-action-buttons">
+                        <button class="btn btn-primary" id="process-pdf-btn">
+                            <i class="fas fa-cogs"></i>
+                            <span id="process-pdf-text">Process Files</span>
+                        </button>
+                        <button class="btn" id="clear-files-btn">
+                            <i class="fas fa-trash"></i>
+                            <span id="clear-files-text">Clear Files</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Smart Notes Tab -->
+        <div class="tab-content" id="notes">
+            <div class="neumorphic-card">
+                <h2 class="section-title">
+                    <i class="fas fa-sticky-note"></i>
+                    <span id="smart-notes-title">Smart Notes</span>
+                </h2>
+                <div class="notes-container" id="notes-container">
+                    <!-- Notes will be dynamically added here -->
+                    <div class="add-note-btn" id="add-note-btn">
+                        <div class="add-icon">+</div>
+                        <div id="add-note-text">Add New Note</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-content" id="settings">
+            <div class="neumorphic-card">
+                <h2 class="section-title">
+                    <i class="fas fa-cog"></i>
+                    <span id="settings-title">Settings</span>
+                </h2>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3 class="settings-card-title">
+                            <i class="fas fa-palette"></i>
+                            <span id="appearance-title">Appearance</span>
+                        </h3>
+                        <div class="settings-option">
+                            <div>
+                                <div class="option-label" id="dark-mode-label">Dark Mode</div>
+                                <div class="option-description" id="dark-mode-desc">Switch between light and dark themes</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="dark-mode-switch">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div>
+                                <div class="option-label" id="language-label">Language</div>
+                                <div class="option-description" id="language-desc">Choose your preferred language</div>
+                            </div>
+                            <select class="input-field" id="language-select" style="width: auto; padding: 8px 12px;">
+                                <option value="en">English</option>
+                                <option value="ar">العربية</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-card-title">
+                            <i class="fas fa-bell"></i>
+                            <span id="notifications-title">Notifications</span>
+                        </h3>
+                        <div class="settings-option">
+                            <div>
+                                <div class="option-label" id="study-reminders-label">Study Reminders</div>
+                                <div class="option-description" id="study-reminders-desc">Get reminders for neglected subjects</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="reminder-switch" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div>
+                                <div class="option-label" id="auto-save-label">Auto Save</div>
+                                <div class="option-description" id="auto-save-desc">Automatically save your progress</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="auto-save-switch" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3 class="settings-card-title">
+                            <i class="fas fa-database"></i>
+                            <span id="data-title">Data Management</span>
+                        </h3>
+                        <div class="settings-option">
+                            <div>
+                                <div class="option-label" id="export-data-label">Export All Data</div>
+                                <div class="option-description" id="export-data-desc">Download your study data as backup</div>
+                            </div>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-download"></i>
+                                <span id="export-data-text">Export</span>
+                            </button>
+                        </div>
+                        <div class="settings-option">
+                            <div>
+                                <div class="option-label" id="clear-data-label">Clear All Data</div>
+                                <div class="option-description" id="clear-data-desc">Permanently delete all your data</div>
+                            </div>
+                            <button class="btn btn-danger btn-sm" id="clear-data">
+                                <i class="fas fa-trash"></i>
+                                <span id="clear-data-text">Clear All</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Supabase Configuration
+        // TODO: Replace these with your actual Supabase URL and anon key
+        const SUPABASE_URL = 'https://nbqjkieacvtsizpsyzfl.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5icWpraWVhY3Z0c2l6cHN5emZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2MjkwMTQsImV4cCI6MjA3ODIwNTAxNH0._qlU278XzKf_6l3HkL9ROVZbim0_LWK54l6gSd7jCZI';
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // DOM Elements
+        const landingPage = document.getElementById('landing-page');
+        const authOptions = document.getElementById('auth-options');
+        const dashboard = document.getElementById('dashboard');
+        const startBtn = document.getElementById('start-btn');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const darkModeSwitch = document.getElementById('dark-mode-switch');
+        const addSubjectBtn = document.getElementById('add-subject');
+        const subjectNameInput = document.getElementById('subject-name');
+        const chaptersCountInput = document.getElementById('chapters-count');
+        const examDateInput = document.getElementById('exam-date');
+        const subjectsContainer = document.getElementById('subjects-container');
+        const notesContainer = document.getElementById('notes-container');
+        const addNoteBtn = document.getElementById('add-note-btn');
+        const clearDataBtn = document.getElementById('clear-data');
+        const langToggle = document.getElementById('lang-toggle');
+        const langText = document.getElementById('lang-text');
+        const languageSelect = document.getElementById('language-select');
+        const studyPartnerChat = document.getElementById('study-partner-chat');
+
+        // Auth Elements
+        const signupContainer = document.getElementById('signup-container');
+        const loginContainer = document.getElementById('login-container');
+        const forgotPasswordContainer = document.getElementById('forgot-password-container');
+        const signupForm = document.getElementById('signup-form');
+        const loginForm = document.getElementById('login-form');
+        const forgotPasswordForm = document.getElementById('forgot-password-form');
+        const loginLink = document.getElementById('login-link');
+        const signupLink = document.getElementById('signup-link');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+        const backToLogin = document.getElementById('back-to-login');
+        const googleSignup = document.getElementById('google-signup');
+        const googleLogin = document.getElementById('google-login');
+
+        // User Profile Elements
+        const profileToggle = document.getElementById('profile-toggle');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const profileImg = document.getElementById('profile-img');
+        const userName = document.getElementById('user-name');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Chat Elements
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatContainer = document.getElementById('chat-container');
+        const chatClose = document.getElementById('chat-close');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const welcomeTime = document.getElementById('welcome-time');
+
+        // Subject Popup Elements
+        const subjectPopup = document.getElementById('subject-popup');
+        const subjectPopupClose = document.getElementById('subject-popup-close');
+        const subjectPopupTitle = document.getElementById('subject-popup-title');
+        const chaptersContainer = document.getElementById('chapters-container');
+        const subjectProgressFill = document.getElementById('subject-progress-fill');
+        const subjectProgressText = document.getElementById('subject-progress-text');
+
+        // Notes Popup Elements
+        const notesPopup = document.getElementById('notes-popup');
+        const notesPopupClose = document.getElementById('notes-popup-close');
+        const noteTitleInput = document.getElementById('note-title-input');
+        const noteContentTextarea = document.getElementById('note-content-textarea');
+        const noteTagsContainer = document.getElementById('note-tags-container');
+        const addTagBtn = document.getElementById('add-tag-btn');
+        const saveNoteBtn = document.getElementById('save-note-btn');
+
+        // PDF Tools Elements
+        const pdfTools = document.querySelectorAll('.tool-card');
+        const pdfToolInterface = document.getElementById('pdf-tool-interface');
+        const fileUploadArea = document.getElementById('file-upload-area');
+        const fileList = document.getElementById('file-list');
+        const processPdfBtn = document.getElementById('process-pdf-btn');
+        const clearFilesBtn = document.getElementById('clear-files-btn');
+
+        // New Feature Elements
+        const todoInput = document.getElementById('todo-input');
+        const addTodoBtn = document.getElementById('add-todo');
+        const todoList = document.getElementById('todo-list');
+        const clearTodosBtn = document.getElementById('clear-todos');
+        const generateScheduleBtn = document.getElementById('generate-schedule');
+        const analyzeProgressBtn = document.getElementById('analyze-progress');
+        const exportProgressBtn = document.getElementById('export-progress');
+
+        // Language texts
+        const translations = {
+            en: {
+                // Landing Page
+                logoSubtitle: "Your Study Companion",
+                tagline: "Organize your study, master your materials, and stay productive. A comprehensive platform that combines smart planning, PDF tools, and organized notes.",
+                feature1Title: "Interactive Study Planner",
+                feature1Text: "Plan your subjects, track chapters, and monitor your progress with an intuitive study planner.",
+                feature2Title: "Complete PDF Toolkit",
+                feature2Text: "Merge, convert, compress, and create PDFs with our comprehensive set of tools.",
+                feature3Title: "Smart & Organized Notes",
+                feature3Text: "Take notes, organize them with tags, and access them anytime with our smart notes system.",
+                feature4Title: "Progress Tracking",
+                feature4Text: "Monitor your study progress with visual indicators and get reminders for neglected subjects.",
+                startBtn: "Start Now",
+                
+                // Auth Pages
+                signupTitle: "Create Account",
+                signupSubtitle: "Join StudyDisk to organize your study journey",
+                signupBtnText: "Create Account",
+                googleSignupText: "Sign up with Google",
+                orText: "Or",
+                haveAccountText: "Already have an account?",
+                loginTitle: "Welcome Back",
+                loginSubtitle: "Sign in to your StudyDisk account",
+                loginBtnText: "Log In",
+                googleLoginText: "Sign in with Google",
+                noAccountText: "Don't have an account?",
+                forgotPasswordTitle: "Reset Password",
+                forgotPasswordSubtitle: "Enter your email to reset your password",
+                resetPasswordBtnText: "Reset Password",
+                
+                // Dashboard
+                darkMode: "Dark Mode",
+                exportPdf: "Export PDF",
+                plannerTab: "Study Planner",
+                pdfTab: "PDF Tools",
+                notesTab: "Smart Notes",
+                settingsTab: "Settings",
+                
+                // User Profile
+                myAccountText: "My Account",
+                logoutText: "Log Out",
+                
+                // Study Planner
+                addSubjectTitle: "Add New Subject",
+                subjectNameLabel: "Subject Name",
+                chaptersCountLabel: "Number of Chapters",
+                examDateLabel: "Exam Date",
+                addSubjectText: "Add Subject",
+                yourSubjectsTitle: "Your Subjects",
+                noSubjects: "No subjects added yet. Add your first subject above!",
+                exam: "Exam",
+                daysLeft: "days left",
+                examPassed: "Exam passed",
+                chaptersStudied: "chapters studied",
+                chaptersSolved: "chapters solved",
+                delete: "Delete",
+                markStudied: "Mark Studied",
+                markSolved: "Mark Solved",
+                studied: "Studied",
+                solved: "Solved",
+                complete: "Complete",
+                
+                // PDF Tools
+                pdfToolsTitle: "PDF Tools",
+                mergePdfName: "Merge PDFs",
+                mergePdfDesc: "Combine multiple PDF files into a single document",
+                convertPdfName: "Convert Files",
+                convertPdfDesc: "Convert between Word, Image, PPT and PDF formats",
+                compressPdfName: "Compress PDF",
+                compressPdfDesc: "Reduce PDF file size while maintaining quality",
+                ocrPdfName: "OCR Scan",
+                ocrPdfDesc: "Extract text from images and scanned documents",
+                createPdfName: "Create PDF",
+                createPdfDesc: "Create new PDF documents from text and images",
+                splitPdfName: "Split PDF",
+                splitPdfDesc: "Split a PDF into multiple documents",
+                pdfToolActiveTitle: "Merge PDF Files",
+                fileUploadText: "Drag & Drop files here or click to browse",
+                fileUploadSubtext: "Supported formats: PDF, DOC, DOCX, PPT, PPTX, JPG, PNG",
+                processPdfText: "Process Files",
+                clearFilesText: "Clear Files",
+                
+                // Notes
+                smartNotesTitle: "Smart Notes",
+                addNoteText: "Add New Note",
+                editNote: "Edit Note",
+                noteTitlePlaceholder: "Note Title",
+                noteContentPlaceholder: "Start typing your note here...",
+                addTagText: "Add Tag",
+                saveNoteText: "Save Note",
+                
+                // Settings
+                settingsTitle: "Settings",
+                appearanceTitle: "Appearance",
+                notificationsTitle: "Notifications",
+                dataTitle: "Data Management",
+                darkModeLabel: "Dark Mode",
+                darkModeDesc: "Switch between light and dark themes",
+                languageLabel: "Language",
+                languageDesc: "Choose your preferred language",
+                studyRemindersLabel: "Study Reminders",
+                studyRemindersDesc: "Get reminders for neglected subjects",
+                autoSaveLabel: "Auto Save",
+                autoSaveDesc: "Automatically save your progress",
+                exportDataLabel: "Export All Data",
+                exportDataDesc: "Download your study data as backup",
+                exportDataText: "Export",
+                clearDataLabel: "Clear All Data",
+                clearDataDesc: "Permanently delete all your data",
+                clearDataText: "Clear All",
+                
+                // Chat
+                chatTitle: "Study Partner",
+                chatPlaceholder: "Ask me about your studies...",
+                welcomeMessage: "Hello! I'm your Study Partner. I can help you analyze your study data and answer questions about your subjects, progress, and exams. How can I assist you today?",
+                
+                // New Features
+                assistantTitle: "Study Partner Assistant",
+                scheduleTitle: "Generate Study Schedule",
+                scheduleDesc: "Create a personalized study schedule based on your exam dates and subjects.",
+                analyzeTitle: "Analyze Study Progress",
+                analyzeDesc: "Get AI-powered insights on which subjects need more attention right now.",
+                exportProgressTitle: "Export Progress",
+                exportProgressDesc: "Share your study progress with friends via image or PDF.",
+                todoTitle: "To-Do List",
+                addTodoText: "Add",
+                clearTodosText: "Clear All"
+            },
+            ar: {
+                // Landing Page
+                logoSubtitle: "رفيق دراستك",
+                tagline: "نظم دراستك، أتقن موادك، وابقَ منتجاً. منصة شاملة تجمع بين التخطيط الذكي، أدوات PDF، والملاحظات المنظمة.",
+                feature1Title: "مخطط الدراسة التفاعلي",
+                feature1Text: "خطط لموادك، تتبع الفصول، وراقب تقدمك مع مخطط دراسة بديهي.",
+                feature2Title: "مجموعة أدوات PDF كاملة",
+                feature2Text: "ادمج، حوّل، اضغط، وأنشئ ملفات PDF مع مجموعة أدواتنا الشاملة.",
+                feature3Title: "ملاحظات ذكية ومنظمة",
+                feature3Text: "دوّن الملاحظات، نظمها بالوسوم، وادخل إليها في أي وقت مع نظام ملاحظاتنا الذكي.",
+                feature4Title: "تتبع التقدم",
+                feature4Text: "راقب تقدمك الدراسي بمؤشرات بصرية واحصل على تذكيرات للمواد المهملة.",
+                startBtn: "ابدأ الآن",
+                
+                // Auth Pages
+                signupTitle: "إنشاء حساب",
+                signupSubtitle: "انضم إلى StudyDisk لتنظيم رحلة دراستك",
+                signupBtnText: "إنشاء حساب",
+                googleSignupText: "التسجيل باستخدام جوجل",
+                orText: "أو",
+                haveAccountText: "هل لديك حساب بالفعل؟",
+                loginTitle: "مرحباً بعودتك",
+                loginSubtitle: "سجل الدخول إلى حساب StudyDisk الخاص بك",
+                loginBtnText: "تسجيل الدخول",
+                googleLoginText: "تسجيل الدخول باستخدام جوجل",
+                noAccountText: "ليس لديك حساب؟",
+                forgotPasswordTitle: "إعادة تعيين كلمة المرور",
+                forgotPasswordSubtitle: "أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور",
+                resetPasswordBtnText: "إعادة تعيين كلمة المرور",
+                
+                // Dashboard
+                darkMode: "الوضع الداكن",
+                exportPdf: "تصدير PDF",
+                plannerTab: "مخطط الدراسة",
+                pdfTab: "أدوات PDF",
+                notesTab: "الملاحظات الذكية",
+                settingsTab: "الإعدادات",
+                
+                // User Profile
+                myAccountText: "حسابي",
+                logoutText: "تسجيل الخروج",
+                
+                // Study Planner
+                addSubjectTitle: "إضافة مادة جديدة",
+                subjectNameLabel: "اسم المادة",
+                chaptersCountLabel: "عدد الفصول",
+                examDateLabel: "موعد الامتحان",
+                addSubjectText: "إضافة المادة",
+                yourSubjectsTitle: "موادك الدراسية",
+                noSubjects: "لم تقم بإضافة أي مواد بعد. أضف أول مادة من الأعلى!",
+                exam: "الامتحان",
+                daysLeft: "يوم متبقي",
+                examPassed: "انتهى الامتحان",
+                chaptersStudied: "فصول تمت مذاكرتها",
+                chaptersSolved: "فصول تم حلها",
+                delete: "حذف",
+                markStudied: "تعليم كمتم الدراسة",
+                markSolved: "تعليم كمتم الحل",
+                studied: "تمت",
+                solved: "تم حل",
+                complete: "مكتمل",
+                
+                // PDF Tools
+                pdfToolsTitle: "أدوات PDF",
+                mergePdfName: "دمج ملفات PDF",
+                mergePdfDesc: "اجمع عدة ملفات PDF في مستند واحد",
+                convertPdfName: "تحويل الملفات",
+                convertPdfDesc: "تحويل بين Word، Image، PPT و PDF",
+                compressPdfName: "ضغط PDF",
+                compressPdfDesc: "تقليل حجم ملف PDF مع الحفاظ على الجودة",
+                ocrPdfName: "مسح ضوئي OCR",
+                ocrPdfDesc: "استخراج النص من الصور والمستندات الممسوحة",
+                createPdfName: "إنشاء PDF",
+                createPdfDesc: "إنشاء مستندات PDF جديدة من النصوص والصور",
+                splitPdfName: "تقسيم PDF",
+                splitPdfDesc: "تقسيم ملف PDF إلى عدة مستندات",
+                pdfToolActiveTitle: "دمج ملفات PDF",
+                fileUploadText: "اسحب وأفلت الملفات هنا أو انقر للتصفح",
+                fileUploadSubtext: "الصيغ المدعومة: PDF, DOC, DOCX, PPT, PPTX, JPG, PNG",
+                processPdfText: "معالجة الملفات",
+                clearFilesText: "مسح الملفات",
+                
+                // Notes
+                smartNotesTitle: "الملاحظات الذكية",
+                addNoteText: "إضافة ملاحظة جديدة",
+                editNote: "تعديل الملاحظة",
+                noteTitlePlaceholder: "عنوان الملاحظة",
+                noteContentPlaceholder: "ابدأ بكتابة ملاحظاتك هنا...",
+                addTagText: "إضافة وسم",
+                saveNoteText: "حفظ الملاحظة",
+                
+                // Settings
+                settingsTitle: "الإعدادات",
+                appearanceTitle: "المظهر",
+                notificationsTitle: "الإشعارات",
+                dataTitle: "إدارة البيانات",
+                darkModeLabel: "الوضع الداكن",
+                darkModeDesc: "التبديل بين السمة الفاتحة والداكنة",
+                languageLabel: "اللغة",
+                languageDesc: "اختر لغتك المفضلة",
+                studyRemindersLabel: "تذكيرات الدراسة",
+                studyRemindersDesc: "احصل على تذكيرات للمواد المهملة",
+                autoSaveLabel: "الحفظ التلقائي",
+                autoSaveDesc: "حفظ تقدمك تلقائياً",
+                exportDataLabel: "تصدير جميع البيانات",
+                exportDataDesc: "حمّل بيانات دراستك كنسخة احتياطية",
+                exportDataText: "تصدير",
+                clearDataLabel: "مسح جميع البيانات",
+                clearDataDesc: "حذف جميع بياناتك بشكل دائم",
+                clearDataText: "مسح الكل",
+                
+                // Chat
+                chatTitle: "شريك الدراسة",
+                chatPlaceholder: "اسألني عن دراستك...",
+                welcomeMessage: "مرحباً! أنا شريك دراستك. يمكنني مساعدتك في تحليل بيانات دراستك والإجابة على أسئلتك حول موادك وتقدمك وامتحاناتك. كيف يمكنني مساعدتك اليوم؟",
+                
+                // New Features
+                assistantTitle: "مساعد شريك الدراسة",
+                scheduleTitle: "إنشاء جدول الدراسة",
+                scheduleDesc: "أنشئ جدول دراسة مخصص بناءً على مواعيد امتحاناتك وموادك.",
+                analyzeTitle: "تحليل تقدم الدراسة",
+                analyzeDesc: "احصل على رؤى مدعومة بالذكاء الاصطناعي حول المواد التي تحتاج إلى مزيد من الاهتمام الآن.",
+                exportProgressTitle: "تصدير التقدم",
+                exportProgressDesc: "شارك تقدمك الدراسي مع أصدقائك عبر الصور أو PDF.",
+                todoTitle: "قائمة المهام",
+                addTodoText: "إضافة",
+                clearTodosText: "مسح الكل"
+            }
+        };
+
+        // Initialize data from localStorage
+        let subjects = JSON.parse(localStorage.getItem('studydisk_subjects')) || [];
+        let notes = JSON.parse(localStorage.getItem('studydisk_notes')) || [];
+        let isDarkMode = localStorage.getItem('studydisk_darkmode') === 'true';
+        let language = localStorage.getItem('studydisk_language') || 'en';
+        let currentNoteId = null;
+        let currentSubjectId = null;
+        let currentPdfTool = 'merge-pdf';
+        let todos = JSON.parse(localStorage.getItem('studydisk_todos')) || {};
+        let currentUser = JSON.parse(localStorage.getItem('studydisk_currentUser')) || null;
+
+        // Set initial language
+        updateLanguage();
+        darkModeSwitch.checked = isDarkMode;
+        updateDarkMode();
+        languageSelect.value = language;
+
+        // Set welcome message time
+        welcomeTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        // Check if user is logged in
+        if (currentUser) {
+            showDashboard();
+        }
+
+        // Event Listeners
+        startBtn.addEventListener('click', showAuthOptions);
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        darkModeSwitch.addEventListener('change', toggleDarkMode);
+        
+        addSubjectBtn.addEventListener('click', addSubject);
+        addNoteBtn.addEventListener('click', () => openNotePopup());
+        
+        clearDataBtn.addEventListener('click', clearAllData);
+        langToggle.addEventListener('click', toggleLanguage);
+        languageSelect.addEventListener('change', changeLanguage);
+
+        // Auth Event Listeners
+        loginLink.addEventListener('click', showLogin);
+        signupLink.addEventListener('click', showSignup);
+        forgotPasswordLink.addEventListener('click', showForgotPassword);
+        backToLogin.addEventListener('click', showLogin);
+        googleSignup.addEventListener('click', signupWithGoogle);
+        googleLogin.addEventListener('click', loginWithGoogle);
+        
+        signupForm.addEventListener('submit', handleSignup);
+        loginForm.addEventListener('submit', handleLogin);
+        forgotPasswordForm.addEventListener('submit', handleForgotPassword);
+
+        // User Profile Event Listeners
+        profileToggle.addEventListener('click', toggleProfileDropdown);
+        logoutBtn.addEventListener('click', handleLogout);
+
+        // Chat Event Listeners
+        chatToggle.addEventListener('click', toggleChat);
+        chatClose.addEventListener('click', closeChat);
+        chatSend.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        // Subject Popup Event Listeners
+        subjectPopupClose.addEventListener('click', closeSubjectPopup);
+
+        // Notes Popup Event Listeners
+        notesPopupClose.addEventListener('click', closeNotePopup);
+        saveNoteBtn.addEventListener('click', saveNote);
+        addTagBtn.addEventListener('click', addTagToNote);
+
+        // PDF Tools Event Listeners
+        pdfTools.forEach(tool => {
+            tool.addEventListener('click', () => {
+                currentPdfTool = tool.id;
+                activatePdfTool(tool.id);
+            });
+        });
+
+        fileUploadArea.addEventListener('click', triggerFileUpload);
+        processPdfBtn.addEventListener('click', processPdfFiles);
+        clearFilesBtn.addEventListener('click', clearFileList);
+
+        // New Feature Event Listeners
+        addTodoBtn.addEventListener('click', addTodo);
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+        clearTodosBtn.addEventListener('click', clearTodos);
+        generateScheduleBtn.addEventListener('click', generateStudySchedule);
+        analyzeProgressBtn.addEventListener('click', analyzeStudyProgress);
+        exportProgressBtn.addEventListener('click', exportProgress);
+
+        // Functions
+        function showAuthOptions() {
+            landingPage.style.display = 'none';
+            authOptions.style.display = 'flex';
+            studyPartnerChat.style.display = 'none'; // Hide chat on auth pages
+        }
+
+        function showSignup() {
+            loginContainer.classList.add('hidden');
+            forgotPasswordContainer.classList.add('hidden');
+            signupContainer.classList.remove('hidden');
+        }
+
+        function showLogin() {
+            signupContainer.classList.add('hidden');
+            forgotPasswordContainer.classList.add('hidden');
+            loginContainer.classList.remove('hidden');
+        }
+
+        function showForgotPassword() {
+            signupContainer.classList.add('hidden');
+            loginContainer.classList.add('hidden');
+            forgotPasswordContainer.classList.remove('hidden');
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('full-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            // Basic validation
+            if (password !== confirmPassword) {
+                alert(language === 'en' ? 'Passwords do not match' : 'كلمات المرور غير متطابقة');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert(language === 'en' ? 'Password must be at least 6 characters' : 'يجب أن تكون كلمة المرور 6 أحرف على الأقل');
+                return;
+            }
+            
+            try {
+                // Sign up with Supabase
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName
+                        }
+                    }
+                });
+                
+                if (error) {
+                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    return;
+                }
+                
+                // Set current user
+                currentUser = data.user;
+                localStorage.setItem('studydisk_currentUser', JSON.stringify(currentUser));
+                
+                // Update UI
+                updateUserProfile();
+                
+                // Show dashboard
+                showDashboard();
+                
+                alert(language === 'en' ? 'Account created successfully! Please check your email for verification.' : 'تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني للتأكيد.');
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert(language === 'en' ? 'An error occurred during signup' : 'حدث خطأ أثناء إنشاء الحساب');
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                // Sign in with Supabase
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    return;
+                }
+                
+                // Set current user
+                currentUser = data.user;
+                localStorage.setItem('studydisk_currentUser', JSON.stringify(currentUser));
+                
+                // Update UI
+                updateUserProfile();
+                
+                // Show dashboard
+                showDashboard();
+                
+                alert(language === 'en' ? 'Login successful!' : 'تم تسجيل الدخول بنجاح!');
+            } catch (error) {
+                console.error('Login error:', error);
+                alert(language === 'en' ? 'An error occurred during login' : 'حدث خطأ أثناء تسجيل الدخول');
+            }
+        }
+
+        async function handleForgotPassword(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('reset-email').value;
+            
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin,
+                });
+                
+                if (error) {
+                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    return;
+                }
+                
+                alert(language === 'en' ? 
+                    `Password reset instructions have been sent to ${email}` : 
+                    `تم إرسال تعليمات إعادة تعيين كلمة المرور إلى ${email}`);
+                
+                // Go back to login
+                showLogin();
+            } catch (error) {
+                console.error('Forgot password error:', error);
+                alert(language === 'en' ? 'An error occurred' : 'حدث خطأ');
+            }
+        }
+
+        async function signupWithGoogle() {
+            try {
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+                
+                if (error) {
+                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('Google signup error:', error);
+                alert(language === 'en' ? 'An error occurred during Google signup' : 'حدث خطأ أثناء التسجيل باستخدام جوجل');
+            }
+        }
+
+        async function loginWithGoogle() {
+            try {
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+                
+                if (error) {
+                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('Google login error:', error);
+                alert(language === 'en' ? 'An error occurred during Google login' : 'حدث خطأ أثناء تسجيل الدخول باستخدام جوجل');
+            }
+        }
+
+        function updateUserProfile() {
+            if (currentUser) {
+                // Update profile image with first letter of name
+                const userData = currentUser.user_metadata || {};
+                const name = userData.full_name || currentUser.email || 'User';
+                profileImg.textContent = name.charAt(0).toUpperCase();
+                
+                // Update user name
+                userName.textContent = name;
+            }
+        }
+
+        function toggleProfileDropdown() {
+            profileDropdown.classList.toggle('active');
+        }
+
+        async function handleLogout() {
+            try {
+                // Sign out from Supabase
+                const { error } = await supabase.auth.signOut();
+                
+                if (error) {
+                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    return;
+                }
+                
+                // Clear current user
+                currentUser = null;
+                localStorage.removeItem('studydisk_currentUser');
+                
+                // Hide dashboard and show landing page
+                dashboard.style.display = 'none';
+                authOptions.style.display = 'none';
+                landingPage.style.display = 'flex';
+                studyPartnerChat.style.display = 'none'; // Hide chat on logout
+                
+                // Close profile dropdown
+                profileDropdown.classList.remove('active');
+                
+                alert(language === 'en' ? 'You have been logged out' : 'تم تسجيل الخروج');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert(language === 'en' ? 'An error occurred during logout' : 'حدث خطأ أثناء تسجيل الخروج');
+            }
+        }
+
+        function showDashboard() {
+            landingPage.style.display = 'none';
+            authOptions.style.display = 'none';
+            dashboard.style.display = 'block';
+            studyPartnerChat.style.display = 'block'; // Show chat on dashboard
+            renderSubjects();
+            renderNotes();
+        }
+
+        function switchTab(tabId) {
+            // Remove active class from all tabs and contents
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to current tab and content
+            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            updateDarkMode();
+            localStorage.setItem('studydisk_darkmode', isDarkMode);
+        }
+
+        function updateDarkMode() {
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeSwitch.checked = true;
+            } else {
+                document.body.classList.remove('dark-mode');
+                darkModeSwitch.checked = false;
+            }
+        }
+
+        function toggleLanguage() {
+            language = language === 'en' ? 'ar' : 'en';
+            localStorage.setItem('studydisk_language', language);
+            updateLanguage();
+        }
+
+        function changeLanguage() {
+            language = languageSelect.value;
+            localStorage.setItem('studydisk_language', language);
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            // Update HTML direction
+            document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = language;
+            
+            // Update language toggle button
+            langText.textContent = language === 'en' ? 'AR' : 'EN';
+            languageSelect.value = language;
+            
+            // Update all text elements
+            const texts = translations[language];
+            for (const key in texts) {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = texts[key];
+                }
+            }
+            
+            // Update placeholders
+            if (noteTitleInput) noteTitleInput.placeholder = texts.noteTitlePlaceholder;
+            if (noteContentTextarea) noteContentTextarea.placeholder = texts.noteContentPlaceholder;
+            if (subjectNameInput) subjectNameInput.placeholder = language === 'en' ? 'Enter subject name' : 'أدخل اسم المادة';
+            if (chaptersCountInput) chaptersCountInput.placeholder = language === 'en' ? 'Number of chapters' : 'عدد الفصول';
+            if (chatInput) chatInput.placeholder = texts.chatPlaceholder;
+            if (todoInput) todoInput.placeholder = language === 'en' ? 'Add a new task...' : 'إضافة مهمة جديدة...';
+            
+            // Update welcome message
+            document.getElementById('welcome-message').textContent = texts.welcomeMessage;
+            
+            // Re-render subjects and notes to update their text
+            renderSubjects();
+            renderNotes();
+            if (currentSubjectId) {
+                renderSubjectPopup(currentSubjectId);
+            }
+        }
+
+        function addSubject() {
+            const name = subjectNameInput.value.trim();
+            const chaptersCount = parseInt(chaptersCountInput.value);
+            const examDate = examDateInput.value;
+            
+            if (!name || isNaN(chaptersCount) || chaptersCount < 1) {
+                alert(language === 'en' ? 'Please enter a valid subject name and number of chapters' : 'يرجى إدخال اسم مادة صحيح وعدد الفصول');
+                return;
+            }
+            
+            const subject = {
+                id: Date.now(),
+                name: name,
+                chaptersCount: chaptersCount,
+                examDate: examDate,
+                chapters: Array(chaptersCount).fill().map((_, i) => ({
+                    id: i + 1,
+                    name: language === 'en' ? `Chapter ${i + 1}` : `الفصل ${i + 1}`,
+                    studied: false,
+                    solved: false,
+                    lastAccessed: null
+                })),
+                notes: [],
+                createdAt: new Date().toISOString()
+            };
+            
+            subjects.push(subject);
+            saveSubjects();
+            renderSubjects();
+            
+            // Clear inputs
+            subjectNameInput.value = '';
+            chaptersCountInput.value = '';
+            examDateInput.value = '';
+            
+            alert(`${name} ${language === 'en' ? 'has been added to your study planner!' : 'تمت إضافتها إلى مخطط الدراسة!'}`);
+        }
+
+        function renderSubjects() {
+            subjectsContainer.innerHTML = '';
+            
+            if (subjects.length === 0) {
+                subjectsContainer.innerHTML = `<p class="text-center">${translations[language].noSubjects}</p>`;
+                return;
+            }
+            
+            subjects.forEach(subject => {
+                const studiedCount = subject.chapters.filter(ch => ch.studied).length;
+                const solvedCount = subject.chapters.filter(ch => ch.solved).length;
+                const progress = (studiedCount / subject.chapters.length) * 100;
+                
+                // Calculate days until exam
+                let daysLeft = null;
+                if (subject.examDate) {
+                    const examDate = new Date(subject.examDate);
+                    const today = new Date();
+                    const timeDiff = examDate.getTime() - today.getTime();
+                    daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                }
+                
+                const subjectCard = document.createElement('div');
+                subjectCard.className = 'subject-card';
+                subjectCard.innerHTML = `
+                    <div class="subject-header">
+                        <div class="subject-name">${subject.name}</div>
+                        <div class="subject-actions">
+                            <button class="btn btn-danger btn-sm" onclick="deleteSubject(${subject.id})">
+                                <i class="fas fa-trash"></i>
+                                ${translations[language].delete}
+                            </button>
+                        </div>
+                    </div>
+                    
+                    ${subject.examDate ? `
+                    <div class="exam-info">
+                        <div class="exam-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            ${translations[language].exam}: ${new Date(subject.examDate).toLocaleDateString(language === 'en' ? 'en-US' : 'ar-EG')}
+                        </div>
+                        ${daysLeft !== null ? `
+                        <div class="days-left">
+                            ${daysLeft > 0 ? `${daysLeft} ${translations[language].daysLeft}` : translations[language].examPassed}
+                        </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+                    
+                    <div class="chapters-progress">
+                        <div class="progress-text">${studiedCount}/${subject.chapters.length} ${translations[language].chaptersStudied}</div>
+                        <div class="progress-text">${solvedCount}/${subject.chapters.length} ${translations[language].chaptersSolved}</div>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                `;
+                
+                // Add click event to open subject popup
+                subjectCard.addEventListener('click', () => openSubjectPopup(subject.id));
+                
+                subjectsContainer.appendChild(subjectCard);
+            });
+        }
+
+        function openSubjectPopup(subjectId) {
+            currentSubjectId = subjectId;
+            renderSubjectPopup(subjectId);
+            subjectPopup.style.display = 'flex';
+        }
+
+        function closeSubjectPopup() {
+            subjectPopup.style.display = 'none';
+            currentSubjectId = null;
+        }
+
+        function renderSubjectPopup(subjectId) {
+            const subject = subjects.find(s => s.id === subjectId);
+            if (!subject) return;
+            
+            // Update popup title
+            subjectPopupTitle.textContent = subject.name;
+            
+            // Render chapters
+            renderChapters(subject);
+            
+            // Render to-do list
+            renderTodos(subjectId);
+            
+            // Update progress
+            updateSubjectProgress(subject);
+        }
+
+        function renderChapters(subject) {
+            chaptersContainer.innerHTML = '';
+            
+            subject.chapters.forEach(chapter => {
+                const chapterCard = document.createElement('div');
+                chapterCard.className = 'chapter-card';
+                chapterCard.innerHTML = `
+                    <div class="chapter-header">
+                        <div class="chapter-name">${chapter.name}</div>
+                        <div class="chapter-status">
+                            ${chapter.studied ? `<span class="status-badge status-studied">${translations[language].studied}</span>` : ''}
+                            ${chapter.solved ? `<span class="status-badge status-solved">${translations[language].solved}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="chapter-actions">
+                        <button class="btn btn-sm ${chapter.studied ? 'btn-success' : ''}" onclick="toggleChapterStatus(${subject.id}, ${chapter.id}, 'studied')">
+                            <i class="fas fa-book"></i>
+                            ${chapter.studied ? translations[language].studied : translations[language].markStudied}
+                        </button>
+                        <button class="btn btn-sm ${chapter.solved ? 'btn-warning' : ''}" onclick="toggleChapterStatus(${subject.id}, ${chapter.id}, 'solved')">
+                            <i class="fas fa-pencil-alt"></i>
+                            ${chapter.solved ? translations[language].solved : translations[language].markSolved}
+                        </button>
+                    </div>
+                `;
+                
+                chaptersContainer.appendChild(chapterCard);
+            });
+        }
+
+        function toggleChapterStatus(subjectId, chapterId, type) {
+            const subject = subjects.find(s => s.id === subjectId);
+            if (!subject) return;
+            
+            const chapter = subject.chapters.find(ch => ch.id === chapterId);
+            if (!chapter) return;
+            
+            if (type === 'studied') {
+                chapter.studied = !chapter.studied;
+                chapter.lastAccessed = new Date().toISOString();
+            } else if (type === 'solved') {
+                chapter.solved = !chapter.solved;
+                chapter.lastAccessed = new Date().toISOString();
+            }
+            
+            saveSubjects();
+            renderSubjectPopup(subjectId);
+            renderSubjects();
+        }
+
+        function updateSubjectProgress(subject) {
+            const studiedCount = subject.chapters.filter(ch => ch.studied).length;
+            const progress = (studiedCount / subject.chapters.length) * 100;
+            
+            subjectProgressFill.style.width = `${progress}%`;
+            subjectProgressText.textContent = `${Math.round(progress)}% ${translations[language].complete}`;
+        }
+
+        function deleteSubject(subjectId) {
+            if (confirm(language === 'en' ? 'Are you sure you want to delete this subject?' : 'هل أنت متأكد من حذف هذه المادة؟')) {
+                subjects = subjects.filter(s => s.id !== subjectId);
+                saveSubjects();
+                renderSubjects();
+                if (currentSubjectId === subjectId) {
+                    closeSubjectPopup();
+                }
+            }
+        }
+
+        // To-Do List Functions
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (!text) return;
+            
+            if (!todos[currentSubjectId]) {
+                todos[currentSubjectId] = [];
+            }
+            
+            const todo = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+            
+            todos[currentSubjectId].push(todo);
+            saveTodos();
+            renderTodos(currentSubjectId);
+            todoInput.value = '';
+        }
+
+        function renderTodos(subjectId) {
+            todoList.innerHTML = '';
+            
+            if (!todos[subjectId] || todos[subjectId].length === 0) {
+                todoList.innerHTML = `<p class="text-center">${language === 'en' ? 'No tasks yet. Add your first task!' : 'لا توجد مهام بعد. أضف أول مهمة!'}</p>`;
+                return;
+            }
+            
+            todos[subjectId].forEach(todo => {
+                const todoItem = document.createElement('li');
+                todoItem.className = 'todo-item';
+                todoItem.innerHTML = `
+                    <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo(${subjectId}, ${todo.id})"></div>
+                    <div class="todo-text ${todo.completed ? 'completed' : ''}">${todo.text}</div>
+                    <button class="todo-delete" onclick="deleteTodo(${subjectId}, ${todo.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                todoList.appendChild(todoItem);
+            });
+        }
+
+        function toggleTodo(subjectId, todoId) {
+            const todo = todos[subjectId].find(t => t.id === todoId);
+            if (todo) {
+                todo.completed = !todo.completed;
+                saveTodos();
+                renderTodos(subjectId);
+            }
+        }
+
+        function deleteTodo(subjectId, todoId) {
+            todos[subjectId] = todos[subjectId].filter(t => t.id !== todoId);
+            saveTodos();
+            renderTodos(subjectId);
+        }
+
+        function clearTodos() {
+            if (confirm(language === 'en' ? 'Are you sure you want to clear all tasks?' : 'هل أنت متأكد من مسح جميع المهام؟')) {
+                todos[currentSubjectId] = [];
+                saveTodos();
+                renderTodos(currentSubjectId);
+            }
+        }
+
+        // Study Partner Assistant Functions
+        function generateStudySchedule() {
+            if (subjects.length === 0) {
+                alert(language === 'en' ? 'Please add subjects first to generate a study schedule.' : 'يرجى إضافة مواد أولاً لإنشاء جدول دراسة.');
+                return;
+            }
+            
+            const upcomingExams = subjects.filter(subject => {
+                if (!subject.examDate) return false;
+                const examDate = new Date(subject.examDate);
+                const today = new Date();
+                return examDate >= today;
+            }).sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+            
+            if (upcomingExams.length === 0) {
+                alert(language === 'en' ? 'No upcoming exams found. Please add exam dates to your subjects.' : 'لم يتم العثور على امتحانات قادمة. يرجى إضافة مواعيد الامتحانات لموادك.');
+                return;
+            }
+            
+            let schedule = language === 'en' ? '📚 Your Personalized Study Schedule:\n\n' : '📚 جدول الدراسة المخصص:\n\n';
+            
+            upcomingExams.forEach(subject => {
+                const examDate = new Date(subject.examDate);
+                const daysLeft = Math.ceil((examDate - new Date()) / (1000 * 3600 * 24));
+                const chaptersLeft = subject.chapters.length - subject.chapters.filter(ch => ch.studied).length;
+                const dailyChapters = Math.ceil(chaptersLeft / Math.max(daysLeft, 1));
+                
+                schedule += `📖 ${subject.name}:\n`;
+                schedule += language === 'en' ? 
+                    `   - Exam: ${examDate.toLocaleDateString()} (${daysLeft} days left)\n` :
+                    `   - الامتحان: ${examDate.toLocaleDateString('ar-EG')} (${daysLeft} يوم متبقي)\n`;
+                schedule += language === 'en' ?
+                    `   - Study ${dailyChapters} chapters per day\n` :
+                    `   - ادرس ${dailyChapters} فصل يومياً\n`;
+                schedule += language === 'en' ?
+                    `   - ${chaptersLeft} chapters remaining\n\n` :
+                    `   - ${chaptersLeft} فصل متبقي\n\n`;
+            });
+            
+            alert(schedule);
+        }
+
+        function analyzeStudyProgress() {
+            if (subjects.length === 0) {
+                alert(language === 'en' ? 'Please add subjects first to analyze your progress.' : 'يرجى إضافة مواد أولاً لتحليل تقدمك.');
+                return;
+            }
+            
+            // Find subjects with lowest progress
+            const subjectsWithProgress = subjects.map(subject => {
+                const studiedCount = subject.chapters.filter(ch => ch.studied).length;
+                const progress = (studiedCount / subject.chapters.length) * 100;
+                return {
+                    name: subject.name,
+                    progress: progress,
+                    studiedCount: studiedCount,
+                    totalChapters: subject.chapters.length
+                };
+            }).sort((a, b) => a.progress - b.progress);
+            
+            // Find upcoming exams
+            const upcomingExams = subjects.filter(subject => {
+                if (!subject.examDate) return false;
+                const examDate = new Date(subject.examDate);
+                const today = new Date();
+                return examDate >= today;
+            }).sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+            
+            let analysis = language === 'en' ? '📊 Study Progress Analysis:\n\n' : '📊 تحليل تقدم الدراسة:\n\n';
+            
+            // Priority subjects (low progress and upcoming exams)
+            analysis += language === 'en' ? '🚨 Priority Subjects:\n' : '🚨 المواد ذات الأولوية:\n';
+            const prioritySubjects = subjectsWithProgress.filter(subject => subject.progress < 50);
+            
+            if (prioritySubjects.length > 0) {
+                prioritySubjects.forEach(subject => {
+                    analysis += `   - ${subject.name}: ${Math.round(subject.progress)}% complete\n`;
+                });
+            } else {
+                analysis += language === 'en' ? '   Great job! All subjects are above 50% progress.\n' : '   عمل رائع! جميع المواد فوق 50% تقدم.\n';
+            }
+            
+            analysis += '\n';
+            
+            // Upcoming exams
+            if (upcomingExams.length > 0) {
+                analysis += language === 'en' ? '📅 Upcoming Exams:\n' : '📅 الامتحانات القادمة:\n';
+                upcomingExams.forEach(subject => {
+                    const studiedCount = subject.chapters.filter(ch => ch.studied).length;
+                    const progress = (studiedCount / subject.chapters.length) * 100;
+                    const examDate = new Date(subject.examDate);
+                    const daysLeft = Math.ceil((examDate - new Date()) / (1000 * 3600 * 24));
+                    
+                    analysis += `   - ${subject.name}: ${Math.round(progress)}% complete, ${daysLeft} days left\n`;
+                });
+            }
+            
+            alert(analysis);
+        }
+
+        function exportProgress() {
+            if (subjects.length === 0) {
+                alert(language === 'en' ? 'No subjects to export.' : 'لا توجد مواد للتصدير.');
+                return;
+            }
+            
+            // Create a simple progress table
+            let progressTable = language === 'en' ? 
+                '📊 My Study Progress\n\n' : 
+                '📊 تقدمي الدراسي\n\n';
+            
+            subjects.forEach(subject => {
+                const studiedCount = subject.chapters.filter(ch => ch.studied).length;
+                const solvedCount = subject.chapters.filter(ch => ch.solved).length;
+                const progress = (studiedCount / subject.chapters.length) * 100;
+                
+                progressTable += `📚 ${subject.name}\n`;
+                progressTable += language === 'en' ?
+                    `   - Progress: ${Math.round(progress)}%\n` :
+                    `   - التقدم: ${Math.round(progress)}%\n`;
+                progressTable += language === 'en' ?
+                    `   - Chapters: ${studiedCount}/${subject.chapters.length} studied\n` :
+                    `   - الفصول: ${studiedCount}/${subject.chapters.length} تمت دراستها\n`;
+                progressTable += language === 'en' ?
+                    `   - Problems: ${solvedCount}/${subject.chapters.length} solved\n\n` :
+                    `   - المسائل: ${solvedCount}/${subject.chapters.length} تم حلها\n\n`;
+            });
+            
+            // In a real implementation, this would generate an image or PDF
+            // For now, we'll just show the table in an alert
+            alert(progressTable + '\n\n' + (language === 'en' ? 
+                'Share this progress with your friends!' : 
+                'شارك هذا التقدم مع أصدقائك!'));
+        }
+
+        function openNotePopup(noteId = null) {
+            currentNoteId = noteId;
+            
+            if (noteId) {
+                // Edit existing note
+                const note = notes.find(n => n.id === noteId);
+                if (note) {
+                    noteTitleInput.value = note.title;
+                    noteContentTextarea.value = note.content;
+                    renderNoteTags(note.tags || []);
+                }
+            } else {
+                // Create new note
+                noteTitleInput.value = '';
+                noteContentTextarea.value = '';
+                renderNoteTags([]);
+            }
+            
+            notesPopup.style.display = 'flex';
+        }
+
+        function closeNotePopup() {
+            notesPopup.style.display = 'none';
+            currentNoteId = null;
+        }
+
+        function saveNote() {
+            const title = noteTitleInput.value.trim();
+            const content = noteContentTextarea.value.trim();
+            const tags = Array.from(noteTagsContainer.querySelectorAll('.note-tag'))
+                .map(tag => tag.querySelector('.tag-text').textContent);
+            
+            if (!title) {
+                alert(language === 'en' ? 'Please enter a note title' : 'يرجى إدخال عنوان للملاحظة');
+                return;
+            }
+            
+            if (currentNoteId) {
+                // Update existing note
+                const note = notes.find(n => n.id === currentNoteId);
+                if (note) {
+                    note.title = title;
+                    note.content = content;
+                    note.tags = tags;
+                    note.updatedAt = new Date().toISOString();
+                }
+            } else {
+                // Create new note
+                const note = {
+                    id: Date.now(),
+                    title: title,
+                    content: content,
+                    tags: tags,
+                    createdAt: new Date().toISOString()
+                };
+                notes.push(note);
+            }
+            
+            saveNotes();
+            renderNotes();
+            closeNotePopup();
+            
+            alert(language === 'en' ? 'Your note has been saved successfully.' : 'تم حفظ ملاحظتك بنجاح.');
+        }
+
+        function addTagToNote() {
+            const tagName = prompt(language === 'en' ? 'Enter tag name:' : 'أدخل اسم الوسم:');
+            if (tagName && tagName.trim() !== '') {
+                const tags = Array.from(noteTagsContainer.querySelectorAll('.tag-text'))
+                    .map(tag => tag.textContent);
+                
+                if (!tags.includes(tagName.trim())) {
+                    const tagElement = document.createElement('div');
+                    tagElement.className = 'note-tag';
+                    tagElement.innerHTML = `
+                        <span class="tag-text">${tagName.trim()}</span>
+                        <button class="note-tag-remove" onclick="removeNoteTag(this)">&times;</button>
+                    `;
+                    noteTagsContainer.appendChild(tagElement);
+                }
+            }
+        }
+
+        function removeNoteTag(button) {
+            button.parentElement.remove();
+        }
+
+        function renderNoteTags(tags) {
+            noteTagsContainer.innerHTML = '';
+            tags.forEach(tag => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'note-tag';
+                tagElement.innerHTML = `
+                    <span class="tag-text">${tag}</span>
+                    <button class="note-tag-remove" onclick="removeNoteTag(this)">&times;</button>
+                `;
+                noteTagsContainer.appendChild(tagElement);
+            });
+        }
+
+        function renderNotes() {
+            notesContainer.innerHTML = '';
+            
+            notes.forEach(note => {
+                const noteCard = document.createElement('div');
+                noteCard.className = 'note-card';
+                noteCard.innerHTML = `
+                    <div class="note-header">
+                        <div class="note-title">${note.title}</div>
+                        <button class="btn btn-danger btn-sm" onclick="deleteNote(${note.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="note-content">${note.content.substring(0, 150)}${note.content.length > 150 ? '...' : ''}</div>
+                    ${note.tags && note.tags.length > 0 ? `
+                    <div class="note-tags">
+                        ${note.tags.map(tag => `<span class="note-tag">${tag}</span>`).join('')}
+                    </div>
+                    ` : ''}
+                    <div class="note-actions">
+                        <div class="note-date">${new Date(note.createdAt).toLocaleDateString(language === 'en' ? 'en-US' : 'ar-EG')}</div>
+                        <button class="btn btn-sm" onclick="openNotePopup(${note.id})">
+                            <i class="fas fa-edit"></i>
+                            ${language === 'en' ? 'Edit' : 'تعديل'}
+                        </button>
+                    </div>
+                `;
+                
+                notesContainer.appendChild(noteCard);
+            });
+            
+            // Add the "Add New Note" button at the end
+            notesContainer.appendChild(addNoteBtn);
+        }
+
+        function deleteNote(noteId) {
+            if (confirm(language === 'en' ? 'Are you sure you want to delete this note?' : 'هل أنت متأكد من حذف هذه الملاحظة؟')) {
+                notes = notes.filter(n => n.id !== noteId);
+                saveNotes();
+                renderNotes();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm(language === 'en' ? 'Are you sure you want to clear all data? This action cannot be undone.' : 'هل أنت متأكد من مسح جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                localStorage.removeItem('studydisk_subjects');
+                localStorage.removeItem('studydisk_notes');
+                localStorage.removeItem('studydisk_todos');
+                localStorage.removeItem('studydisk_darkmode');
+                localStorage.removeItem('studydisk_language');
+                subjects = [];
+                notes = [];
+                todos = {};
+                renderSubjects();
+                renderNotes();
+                if (currentSubjectId) {
+                    closeSubjectPopup();
+                }
+            }
+        }
+
+        // Chat Functions
+        function toggleChat() {
+            chatContainer.classList.toggle('active');
+        }
+
+        function closeChat() {
+            chatContainer.classList.remove('active');
+        }
+
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addChatMessage(message, 'user');
+            chatInput.value = '';
+            
+            // Generate bot response
+            setTimeout(() => {
+                const response = generateBotResponse(message);
+                addChatMessage(response, 'bot');
+            }, 1000);
+        }
+
+        function addChatMessage(text, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${sender}`;
+            
+            const timeElement = document.createElement('div');
+            timeElement.className = 'message-time';
+            timeElement.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            messageElement.textContent = text;
+            messageElement.appendChild(timeElement);
+            
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateBotResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Analyze user data to provide personalized responses
+            const totalSubjects = subjects.length;
+            const totalChapters = subjects.reduce((sum, subject) => sum + subject.chapters.length, 0);
+            const studiedChapters = subjects.reduce((sum, subject) => sum + subject.chapters.filter(ch => ch.studied).length, 0);
+            const solvedChapters = subjects.reduce((sum, subject) => sum + subject.chapters.filter(ch => ch.solved).length, 0);
+            const progressPercentage = totalChapters > 0 ? Math.round((studiedChapters / totalChapters) * 100) : 0;
+            
+            // Find subject with most chapters
+            let subjectWithMostChapters = null;
+            if (subjects.length > 0) {
+                subjectWithMostChapters = subjects.reduce((max, subject) => 
+                    subject.chapters.length > max.chapters.length ? subject : max
+                );
+            }
+            
+            // Find subject with best progress
+            let subjectWithBestProgress = null;
+            if (subjects.length > 0) {
+                subjectWithBestProgress = subjects.reduce((max, subject) => {
+                    const subjectProgress = subject.chapters.filter(ch => ch.studied).length / subject.chapters.length;
+                    const maxProgress = max.chapters.filter(ch => ch.studied).length / max.chapters.length;
+                    return subjectProgress > maxProgress ? subject : max;
+                });
+            }
+            
+            // Find upcoming exams
+            const upcomingExams = subjects.filter(subject => {
+                if (!subject.examDate) return false;
+                const examDate = new Date(subject.examDate);
+                const today = new Date();
+                return examDate >= today;
+            }).sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+            
+            // Find subjects with no progress
+            const neglectedSubjects = subjects.filter(subject => {
+                const studiedCount = subject.chapters.filter(ch => ch.studied).length;
+                return studiedCount === 0;
+            });
+            
+            // Response logic based on message content
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('مرحبا')) {
+                return language === 'en' 
+                    ? "Hello! How can I help you with your studies today?" 
+                    : "مرحباً! كيف يمكنني مساعدتك في دراستك اليوم؟";
+            }
+            else if (lowerMessage.includes('progress') || lowerMessage.includes('تقدم')) {
+                const bestSubject = subjectWithBestProgress ? subjectWithBestProgress.name : "None";
+                const bestProgress = subjectWithBestProgress ? 
+                    Math.round((subjectWithBestProgress.chapters.filter(ch => ch.studied).length / subjectWithBestProgress.chapters.length) * 100) : 0;
+                
+                return language === 'en'
+                    ? `Your overall study progress is ${progressPercentage}%. You've completed ${studiedChapters} out of ${totalChapters} chapters across ${totalSubjects} subjects. Your best subject is "${bestSubject}" with ${bestProgress}% progress.`
+                    : `تقدمك الدراسي العام هو ${progressPercentage}%. لقد أكملت ${studiedChapters} من أصل ${totalChapters} فصل في ${totalSubjects} مادة. أفضل مادة لديك هي "${bestSubject}" بتقدم ${bestProgress}%.`;
+            }
+            else if (lowerMessage.includes('subject') || lowerMessage.includes('مادة') || lowerMessage.includes('مواد')) {
+                if (subjectWithMostChapters) {
+                    const studiedInMost = subjectWithMostChapters.chapters.filter(ch => ch.studied).length;
+                    const progressInMost = Math.round((studiedInMost / subjectWithMostChapters.chapters.length) * 100);
+                    
+                    return language === 'en'
+                        ? `The subject with the most chapters is "${subjectWithMostChapters.name}" with ${subjectWithMostChapters.chapters.length} chapters. You've completed ${studiedInMost} chapters (${progressInMost}%).`
+                        : `المادة التي تحتوي على أكبر عدد من الفصول هي "${subjectWithMostChapters.name}" بـ ${subjectWithMostChapters.chapters.length} فصل. لقد أكملت ${studiedInMost} فصل (${progressInMost}%).`;
+                } else {
+                    return language === 'en'
+                        ? "You haven't added any subjects yet. Start by adding your first subject in the Study Planner!"
+                        : "لم تقم بإضافة أي مواد بعد. ابدأ بإضافة أول مادة في مخطط الدراسة!";
+                }
+            }
+            else if (lowerMessage.includes('exam') || lowerMessage.includes('امتحان')) {
+                if (upcomingExams.length > 0) {
+                    const nextExam = upcomingExams[0];
+                    const examDate = new Date(nextExam.examDate);
+                    const daysLeft = Math.ceil((examDate - new Date()) / (1000 * 3600 * 24));
+                    const studiedInExam = nextExam.chapters.filter(ch => ch.studied).length;
+                    const totalInExam = nextExam.chapters.length;
+                    const examProgress = Math.round((studiedInExam / totalInExam) * 100);
+                    
+                    return language === 'en'
+                        ? `Your next exam is for "${nextExam.name}" in ${daysLeft} days (${examDate.toLocaleDateString()}). You've completed ${studiedInExam}/${totalInExam} chapters (${examProgress}%).`
+                        : `امتحانك القادم هو لمادة "${nextExam.name}" بعد ${daysLeft} يوم (${examDate.toLocaleDateString('ar-EG')}). لقد أكملت ${studiedInExam}/${totalInExam} فصل (${examProgress}%).`;
+                } else {
+                    return language === 'en'
+                        ? "You don't have any upcoming exams scheduled."
+                        : "ليس لديك أي امتحانات قادمة مجدولة.";
+                }
+            }
+            else if (lowerMessage.includes('neglect') || lowerMessage.includes('إهمال') || lowerMessage.includes('تجاهل')) {
+                if (neglectedSubjects.length > 0) {
+                    const neglectedNames = neglectedSubjects.map(s => s.name).join(', ');
+                    return language === 'en'
+                        ? `You have ${neglectedSubjects.length} subjects with no progress: ${neglectedNames}. Consider starting with these subjects!`
+                        : `لديك ${neglectedSubjects.length} مادة بدون أي تقدم: ${neglectedNames}. فكر في البدء بهذه المواد!`;
+                } else {
+                    return language === 'en'
+                        ? "Great job! You've made progress in all your subjects."
+                        : "عمل رائع! لقد حققت تقدماً في جميع موادك.";
+                }
+            }
+            else if (lowerMessage.includes('help') || lowerMessage.includes('مساعدة')) {
+                return language === 'en'
+                    ? "I can help you with: checking your progress, finding subjects with most chapters, upcoming exams, neglected subjects, and general study advice. Just ask!"
+                    : "يمكنني مساعدتك في: التحقق من تقدمك، إيجاد المواد ذات أكبر عدد من الفصول، الامتحانات القادمة، المواد المهملة، ونصائح دراسة عامة. فقط اسأل!";
+            }
+            else if (lowerMessage.includes('study plan') || lowerMessage.includes('خطة دراسة')) {
+                if (upcomingExams.length > 0) {
+                    const nextExam = upcomingExams[0];
+                    const daysLeft = Math.ceil((new Date(nextExam.examDate) - new Date()) / (1000 * 3600 * 24));
+                    const chaptersLeft = nextExam.chapters.length - nextExam.chapters.filter(ch => ch.studied).length;
+                    const dailyChapters = Math.ceil(chaptersLeft / Math.max(daysLeft, 1));
+                    
+                    return language === 'en'
+                        ? `For "${nextExam.name}", you need to study ${dailyChapters} chapters per day to complete all ${chaptersLeft} remaining chapters before the exam in ${daysLeft} days.`
+                        : `لمادة "${nextExam.name}"، تحتاج إلى دراسة ${dailyChapters} فصل يومياً لإكمال جميع الفصول ${chaptersLeft} المتبقية قبل الامتحان في ${daysLeft} يوم.`;
+                } else {
+                    return language === 'en'
+                        ? "I can create a study plan for you once you add exam dates to your subjects."
+                        : "يمكنني إنشاء خطة دراسة لك بمجرد إضافة مواعيد الامتحانات لموادك.";
+                }
+            }
+            else {
+                return language === 'en'
+                    ? "I'm not sure how to help with that. Try asking about your progress, subjects, upcoming exams, or study plans."
+                    : "لست متأكداً من كيفية المساعدة في هذا. حاول السؤال عن تقدمك أو موادك أو امتحاناتك القادمة أو خطط الدراسة.";
+            }
+        }
+
+        // PDF Tools Functions
+        function activatePdfTool(toolId) {
+            // Remove active class from all tools
+            pdfTools.forEach(tool => tool.classList.remove('active'));
+            // Add active class to clicked tool
+            document.getElementById(toolId).classList.add('active');
+            
+            // Update PDF tool interface title
+            const toolName = document.getElementById(`${toolId}-name`).textContent;
+            document.getElementById('pdf-tool-active-title').textContent = toolName;
+            
+            // Show PDF tool interface
+            pdfToolInterface.style.display = 'block';
+            clearFileList();
+        }
+
+        function triggerFileUpload() {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.multiple = true;
+            fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png';
+            fileInput.onchange = (e) => {
+                if (e.target.files.length > 0) {
+                    for (let i = 0; i < e.target.files.length; i++) {
+                        addFileToList(e.target.files[i]);
+                    }
+                }
+            };
+            fileInput.click();
+        }
+
+        function addFileToList(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-name">${file.name}</div>
+                <div class="file-actions">
+                    <button class="btn btn-danger btn-sm" onclick="removeFile(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(button) {
+            button.closest('.file-item').remove();
+        }
+
+        function clearFileList() {
+            fileList.innerHTML = '';
+        }
+
+        function processPdfFiles() {
+            if (fileList.children.length === 0) {
+                alert(language === 'en' ? 'Please add files first' : 'يرجى إضافة الملفات أولاً');
+                return;
+            }
+            
+            // Simulate processing
+            alert(language === 'en' ? 'Processing your files...' : 'جاري معالجة ملفاتك...');
+            
+            // Simulate completion
+            setTimeout(() => {
+                alert(language === 'en' ? 'Files processed successfully!' : 'تمت معالجة الملفات بنجاح!');
+                clearFileList();
+            }, 2000);
+        }
+
+        function saveSubjects() {
+            localStorage.setItem('studydisk_subjects', JSON.stringify(subjects));
+        }
+
+        function saveNotes() {
+            localStorage.setItem('studydisk_notes', JSON.stringify(notes));
+        }
+
+        function saveTodos() {
+            localStorage.setItem('studydisk_todos', JSON.stringify(todos));
+        }
+
+        // Initialize Supabase Auth State Listener
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                currentUser = session.user;
+                localStorage.setItem('studydisk_currentUser', JSON.stringify(currentUser));
+                updateUserProfile();
+                showDashboard();
+            } else if (event === 'SIGNED_OUT') {
+                currentUser = null;
+                localStorage.removeItem('studydisk_currentUser');
+                dashboard.style.display = 'none';
+                authOptions.style.display = 'none';
+                landingPage.style.display = 'flex';
+                studyPartnerChat.style.display = 'none';
+            }
+        });
+
+        // Initialize
+        updateDarkMode();
+    </script>
+</body>
+</html>
