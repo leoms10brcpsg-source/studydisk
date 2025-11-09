@@ -3145,41 +3145,41 @@
         }
 
         async function signupWithGoogle() {
-    try {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: 'https://studydisk.com' // بدل window.location.origin
+            try {
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+                
+                if (error) {
+                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('Google signup error:', error);
+                alert(language === 'en' ? 'An error occurred during Google signup' : 'حدث خطأ أثناء التسجيل باستخدام جوجل');
             }
-        });
-
-        if (error) {
-            alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
-        }
-    } catch (error) {
-        console.error('Google signup error:', error);
-        alert(language === 'en' ? 'An error occurred during Google signup' : 'حدث خطأ أثناء التسجيل باستخدام جوجل');
-    }
-}
+        } 
 
 
         async function loginWithGoogle() {
-    try {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: 'https://studydisk.com'
+            try {
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+                
+                if (error) {
+                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('Google login error:', error);
+                alert(language === 'en' ? 'An error occurred during Google login' : 'حدث خطأ أثناء تسجيل الدخول باستخدام جوجل');
             }
-        });
-
-        if (error) {
-            alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
         }
-    } catch (error) {
-        console.error('Google login error:', error);
-        alert(language === 'en' ? 'An error occurred during Google login' : 'حدث خطأ أثناء تسجيل الدخول باستخدام جوجل');
-    }
-}
 
 
         function updateUserProfile() {
