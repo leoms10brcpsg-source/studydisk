@@ -457,6 +457,7 @@
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid var(--dark-shadow);
+            position: relative;
         }
 
         .dashboard-logo {
@@ -493,12 +494,9 @@
             align-items: center;
         }
 
-        /* User Profile Styles - Updated to always be on top right */
+        /* User Profile Styles - Updated to be in header controls */
         .user-profile {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
+            position: relative;
         }
 
         .profile-toggle {
@@ -1989,6 +1987,23 @@
             .export-options {
                 flex-direction: column;
             }
+
+            /* Improved mobile chat */
+            .chat-container.fullscreen {
+                border-radius: 0;
+            }
+
+            .chat-container {
+                width: 95vw;
+                right: 2.5vw;
+                height: 65vh;
+            }
+            
+            .chat-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -2047,9 +2062,9 @@
             }
             
             .user-profile {
-                position: fixed;
-                top: 15px;
-                right: 15px;
+                position: relative;
+                top: auto;
+                right: auto;
             }
         }
 
@@ -2230,7 +2245,7 @@
         
         <div class="logo-container">
             <h1 class="logo">StudyDisk</h1>
-            <div class="logo-subtitle" id="logo-subtitle">Your Study Companion</div>
+            <div class="logo-subtitle" id="logo-subtitle">Your Study Partner</div>
         </div>
         
         <p class="tagline" id="tagline">Organize your study, master your materials, and stay productive. A comprehensive platform that combines smart planning, PDF tools, and organized notes.</p>
@@ -2398,25 +2413,24 @@
                         <i class="fas fa-file-pdf"></i>
                         <span id="export-pdf-text">Export PDF</span>
                     </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- User Profile - Always on top right -->
-        <div class="user-profile">
-            <button class="profile-toggle" id="profile-toggle">
-                <div class="profile-img" id="profile-img">U</div>
-                <span id="user-name">User</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="profile-dropdown" id="profile-dropdown">
-                <div class="profile-item">
-                    <i class="fas fa-user"></i>
-                    <span id="my-account-text">My Account</span>
-                </div>
-                <div class="profile-item logout" id="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span id="logout-text">Log Out</span>
+                    <!-- User Profile - Moved to header controls -->
+                    <div class="user-profile">
+                        <button class="profile-toggle" id="profile-toggle">
+                            <div class="profile-img" id="profile-img">U</div>
+                            <span id="user-name">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="profile-dropdown" id="profile-dropdown">
+                            <div class="profile-item">
+                                <i class="fas fa-user"></i>
+                                <span id="my-account-text">My Account</span>
+                            </div>
+                            <div class="profile-item logout" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span id="logout-text">Log Out</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2778,7 +2792,7 @@
         const translations = {
             en: {
                 // Landing Page
-                logoSubtitle: "Your Study Companion",
+                logoSubtitle: "Your Study Partner",
                 tagline: "Organize your study, master your materials, and stay productive. A comprehensive platform that combines smart planning, PDF tools, and organized notes.",
                 feature1Title: "Interactive Study Planner",
                 feature1Text: "Plan your subjects, track chapters, and monitor your progress with an intuitive study planner.",
