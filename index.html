@@ -7,12 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="icon" type="image/x-icon" sizes="16x16" href="images/studydisk16.ico">
- <link rel="icon" type="image/x-icon" sizes="32x32" href="images/studydisk32.ico">
- <link rel="icon" type="image/x-icon" sizes="48x48" href="images/studydisk48.ico">
- <link rel="icon" type="image/x-icon" sizes="64x64" href="images/studydisk64.ico">
- <link rel="icon" type="image/x-icon" sizes="192x192" href="images/studydisk192.ico">
- <link rel="apple-touch-icon" sizes="180x180" href="images/studydisk180.ico">
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="images/studydisk16.png">
+ <link rel="icon" type="image/x-icon" sizes="32x32" href="images/studydisk32.png">
+ <link rel="icon" type="image/x-icon" sizes="48x48" href="images/studydisk48.png">
+ <link rel="icon" type="image/x-icon" sizes="64x64" href="images/studydisk64.png">
+ <link rel="icon" type="image/x-icon" sizes="192x192" href="images/studydisk192.png">
+ <link rel="apple-touch-icon" sizes="180x180" href="images/studydisk180.png">
 
     <style>
         :root {
@@ -52,29 +52,6 @@
             transition: var(--transition);
             overflow-x: hidden;
             line-height: 1.6;
-        }
-
-        /* Language Toggle */
-        .language-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .lang-btn {
-            background: var(--primary-bg);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
-            transition: var(--transition);
-            color: var(--text-color);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         /* Landing Page Styles */
@@ -483,6 +460,26 @@
         }
 
         .dashboard-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(179, 136, 255, 0.5);
+        }
+
+        .logo-text {
             font-size: 2.2rem;
             font-weight: 700;
             background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
@@ -496,13 +493,16 @@
             align-items: center;
         }
 
-        /* User Profile Styles */
+        /* User Profile Styles - Updated to always be on top right */
         .user-profile {
-            position: relative;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
         }
 
         .profile-toggle {
-            background: none;
+            background: var(--primary-bg);
             border: none;
             cursor: pointer;
             display: flex;
@@ -511,6 +511,7 @@
             padding: 8px 12px;
             border-radius: 10px;
             transition: var(--transition);
+            box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
         }
 
         .profile-toggle:hover {
@@ -1332,8 +1333,8 @@
         }
 
         .chat-toggle {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
             color: white;
@@ -1343,7 +1344,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: bold;
             transition: var(--transition);
             position: relative;
@@ -1373,10 +1374,10 @@
 
         .chat-container {
             position: absolute;
-            bottom: 90px;
+            bottom: 80px;
             right: 0;
-            width: 400px;
-            height: 600px;
+            width: 350px;
+            height: 450px;
             background: var(--primary-bg);
             border-radius: var(--card-radius);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
@@ -1384,6 +1385,18 @@
             flex-direction: column;
             overflow: hidden;
             border: 2px solid var(--accent-purple);
+            transition: var(--transition);
+        }
+
+        .chat-container.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3000;
+            border-radius: 0;
+            border: none;
         }
 
         .chat-container.active {
@@ -1397,7 +1410,7 @@
         }
 
         .chat-header {
-            padding: 20px;
+            padding: 15px 20px;
             background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
             color: white;
             display: flex;
@@ -1419,15 +1432,15 @@
 
         .chat-title {
             font-weight: 600;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .chat-avatar {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             display: flex;
@@ -1440,7 +1453,7 @@
 
         .chat-avatar::before {
             content: '🤖';
-            font-size: 20px;
+            font-size: 18px;
             position: relative;
             z-index: 2;
         }
@@ -1450,19 +1463,24 @@
             position: absolute;
             bottom: -2px;
             right: -2px;
-            font-size: 12px;
+            font-size: 10px;
             z-index: 3;
             transform: rotate(15deg);
         }
 
-        .chat-close {
+        .chat-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-control {
             background: none;
             border: none;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            width: 35px;
-            height: 35px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1470,21 +1488,21 @@
             transition: var(--transition);
         }
 
-        .chat-close:hover {
+        .chat-control:hover {
             background: rgba(255, 255, 255, 0.2);
         }
 
         .chat-messages {
             flex-grow: 1;
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .message {
-            padding: 12px 18px;
+            padding: 10px 15px;
             border-radius: 18px;
             max-width: 85%;
             word-wrap: break-word;
@@ -1519,10 +1537,10 @@
         }
 
         .chat-input {
-            padding: 20px;
+            padding: 15px;
             border-top: 1px solid var(--dark-shadow);
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
         }
 
@@ -1530,11 +1548,11 @@
             flex-grow: 1;
             background: var(--primary-bg);
             border: none;
-            padding: 14px 18px;
+            padding: 12px 15px;
             border-radius: 25px;
             box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
             color: var(--text-color);
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .chat-input-field:focus {
@@ -1546,8 +1564,8 @@
             background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
             color: white;
             border: none;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -1744,6 +1762,118 @@
             box-shadow: 2px 2px 4px var(--dark-shadow), -2px -2px 4px var(--light-shadow);
         }
 
+        /* Notes Card Styles */
+        .notes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .note-card {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 25px;
+            box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 14px 14px 28px var(--dark-shadow), -14px -14px 28px var(--light-shadow);
+        }
+
+        .note-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .note-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--accent-purple);
+        }
+
+        .note-content {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .note-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .note-tag {
+            background: rgba(179, 136, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .note-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .note-date {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .add-note-btn {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            padding: 30px;
+            box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            cursor: pointer;
+            border: 2px dashed var(--accent-purple);
+        }
+
+        .add-note-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 14px 14px 28px var(--dark-shadow), -14px -14px 28px var(--light-shadow);
+        }
+
+        .add-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
         /* Responsive Design - Improved for Mobile */
         @media (max-width: 1200px) {
             .subject-input {
@@ -1779,7 +1909,7 @@
                 padding: 30px 20px;
             }
             
-            .dashboard-logo {
+            .logo-text {
                 font-size: 1.8rem;
             }
             
@@ -1821,9 +1951,9 @@
             
             .chat-container {
                 width: 90vw;
-                height: 70vh;
+                height: 60vh;
                 right: 5vw;
-                bottom: 80px;
+                bottom: 70px;
             }
             
             .subject-popup-content,
@@ -1885,13 +2015,13 @@
             .chat-container {
                 width: 95vw;
                 right: 2.5vw;
-                height: 75vh;
+                height: 65vh;
             }
             
             .chat-toggle {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
             }
             
             .header-controls {
@@ -1910,6 +2040,16 @@
             
             .subject-name {
                 font-size: 1.2rem;
+            }
+            
+            .note-card {
+                padding: 20px;
+            }
+            
+            .user-profile {
+                position: fixed;
+                top: 15px;
+                right: 15px;
             }
         }
 
@@ -1967,14 +2107,6 @@
     </style>
 </head>
 <body>
-    <!-- Language Toggle -->
-    <div class="language-toggle">
-        <button class="lang-btn" id="lang-toggle">
-            <i class="fas fa-language"></i>
-            <span id="lang-text">EN</span>
-        </button>
-    </div>
-
     <!-- Study Partner Chat - Hidden on Landing and Auth Pages -->
     <div class="study-partner-chat" id="study-partner-chat" style="display: none;">
         <button class="chat-toggle" id="chat-toggle">
@@ -1986,7 +2118,14 @@
                     <div class="chat-avatar"></div>
                     <span id="chat-title">Study Partner</span>
                 </div>
-                <button class="chat-close" id="chat-close">&times;</button>
+                <div class="chat-controls">
+                    <button class="chat-control" id="chat-fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button class="chat-control" id="chat-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
             <div class="chat-messages" id="chat-messages">
                 <div class="message bot" id="welcome-message">
@@ -2245,7 +2384,10 @@
     <!-- Dashboard -->
     <section id="dashboard">
         <div class="header">
-            <h1 class="dashboard-logo">StudyDisk</h1>
+            <div class="dashboard-logo">
+                <div class="logo-image">SD</div>
+                <div class="logo-text">StudyDisk</div>
+            </div>
             <div class="header-controls">
                 <div class="flex items-center gap-10">
                     <button class="btn" id="dark-mode-toggle">
@@ -2257,24 +2399,24 @@
                         <span id="export-pdf-text">Export PDF</span>
                     </button>
                 </div>
-                
-                <!-- User Profile -->
-                <div class="user-profile">
-                    <button class="profile-toggle" id="profile-toggle">
-                        <div class="profile-img" id="profile-img">U</div>
-                        <span id="user-name">User</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="profile-dropdown" id="profile-dropdown">
-                        <div class="profile-item">
-                            <i class="fas fa-user"></i>
-                            <span id="my-account-text">My Account</span>
-                        </div>
-                        <div class="profile-item logout" id="logout-btn">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span id="logout-text">Log Out</span>
-                        </div>
-                    </div>
+            </div>
+        </div>
+
+        <!-- User Profile - Always on top right -->
+        <div class="user-profile">
+            <button class="profile-toggle" id="profile-toggle">
+                <div class="profile-img" id="profile-img">U</div>
+                <span id="user-name">User</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <div class="profile-item">
+                    <i class="fas fa-user"></i>
+                    <span id="my-account-text">My Account</span>
+                </div>
+                <div class="profile-item logout" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span id="logout-text">Log Out</span>
                 </div>
             </div>
         </div>
@@ -2480,16 +2622,6 @@
                                 <span class="slider"></span>
                             </label>
                         </div>
-                        <div class="settings-option">
-                            <div>
-                                <div class="option-label" id="language-label">Language</div>
-                                <div class="option-description" id="language-desc">Choose your preferred language</div>
-                            </div>
-                            <select class="input-field" id="language-select" style="width: auto; padding: 8px 12px;">
-                                <option value="en">English</option>
-                                <option value="ar">العربية</option>
-                            </select>
-                        </div>
                     </div>
 
                     <div class="settings-card">
@@ -2552,7 +2684,6 @@
 
     <script>
         // Supabase Configuration
-        // TODO: Replace these with your actual Supabase URL and anon key
         const SUPABASE_URL = 'https://nbqjkieacvtsizpsyzfl.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5icWpraWVhY3Z0c2l6cHN5emZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2MjkwMTQsImV4cCI6MjA3ODIwNTAxNH0._qlU278XzKf_6l3HkL9ROVZbim0_LWK54l6gSd7jCZI';
         
@@ -2576,9 +2707,6 @@
         const notesContainer = document.getElementById('notes-container');
         const addNoteBtn = document.getElementById('add-note-btn');
         const clearDataBtn = document.getElementById('clear-data');
-        const langToggle = document.getElementById('lang-toggle');
-        const langText = document.getElementById('lang-text');
-        const languageSelect = document.getElementById('language-select');
         const studyPartnerChat = document.getElementById('study-partner-chat');
 
         // Auth Elements
@@ -2606,6 +2734,7 @@
         const chatToggle = document.getElementById('chat-toggle');
         const chatContainer = document.getElementById('chat-container');
         const chatClose = document.getElementById('chat-close');
+        const chatFullscreen = document.getElementById('chat-fullscreen');
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSend = document.getElementById('chat-send');
@@ -2745,8 +2874,6 @@
                 dataTitle: "Data Management",
                 darkModeLabel: "Dark Mode",
                 darkModeDesc: "Switch between light and dark themes",
-                languageLabel: "Language",
-                languageDesc: "Choose your preferred language",
                 studyRemindersLabel: "Study Reminders",
                 studyRemindersDesc: "Get reminders for neglected subjects",
                 autoSaveLabel: "Auto Save",
@@ -2774,134 +2901,6 @@
                 todoTitle: "To-Do List",
                 addTodoText: "Add",
                 clearTodosText: "Clear All"
-            },
-            ar: {
-                // Landing Page
-                logoSubtitle: "رفيق دراستك",
-                tagline: "نظم دراستك، أتقن موادك، وابقَ منتجاً. منصة شاملة تجمع بين التخطيط الذكي، أدوات PDF، والملاحظات المنظمة.",
-                feature1Title: "مخطط الدراسة التفاعلي",
-                feature1Text: "خطط لموادك، تتبع الفصول، وراقب تقدمك مع مخطط دراسة بديهي.",
-                feature2Title: "مجموعة أدوات PDF كاملة",
-                feature2Text: "ادمج، حوّل، اضغط، وأنشئ ملفات PDF مع مجموعة أدواتنا الشاملة.",
-                feature3Title: "ملاحظات ذكية ومنظمة",
-                feature3Text: "دوّن الملاحظات، نظمها بالوسوم، وادخل إليها في أي وقت مع نظام ملاحظاتنا الذكي.",
-                feature4Title: "تتبع التقدم",
-                feature4Text: "راقب تقدمك الدراسي بمؤشرات بصرية واحصل على تذكيرات للمواد المهملة.",
-                startBtn: "ابدأ الآن",
-                
-                // Auth Pages
-                signupTitle: "إنشاء حساب",
-                signupSubtitle: "انضم إلى StudyDisk لتنظيم رحلة دراستك",
-                signupBtnText: "إنشاء حساب",
-                googleSignupText: "التسجيل باستخدام جوجل",
-                orText: "أو",
-                haveAccountText: "هل لديك حساب بالفعل؟",
-                loginTitle: "مرحباً بعودتك",
-                loginSubtitle: "سجل الدخول إلى حساب StudyDisk الخاص بك",
-                loginBtnText: "تسجيل الدخول",
-                googleLoginText: "تسجيل الدخول باستخدام جوجل",
-                noAccountText: "ليس لديك حساب؟",
-                forgotPasswordTitle: "إعادة تعيين كلمة المرور",
-                forgotPasswordSubtitle: "أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور",
-                resetPasswordBtnText: "إعادة تعيين كلمة المرور",
-                
-                // Dashboard
-                darkMode: "الوضع الداكن",
-                exportPdf: "تصدير PDF",
-                plannerTab: "مخطط الدراسة",
-                pdfTab: "أدوات PDF",
-                notesTab: "الملاحظات الذكية",
-                settingsTab: "الإعدادات",
-                
-                // User Profile
-                myAccountText: "حسابي",
-                logoutText: "تسجيل الخروج",
-                
-                // Study Planner
-                addSubjectTitle: "إضافة مادة جديدة",
-                subjectNameLabel: "اسم المادة",
-                chaptersCountLabel: "عدد الفصول",
-                examDateLabel: "موعد الامتحان",
-                addSubjectText: "إضافة المادة",
-                yourSubjectsTitle: "موادك الدراسية",
-                noSubjects: "لم تقم بإضافة أي مواد بعد. أضف أول مادة من الأعلى!",
-                exam: "الامتحان",
-                daysLeft: "يوم متبقي",
-                examPassed: "انتهى الامتحان",
-                chaptersStudied: "فصول تمت مذاكرتها",
-                chaptersSolved: "فصول تم حلها",
-                delete: "حذف",
-                markStudied: "تعليم كمتم الدراسة",
-                markSolved: "تعليم كمتم الحل",
-                studied: "تمت",
-                solved: "تم حل",
-                complete: "مكتمل",
-                
-                // PDF Tools
-                pdfToolsTitle: "أدوات PDF",
-                mergePdfName: "دمج ملفات PDF",
-                mergePdfDesc: "اجمع عدة ملفات PDF في مستند واحد",
-                convertPdfName: "تحويل الملفات",
-                convertPdfDesc: "تحويل بين Word، Image، PPT و PDF",
-                compressPdfName: "ضغط PDF",
-                compressPdfDesc: "تقليل حجم ملف PDF مع الحفاظ على الجودة",
-                ocrPdfName: "مسح ضوئي OCR",
-                ocrPdfDesc: "استخراج النص من الصور والمستندات الممسوحة",
-                createPdfName: "إنشاء PDF",
-                createPdfDesc: "إنشاء مستندات PDF جديدة من النصوص والصور",
-                splitPdfName: "تقسيم PDF",
-                splitPdfDesc: "تقسيم ملف PDF إلى عدة مستندات",
-                pdfToolActiveTitle: "دمج ملفات PDF",
-                fileUploadText: "اسحب وأفلت الملفات هنا أو انقر للتصفح",
-                fileUploadSubtext: "الصيغ المدعومة: PDF, DOC, DOCX, PPT, PPTX, JPG, PNG",
-                processPdfText: "معالجة الملفات",
-                clearFilesText: "مسح الملفات",
-                
-                // Notes
-                smartNotesTitle: "الملاحظات الذكية",
-                addNoteText: "إضافة ملاحظة جديدة",
-                editNote: "تعديل الملاحظة",
-                noteTitlePlaceholder: "عنوان الملاحظة",
-                noteContentPlaceholder: "ابدأ بكتابة ملاحظاتك هنا...",
-                addTagText: "إضافة وسم",
-                saveNoteText: "حفظ الملاحظة",
-                
-                // Settings
-                settingsTitle: "الإعدادات",
-                appearanceTitle: "المظهر",
-                notificationsTitle: "الإشعارات",
-                dataTitle: "إدارة البيانات",
-                darkModeLabel: "الوضع الداكن",
-                darkModeDesc: "التبديل بين السمة الفاتحة والداكنة",
-                languageLabel: "اللغة",
-                languageDesc: "اختر لغتك المفضلة",
-                studyRemindersLabel: "تذكيرات الدراسة",
-                studyRemindersDesc: "احصل على تذكيرات للمواد المهملة",
-                autoSaveLabel: "الحفظ التلقائي",
-                autoSaveDesc: "حفظ تقدمك تلقائياً",
-                exportDataLabel: "تصدير جميع البيانات",
-                exportDataDesc: "حمّل بيانات دراستك كنسخة احتياطية",
-                exportDataText: "تصدير",
-                clearDataLabel: "مسح جميع البيانات",
-                clearDataDesc: "حذف جميع بياناتك بشكل دائم",
-                clearDataText: "مسح الكل",
-                
-                // Chat
-                chatTitle: "شريك الدراسة",
-                chatPlaceholder: "اسألني عن دراستك...",
-                welcomeMessage: "مرحباً! أنا شريك دراستك. يمكنني مساعدتك في تحليل بيانات دراستك والإجابة على أسئلتك حول موادك وتقدمك وامتحاناتك. كيف يمكنني مساعدتك اليوم؟",
-                
-                // New Features
-                assistantTitle: "مساعد شريك الدراسة",
-                scheduleTitle: "إنشاء جدول الدراسة",
-                scheduleDesc: "أنشئ جدول دراسة مخصص بناءً على مواعيد امتحاناتك وموادك.",
-                analyzeTitle: "تحليل تقدم الدراسة",
-                analyzeDesc: "احصل على رؤى مدعومة بالذكاء الاصطناعي حول المواد التي تحتاج إلى مزيد من الاهتمام الآن.",
-                exportProgressTitle: "تصدير التقدم",
-                exportProgressDesc: "شارك تقدمك الدراسي مع أصدقائك عبر الصور أو PDF.",
-                todoTitle: "قائمة المهام",
-                addTodoText: "إضافة",
-                clearTodosText: "مسح الكل"
             }
         };
 
@@ -2909,7 +2908,7 @@
         let subjects = JSON.parse(localStorage.getItem('studydisk_subjects')) || [];
         let notes = JSON.parse(localStorage.getItem('studydisk_notes')) || [];
         let isDarkMode = localStorage.getItem('studydisk_darkmode') === 'true';
-        let language = localStorage.getItem('studydisk_language') || 'en';
+        let language = 'en'; // Set to English only
         let currentNoteId = null;
         let currentSubjectId = null;
         let currentPdfTool = 'merge-pdf';
@@ -2920,7 +2919,6 @@
         updateLanguage();
         darkModeSwitch.checked = isDarkMode;
         updateDarkMode();
-        languageSelect.value = language;
 
         // Set welcome message time
         welcomeTime.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -2947,8 +2945,6 @@
         addNoteBtn.addEventListener('click', () => openNotePopup());
         
         clearDataBtn.addEventListener('click', clearAllData);
-        langToggle.addEventListener('click', toggleLanguage);
-        languageSelect.addEventListener('change', changeLanguage);
 
         // Auth Event Listeners
         loginLink.addEventListener('click', showLogin);
@@ -2969,6 +2965,7 @@
         // Chat Event Listeners
         chatToggle.addEventListener('click', toggleChat);
         chatClose.addEventListener('click', closeChat);
+        chatFullscreen.addEventListener('click', toggleFullscreenChat);
         chatSend.addEventListener('click', sendChatMessage);
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendChatMessage();
@@ -3039,12 +3036,12 @@
             
             // Basic validation
             if (password !== confirmPassword) {
-                alert(language === 'en' ? 'Passwords do not match' : 'كلمات المرور غير متطابقة');
+                alert('Passwords do not match');
                 return;
             }
             
             if (password.length < 6) {
-                alert(language === 'en' ? 'Password must be at least 6 characters' : 'يجب أن تكون كلمة المرور 6 أحرف على الأقل');
+                alert('Password must be at least 6 characters');
                 return;
             }
             
@@ -3061,7 +3058,7 @@
                 });
                 
                 if (error) {
-                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    alert(`Error: ${error.message}`);
                     return;
                 }
                 
@@ -3075,10 +3072,10 @@
                 // Show dashboard
                 showDashboard();
                 
-                alert(language === 'en' ? 'Account created successfully! Please check your email for verification.' : 'تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني للتأكيد.');
+                alert('Account created successfully! Please check your email for verification.');
             } catch (error) {
                 console.error('Signup error:', error);
-                alert(language === 'en' ? 'An error occurred during signup' : 'حدث خطأ أثناء إنشاء الحساب');
+                alert('An error occurred during signup');
             }
         }
 
@@ -3096,7 +3093,7 @@
                 });
                 
                 if (error) {
-                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    alert(`Error: ${error.message}`);
                     return;
                 }
                 
@@ -3110,10 +3107,10 @@
                 // Show dashboard
                 showDashboard();
                 
-                alert(language === 'en' ? 'Login successful!' : 'تم تسجيل الدخول بنجاح!');
+                alert('Login successful!');
             } catch (error) {
                 console.error('Login error:', error);
-                alert(language === 'en' ? 'An error occurred during login' : 'حدث خطأ أثناء تسجيل الدخول');
+                alert('An error occurred during login');
             }
         }
 
@@ -3128,19 +3125,17 @@
                 });
                 
                 if (error) {
-                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    alert(`Error: ${error.message}`);
                     return;
                 }
                 
-                alert(language === 'en' ? 
-                    `Password reset instructions have been sent to ${email}` : 
-                    `تم إرسال تعليمات إعادة تعيين كلمة المرور إلى ${email}`);
+                alert(`Password reset instructions have been sent to ${email}`);
                 
                 // Go back to login
                 showLogin();
             } catch (error) {
                 console.error('Forgot password error:', error);
-                alert(language === 'en' ? 'An error occurred' : 'حدث خطأ');
+                alert('An error occurred');
             }
         }
 
@@ -3154,14 +3149,13 @@
                 });
                 
                 if (error) {
-                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    alert(`Error: ${error.message}`);
                 }
             } catch (error) {
                 console.error('Google signup error:', error);
-                alert(language === 'en' ? 'An error occurred during Google signup' : 'حدث خطأ أثناء التسجيل باستخدام جوجل');
+                alert('An error occurred during Google signup');
             }
         } 
-
 
         async function loginWithGoogle() {
             try {
@@ -3173,14 +3167,13 @@
                 });
                 
                 if (error) {
-                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    alert(`Error: ${error.message}`);
                 }
             } catch (error) {
                 console.error('Google login error:', error);
-                alert(language === 'en' ? 'An error occurred during Google login' : 'حدث خطأ أثناء تسجيل الدخول باستخدام جوجل');
+                alert('An error occurred during Google login');
             }
         }
-
 
         function updateUserProfile() {
             if (currentUser) {
@@ -3204,7 +3197,7 @@
                 const { error } = await supabase.auth.signOut();
                 
                 if (error) {
-                    alert(language === 'en' ? `Error: ${error.message}` : `خطأ: ${error.message}`);
+                    alert(`Error: ${error.message}`);
                     return;
                 }
                 
@@ -3221,10 +3214,10 @@
                 // Close profile dropdown
                 profileDropdown.classList.remove('active');
                 
-                alert(language === 'en' ? 'You have been logged out' : 'تم تسجيل الخروج');
+                alert('You have been logged out');
             } catch (error) {
                 console.error('Logout error:', error);
-                alert(language === 'en' ? 'An error occurred during logout' : 'حدث خطأ أثناء تسجيل الخروج');
+                alert('An error occurred during logout');
             }
         }
 
@@ -3263,27 +3256,7 @@
             }
         }
 
-        function toggleLanguage() {
-            language = language === 'en' ? 'ar' : 'en';
-            localStorage.setItem('studydisk_language', language);
-            updateLanguage();
-        }
-
-        function changeLanguage() {
-            language = languageSelect.value;
-            localStorage.setItem('studydisk_language', language);
-            updateLanguage();
-        }
-
         function updateLanguage() {
-            // Update HTML direction
-            document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-            document.documentElement.lang = language;
-            
-            // Update language toggle button
-            langText.textContent = language === 'en' ? 'AR' : 'EN';
-            languageSelect.value = language;
-            
             // Update all text elements
             const texts = translations[language];
             for (const key in texts) {
@@ -3296,10 +3269,10 @@
             // Update placeholders
             if (noteTitleInput) noteTitleInput.placeholder = texts.noteTitlePlaceholder;
             if (noteContentTextarea) noteContentTextarea.placeholder = texts.noteContentPlaceholder;
-            if (subjectNameInput) subjectNameInput.placeholder = language === 'en' ? 'Enter subject name' : 'أدخل اسم المادة';
-            if (chaptersCountInput) chaptersCountInput.placeholder = language === 'en' ? 'Number of chapters' : 'عدد الفصول';
+            if (subjectNameInput) subjectNameInput.placeholder = 'Enter subject name';
+            if (chaptersCountInput) chaptersCountInput.placeholder = 'Number of chapters';
             if (chatInput) chatInput.placeholder = texts.chatPlaceholder;
-            if (todoInput) todoInput.placeholder = language === 'en' ? 'Add a new task...' : 'إضافة مهمة جديدة...';
+            if (todoInput) todoInput.placeholder = 'Add a new task...';
             
             // Update welcome message
             document.getElementById('welcome-message').textContent = texts.welcomeMessage;
@@ -3318,7 +3291,7 @@
             const examDate = examDateInput.value;
             
             if (!name || isNaN(chaptersCount) || chaptersCount < 1) {
-                alert(language === 'en' ? 'Please enter a valid subject name and number of chapters' : 'يرجى إدخال اسم مادة صحيح وعدد الفصول');
+                alert('Please enter a valid subject name and number of chapters');
                 return;
             }
             
@@ -3329,7 +3302,7 @@
                 examDate: examDate,
                 chapters: Array(chaptersCount).fill().map((_, i) => ({
                     id: i + 1,
-                    name: language === 'en' ? `Chapter ${i + 1}` : `الفصل ${i + 1}`,
+                    name: `Chapter ${i + 1}`,
                     studied: false,
                     solved: false,
                     lastAccessed: null
@@ -3347,7 +3320,7 @@
             chaptersCountInput.value = '';
             examDateInput.value = '';
             
-            alert(`${name} ${language === 'en' ? 'has been added to your study planner!' : 'تمت إضافتها إلى مخطط الدراسة!'}`);
+            alert(`${name} has been added to your study planner!`);
         }
 
         function renderSubjects() {
@@ -3389,7 +3362,7 @@
                     <div class="exam-info">
                         <div class="exam-date">
                             <i class="fas fa-calendar-alt"></i>
-                            ${translations[language].exam}: ${new Date(subject.examDate).toLocaleDateString(language === 'en' ? 'en-US' : 'ar-EG')}
+                            ${translations[language].exam}: ${new Date(subject.examDate).toLocaleDateString('en-US')}
                         </div>
                         ${daysLeft !== null ? `
                         <div class="days-left">
@@ -3467,11 +3440,30 @@
                             <i class="fas fa-pencil-alt"></i>
                             ${chapter.solved ? translations[language].solved : translations[language].markSolved}
                         </button>
+                        <button class="btn btn-sm btn-info" onclick="renameChapter(${subject.id}, ${chapter.id})">
+                            <i class="fas fa-edit"></i>
+                            Rename
+                        </button>
                     </div>
                 `;
                 
                 chaptersContainer.appendChild(chapterCard);
             });
+        }
+
+        function renameChapter(subjectId, chapterId) {
+            const subject = subjects.find(s => s.id === subjectId);
+            if (!subject) return;
+            
+            const chapter = subject.chapters.find(ch => ch.id === chapterId);
+            if (!chapter) return;
+            
+            const newName = prompt('Enter new chapter name:', chapter.name);
+            if (newName && newName.trim() !== '') {
+                chapter.name = newName.trim();
+                saveSubjects();
+                renderSubjectPopup(subjectId);
+            }
         }
 
         function toggleChapterStatus(subjectId, chapterId, type) {
@@ -3503,7 +3495,7 @@
         }
 
         function deleteSubject(subjectId) {
-            if (confirm(language === 'en' ? 'Are you sure you want to delete this subject?' : 'هل أنت متأكد من حذف هذه المادة؟')) {
+            if (confirm('Are you sure you want to delete this subject?')) {
                 subjects = subjects.filter(s => s.id !== subjectId);
                 saveSubjects();
                 renderSubjects();
@@ -3538,7 +3530,7 @@
             todoList.innerHTML = '';
             
             if (!todos[subjectId] || todos[subjectId].length === 0) {
-                todoList.innerHTML = `<p class="text-center">${language === 'en' ? 'No tasks yet. Add your first task!' : 'لا توجد مهام بعد. أضف أول مهمة!'}</p>`;
+                todoList.innerHTML = `<p class="text-center">No tasks yet. Add your first task!</p>`;
                 return;
             }
             
@@ -3572,7 +3564,7 @@
         }
 
         function clearTodos() {
-            if (confirm(language === 'en' ? 'Are you sure you want to clear all tasks?' : 'هل أنت متأكد من مسح جميع المهام؟')) {
+            if (confirm('Are you sure you want to clear all tasks?')) {
                 todos[currentSubjectId] = [];
                 saveTodos();
                 renderTodos(currentSubjectId);
@@ -3582,7 +3574,7 @@
         // Study Partner Assistant Functions
         function generateStudySchedule() {
             if (subjects.length === 0) {
-                alert(language === 'en' ? 'Please add subjects first to generate a study schedule.' : 'يرجى إضافة مواد أولاً لإنشاء جدول دراسة.');
+                alert('Please add subjects first to generate a study schedule.');
                 return;
             }
             
@@ -3594,11 +3586,11 @@
             }).sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
             
             if (upcomingExams.length === 0) {
-                alert(language === 'en' ? 'No upcoming exams found. Please add exam dates to your subjects.' : 'لم يتم العثور على امتحانات قادمة. يرجى إضافة مواعيد الامتحانات لموادك.');
+                alert('No upcoming exams found. Please add exam dates to your subjects.');
                 return;
             }
             
-            let schedule = language === 'en' ? '📚 Your Personalized Study Schedule:\n\n' : '📚 جدول الدراسة المخصص:\n\n';
+            let schedule = '📚 Your Personalized Study Schedule:\n\n';
             
             upcomingExams.forEach(subject => {
                 const examDate = new Date(subject.examDate);
@@ -3607,15 +3599,9 @@
                 const dailyChapters = Math.ceil(chaptersLeft / Math.max(daysLeft, 1));
                 
                 schedule += `📖 ${subject.name}:\n`;
-                schedule += language === 'en' ? 
-                    `   - Exam: ${examDate.toLocaleDateString()} (${daysLeft} days left)\n` :
-                    `   - الامتحان: ${examDate.toLocaleDateString('ar-EG')} (${daysLeft} يوم متبقي)\n`;
-                schedule += language === 'en' ?
-                    `   - Study ${dailyChapters} chapters per day\n` :
-                    `   - ادرس ${dailyChapters} فصل يومياً\n`;
-                schedule += language === 'en' ?
-                    `   - ${chaptersLeft} chapters remaining\n\n` :
-                    `   - ${chaptersLeft} فصل متبقي\n\n`;
+                schedule += `   - Exam: ${examDate.toLocaleDateString()} (${daysLeft} days left)\n`;
+                schedule += `   - Study ${dailyChapters} chapters per day\n`;
+                schedule += `   - ${chaptersLeft} chapters remaining\n\n`;
             });
             
             alert(schedule);
@@ -3623,7 +3609,7 @@
 
         function analyzeStudyProgress() {
             if (subjects.length === 0) {
-                alert(language === 'en' ? 'Please add subjects first to analyze your progress.' : 'يرجى إضافة مواد أولاً لتحليل تقدمك.');
+                alert('Please add subjects first to analyze your progress.');
                 return;
             }
             
@@ -3647,10 +3633,10 @@
                 return examDate >= today;
             }).sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
             
-            let analysis = language === 'en' ? '📊 Study Progress Analysis:\n\n' : '📊 تحليل تقدم الدراسة:\n\n';
+            let analysis = '📊 Study Progress Analysis:\n\n';
             
             // Priority subjects (low progress and upcoming exams)
-            analysis += language === 'en' ? '🚨 Priority Subjects:\n' : '🚨 المواد ذات الأولوية:\n';
+            analysis += '🚨 Priority Subjects:\n';
             const prioritySubjects = subjectsWithProgress.filter(subject => subject.progress < 50);
             
             if (prioritySubjects.length > 0) {
@@ -3658,14 +3644,14 @@
                     analysis += `   - ${subject.name}: ${Math.round(subject.progress)}% complete\n`;
                 });
             } else {
-                analysis += language === 'en' ? '   Great job! All subjects are above 50% progress.\n' : '   عمل رائع! جميع المواد فوق 50% تقدم.\n';
+                analysis += '   Great job! All subjects are above 50% progress.\n';
             }
             
             analysis += '\n';
             
             // Upcoming exams
             if (upcomingExams.length > 0) {
-                analysis += language === 'en' ? '📅 Upcoming Exams:\n' : '📅 الامتحانات القادمة:\n';
+                analysis += '📅 Upcoming Exams:\n';
                 upcomingExams.forEach(subject => {
                     const studiedCount = subject.chapters.filter(ch => ch.studied).length;
                     const progress = (studiedCount / subject.chapters.length) * 100;
@@ -3681,14 +3667,12 @@
 
         function exportProgress() {
             if (subjects.length === 0) {
-                alert(language === 'en' ? 'No subjects to export.' : 'لا توجد مواد للتصدير.');
+                alert('No subjects to export.');
                 return;
             }
             
             // Create a simple progress table
-            let progressTable = language === 'en' ? 
-                '📊 My Study Progress\n\n' : 
-                '📊 تقدمي الدراسي\n\n';
+            let progressTable = '📊 My Study Progress\n\n';
             
             subjects.forEach(subject => {
                 const studiedCount = subject.chapters.filter(ch => ch.studied).length;
@@ -3696,22 +3680,14 @@
                 const progress = (studiedCount / subject.chapters.length) * 100;
                 
                 progressTable += `📚 ${subject.name}\n`;
-                progressTable += language === 'en' ?
-                    `   - Progress: ${Math.round(progress)}%\n` :
-                    `   - التقدم: ${Math.round(progress)}%\n`;
-                progressTable += language === 'en' ?
-                    `   - Chapters: ${studiedCount}/${subject.chapters.length} studied\n` :
-                    `   - الفصول: ${studiedCount}/${subject.chapters.length} تمت دراستها\n`;
-                progressTable += language === 'en' ?
-                    `   - Problems: ${solvedCount}/${subject.chapters.length} solved\n\n` :
-                    `   - المسائل: ${solvedCount}/${subject.chapters.length} تم حلها\n\n`;
+                progressTable += `   - Progress: ${Math.round(progress)}%\n`;
+                progressTable += `   - Chapters: ${studiedCount}/${subject.chapters.length} studied\n`;
+                progressTable += `   - Problems: ${solvedCount}/${subject.chapters.length} solved\n\n`;
             });
             
             // In a real implementation, this would generate an image or PDF
             // For now, we'll just show the table in an alert
-            alert(progressTable + '\n\n' + (language === 'en' ? 
-                'Share this progress with your friends!' : 
-                'شارك هذا التقدم مع أصدقائك!'));
+            alert(progressTable + '\n\n' + 'Share this progress with your friends!');
         }
 
         function openNotePopup(noteId = null) {
@@ -3747,7 +3723,7 @@
                 .map(tag => tag.querySelector('.tag-text').textContent);
             
             if (!title) {
-                alert(language === 'en' ? 'Please enter a note title' : 'يرجى إدخال عنوان للملاحظة');
+                alert('Please enter a note title');
                 return;
             }
             
@@ -3776,11 +3752,11 @@
             renderNotes();
             closeNotePopup();
             
-            alert(language === 'en' ? 'Your note has been saved successfully.' : 'تم حفظ ملاحظتك بنجاح.');
+            alert('Your note has been saved successfully.');
         }
 
         function addTagToNote() {
-            const tagName = prompt(language === 'en' ? 'Enter tag name:' : 'أدخل اسم الوسم:');
+            const tagName = prompt('Enter tag name:');
             if (tagName && tagName.trim() !== '') {
                 const tags = Array.from(noteTagsContainer.querySelectorAll('.tag-text'))
                     .map(tag => tag.textContent);
@@ -3834,10 +3810,10 @@
                     </div>
                     ` : ''}
                     <div class="note-actions">
-                        <div class="note-date">${new Date(note.createdAt).toLocaleDateString(language === 'en' ? 'en-US' : 'ar-EG')}</div>
+                        <div class="note-date">${new Date(note.createdAt).toLocaleDateString('en-US')}</div>
                         <button class="btn btn-sm" onclick="openNotePopup(${note.id})">
                             <i class="fas fa-edit"></i>
-                            ${language === 'en' ? 'Edit' : 'تعديل'}
+                            Edit
                         </button>
                     </div>
                 `;
@@ -3850,7 +3826,7 @@
         }
 
         function deleteNote(noteId) {
-            if (confirm(language === 'en' ? 'Are you sure you want to delete this note?' : 'هل أنت متأكد من حذف هذه الملاحظة؟')) {
+            if (confirm('Are you sure you want to delete this note?')) {
                 notes = notes.filter(n => n.id !== noteId);
                 saveNotes();
                 renderNotes();
@@ -3858,12 +3834,11 @@
         }
 
         function clearAllData() {
-            if (confirm(language === 'en' ? 'Are you sure you want to clear all data? This action cannot be undone.' : 'هل أنت متأكد من مسح جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.')) {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
                 localStorage.removeItem('studydisk_subjects');
                 localStorage.removeItem('studydisk_notes');
                 localStorage.removeItem('studydisk_todos');
                 localStorage.removeItem('studydisk_darkmode');
-                localStorage.removeItem('studydisk_language');
                 subjects = [];
                 notes = [];
                 todos = {};
@@ -3882,6 +3857,15 @@
 
         function closeChat() {
             chatContainer.classList.remove('active');
+        }
+
+        function toggleFullscreenChat() {
+            chatContainer.classList.toggle('fullscreen');
+            if (chatContainer.classList.contains('fullscreen')) {
+                chatFullscreen.innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                chatFullscreen.innerHTML = '<i class="fas fa-expand"></i>';
+            }
         }
 
         function sendChatMessage() {
@@ -3957,35 +3941,27 @@
             });
             
             // Response logic based on message content
-            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('مرحبا')) {
-                return language === 'en' 
-                    ? "Hello! How can I help you with your studies today?" 
-                    : "مرحباً! كيف يمكنني مساعدتك في دراستك اليوم؟";
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                return "Hello! How can I help you with your studies today?";
             }
-            else if (lowerMessage.includes('progress') || lowerMessage.includes('تقدم')) {
+            else if (lowerMessage.includes('progress')) {
                 const bestSubject = subjectWithBestProgress ? subjectWithBestProgress.name : "None";
                 const bestProgress = subjectWithBestProgress ? 
                     Math.round((subjectWithBestProgress.chapters.filter(ch => ch.studied).length / subjectWithBestProgress.chapters.length) * 100) : 0;
                 
-                return language === 'en'
-                    ? `Your overall study progress is ${progressPercentage}%. You've completed ${studiedChapters} out of ${totalChapters} chapters across ${totalSubjects} subjects. Your best subject is "${bestSubject}" with ${bestProgress}% progress.`
-                    : `تقدمك الدراسي العام هو ${progressPercentage}%. لقد أكملت ${studiedChapters} من أصل ${totalChapters} فصل في ${totalSubjects} مادة. أفضل مادة لديك هي "${bestSubject}" بتقدم ${bestProgress}%.`;
+                return `Your overall study progress is ${progressPercentage}%. You've completed ${studiedChapters} out of ${totalChapters} chapters across ${totalSubjects} subjects. Your best subject is "${bestSubject}" with ${bestProgress}% progress.`;
             }
-            else if (lowerMessage.includes('subject') || lowerMessage.includes('مادة') || lowerMessage.includes('مواد')) {
+            else if (lowerMessage.includes('subject') || lowerMessage.includes('subjects')) {
                 if (subjectWithMostChapters) {
                     const studiedInMost = subjectWithMostChapters.chapters.filter(ch => ch.studied).length;
                     const progressInMost = Math.round((studiedInMost / subjectWithMostChapters.chapters.length) * 100);
                     
-                    return language === 'en'
-                        ? `The subject with the most chapters is "${subjectWithMostChapters.name}" with ${subjectWithMostChapters.chapters.length} chapters. You've completed ${studiedInMost} chapters (${progressInMost}%).`
-                        : `المادة التي تحتوي على أكبر عدد من الفصول هي "${subjectWithMostChapters.name}" بـ ${subjectWithMostChapters.chapters.length} فصل. لقد أكملت ${studiedInMost} فصل (${progressInMost}%).`;
+                    return `The subject with the most chapters is "${subjectWithMostChapters.name}" with ${subjectWithMostChapters.chapters.length} chapters. You've completed ${studiedInMost} chapters (${progressInMost}%).`;
                 } else {
-                    return language === 'en'
-                        ? "You haven't added any subjects yet. Start by adding your first subject in the Study Planner!"
-                        : "لم تقم بإضافة أي مواد بعد. ابدأ بإضافة أول مادة في مخطط الدراسة!";
+                    return "You haven't added any subjects yet. Start by adding your first subject in the Study Planner!";
                 }
             }
-            else if (lowerMessage.includes('exam') || lowerMessage.includes('امتحان')) {
+            else if (lowerMessage.includes('exam')) {
                 if (upcomingExams.length > 0) {
                     const nextExam = upcomingExams[0];
                     const examDate = new Date(nextExam.examDate);
@@ -3994,52 +3970,36 @@
                     const totalInExam = nextExam.chapters.length;
                     const examProgress = Math.round((studiedInExam / totalInExam) * 100);
                     
-                    return language === 'en'
-                        ? `Your next exam is for "${nextExam.name}" in ${daysLeft} days (${examDate.toLocaleDateString()}). You've completed ${studiedInExam}/${totalInExam} chapters (${examProgress}%).`
-                        : `امتحانك القادم هو لمادة "${nextExam.name}" بعد ${daysLeft} يوم (${examDate.toLocaleDateString('ar-EG')}). لقد أكملت ${studiedInExam}/${totalInExam} فصل (${examProgress}%).`;
+                    return `Your next exam is for "${nextExam.name}" in ${daysLeft} days (${examDate.toLocaleDateString()}). You've completed ${studiedInExam}/${totalInExam} chapters (${examProgress}%).`;
                 } else {
-                    return language === 'en'
-                        ? "You don't have any upcoming exams scheduled."
-                        : "ليس لديك أي امتحانات قادمة مجدولة.";
+                    return "You don't have any upcoming exams scheduled.";
                 }
             }
-            else if (lowerMessage.includes('neglect') || lowerMessage.includes('إهمال') || lowerMessage.includes('تجاهل')) {
+            else if (lowerMessage.includes('neglect') || lowerMessage.includes('ignore')) {
                 if (neglectedSubjects.length > 0) {
                     const neglectedNames = neglectedSubjects.map(s => s.name).join(', ');
-                    return language === 'en'
-                        ? `You have ${neglectedSubjects.length} subjects with no progress: ${neglectedNames}. Consider starting with these subjects!`
-                        : `لديك ${neglectedSubjects.length} مادة بدون أي تقدم: ${neglectedNames}. فكر في البدء بهذه المواد!`;
+                    return `You have ${neglectedSubjects.length} subjects with no progress: ${neglectedNames}. Consider starting with these subjects!`;
                 } else {
-                    return language === 'en'
-                        ? "Great job! You've made progress in all your subjects."
-                        : "عمل رائع! لقد حققت تقدماً في جميع موادك.";
+                    return "Great job! You've made progress in all your subjects.";
                 }
             }
-            else if (lowerMessage.includes('help') || lowerMessage.includes('مساعدة')) {
-                return language === 'en'
-                    ? "I can help you with: checking your progress, finding subjects with most chapters, upcoming exams, neglected subjects, and general study advice. Just ask!"
-                    : "يمكنني مساعدتك في: التحقق من تقدمك، إيجاد المواد ذات أكبر عدد من الفصول، الامتحانات القادمة، المواد المهملة، ونصائح دراسة عامة. فقط اسأل!";
+            else if (lowerMessage.includes('help')) {
+                return "I can help you with: checking your progress, finding subjects with most chapters, upcoming exams, neglected subjects, and general study advice. Just ask!";
             }
-            else if (lowerMessage.includes('study plan') || lowerMessage.includes('خطة دراسة')) {
+            else if (lowerMessage.includes('study plan')) {
                 if (upcomingExams.length > 0) {
                     const nextExam = upcomingExams[0];
                     const daysLeft = Math.ceil((new Date(nextExam.examDate) - new Date()) / (1000 * 3600 * 24));
                     const chaptersLeft = nextExam.chapters.length - nextExam.chapters.filter(ch => ch.studied).length;
                     const dailyChapters = Math.ceil(chaptersLeft / Math.max(daysLeft, 1));
                     
-                    return language === 'en'
-                        ? `For "${nextExam.name}", you need to study ${dailyChapters} chapters per day to complete all ${chaptersLeft} remaining chapters before the exam in ${daysLeft} days.`
-                        : `لمادة "${nextExam.name}"، تحتاج إلى دراسة ${dailyChapters} فصل يومياً لإكمال جميع الفصول ${chaptersLeft} المتبقية قبل الامتحان في ${daysLeft} يوم.`;
+                    return `For "${nextExam.name}", you need to study ${dailyChapters} chapters per day to complete all ${chaptersLeft} remaining chapters before the exam in ${daysLeft} days.`;
                 } else {
-                    return language === 'en'
-                        ? "I can create a study plan for you once you add exam dates to your subjects."
-                        : "يمكنني إنشاء خطة دراسة لك بمجرد إضافة مواعيد الامتحانات لموادك.";
+                    return "I can create a study plan for you once you add exam dates to your subjects.";
                 }
             }
             else {
-                return language === 'en'
-                    ? "I'm not sure how to help with that. Try asking about your progress, subjects, upcoming exams, or study plans."
-                    : "لست متأكداً من كيفية المساعدة في هذا. حاول السؤال عن تقدمك أو موادك أو امتحاناتك القادمة أو خطط الدراسة.";
+                return "I'm not sure how to help with that. Try asking about your progress, subjects, upcoming exams, or study plans.";
             }
         }
 
@@ -4098,16 +4058,16 @@
 
         function processPdfFiles() {
             if (fileList.children.length === 0) {
-                alert(language === 'en' ? 'Please add files first' : 'يرجى إضافة الملفات أولاً');
+                alert('Please add files first');
                 return;
             }
             
             // Simulate processing
-            alert(language === 'en' ? 'Processing your files...' : 'جاري معالجة ملفاتك...');
+            alert('Processing your files...');
             
             // Simulate completion
             setTimeout(() => {
-                alert(language === 'en' ? 'Files processed successfully!' : 'تمت معالجة الملفات بنجاح!');
+                alert('Files processed successfully!');
                 clearFileList();
             }, 2000);
         }
