@@ -2238,12 +2238,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent-purple-dark);
         }
-        /* تخطيط جديد للهيدر على الجوال */
-.desktop-controls {
-    display: flex;
-    gap: 10px;
-}
-
+         /* تحسين تخطيط الهيدر للجوال */
 @media (max-width: 768px) {
     .header {
         flex-direction: row;
@@ -2255,63 +2250,66 @@
         flex-grow: 1;
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 10px;
     }
     
     .header-controls {
         display: flex;
         align-items: center;
-        gap: 15px;
-    }
-    
-    .desktop-controls {
-        display: none; /* إخفاء الأزرار على الجوال */
+        gap: 8px;
     }
     
     .user-profile {
-        position: static; /* إعادة البروفايل إلى التدفق الطبيعي */
+        position: static;
     }
     
     .profile-toggle {
-        padding: 8px 12px;
-    }
-    
-    .profile-img {
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
-    }
-    
-    #user-name {
-        display: none; /* إخفاء الاسم على الجوال لتوفير المساحة */
-    }
-    
-    .profile-dropdown {
-        right: 0;
-        left: auto;
-        width: 180px;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo-text {
-        font-size: 1.3rem;
-    }
-    
-    .logo-image {
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
-    }
-    
-    .profile-toggle {
-        padding: 6px 10px;
+        padding: 6px 8px;
+        gap: 5px;
     }
     
     .profile-img {
         width: 32px;
         height: 32px;
         font-size: 0.9rem;
+    }
+    
+    #user-name {
+        display: none;
+    }
+    
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .btn span {
+        display: none;
+    }
+    
+    .btn i {
+        margin: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 1.2rem;
+    }
+    
+    .logo-image {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    
+    .profile-img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .profile-toggle {
+        padding: 4px 6px;
     }
 }
     </style>
@@ -2615,36 +2613,42 @@
 
     <!-- Dashboard -->
     <section id="dashboard">
-        <div class="header-controls">
-    <div class="desktop-controls">
-        <button class="btn" id="dark-mode-toggle">
-            <i class="fas fa-moon"></i>
-            <span id="dark-mode-text">Dark Mode</span>
-        </button>
-        <button class="btn" id="export-pdf">
-            <i class="fas fa-file-pdf"></i>
-            <span id="export-pdf-text">Export PDF</span>
-        </button>
-    </div>
-    <!-- User Profile - بجانب اللوجو على الجوال -->
-    <div class="user-profile">
-        <button class="profile-toggle" id="profile-toggle">
-            <div class="profile-img" id="profile-img">U</div>
-            <span id="user-name">User</span>
-            <i class="fas fa-chevron-down"></i>
-        </button>
-        <div class="profile-dropdown" id="profile-dropdown">
-            <div class="profile-item">
-                <i class="fas fa-user"></i>
-                <span id="my-account-text">My Account</span>
+        <div class="header">
+            <div class="dashboard-logo">
+                <div class="logo-image">SD</div>
+                <div class="logo-text">StudyDisk</div>
             </div>
-            <div class="profile-item logout" id="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
-                <span id="logout-text">Log Out</span>
+            <div class="header-controls">
+                <div class="flex items-center gap-10">
+                    <button class="btn" id="dark-mode-toggle">
+                        <i class="fas fa-moon"></i>
+                        <span id="dark-mode-text">Dark Mode</span>
+                    </button>
+                    <button class="btn" id="export-pdf">
+                        <i class="fas fa-file-pdf"></i>
+                        <span id="export-pdf-text">Export PDF</span>
+                    </button>
+                    <!-- User Profile - Moved to header controls -->
+                    <div class="user-profile">
+                        <button class="profile-toggle" id="profile-toggle">
+                            <div class="profile-img" id="profile-img">U</div>
+                            <span id="user-name">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="profile-dropdown" id="profile-dropdown">
+                            <div class="profile-item">
+                                <i class="fas fa-user"></i>
+                                <span id="my-account-text">My Account</span>
+                            </div>
+                            <div class="profile-item logout" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span id="logout-text">Log Out</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
         <div class="nav-tabs">
             <button class="tab-btn active" data-tab="planner">
