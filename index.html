@@ -1377,18 +1377,17 @@
 
         .chat-container {
             position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 400px;
-            height: 600px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: var(--primary-bg);
-            border-radius: var(--card-radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             z-index: 3000;
             display: none;
             flex-direction: column;
             overflow: hidden;
-            border: 1px solid var(--dark-shadow);
+            border-radius: 0;
+            border: none;
         }
 
         .chat-container.active {
@@ -1560,6 +1559,92 @@
         .chat-send:hover {
             transform: scale(1.05);
             box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
+        }
+
+        /* Chat History Panel */
+        .chat-history-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100%;
+            background: var(--primary-bg);
+            z-index: 3001;
+            display: none;
+            flex-direction: column;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid var(--dark-shadow);
+        }
+
+        .chat-history-panel.active {
+            display: flex;
+        }
+
+        .chat-history-header {
+            padding: 15px 20px;
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-history-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .chat-history-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .chat-history-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .chat-history-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--dark-shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chat-history-item:hover {
+            background: rgba(179, 136, 255, 0.1);
+        }
+
+        .chat-history-item.active {
+            background: rgba(179, 136, 255, 0.2);
+        }
+
+        .chat-history-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .chat-history-preview {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-history-date {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            margin-top: 5px;
+        }
+
+        .chat-history-actions {
+            padding: 15px 20px;
+            border-top: 1px solid var(--dark-shadow);
         }
 
         /* New Features Styles */
@@ -1865,11 +1950,6 @@
             .tools-grid {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             }
-            
-            .chat-container {
-                width: 380px;
-                height: 550px;
-            }
         }
 
         @media (max-width: 768px) {
@@ -1972,11 +2052,13 @@
 
             /* Improved mobile chat */
             .chat-container {
-                width: calc(100vw - 40px);
-                height: 70vh;
-                bottom: 80px;
-                right: 20px;
-                left: 20px;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .chat-history-panel {
+                width: 100%;
             }
 
             /* Mobile Header Layout */
@@ -2096,11 +2178,12 @@
             }
             
             .chat-container {
-                width: calc(100vw - 30px);
-                height: 65vh;
-                bottom: 70px;
-                right: 15px;
-                left: 15px;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .chat-history-panel {
+                width: 100%;
             }
         }
 
@@ -2170,6 +2253,12 @@
                     <span id="chat-title">Study Partner</span>
                 </div>
                 <div class="chat-controls">
+                    <button class="chat-control" id="chat-history-toggle">
+                        <i class="fas fa-history"></i>
+                    </button>
+                    <button class="chat-control" id="new-chat-btn">
+                        <i class="fas fa-plus"></i>
+                    </button>
                     <button class="chat-control" id="chat-close">
                         <i class="fas fa-times"></i>
                     </button>
@@ -2187,6 +2276,25 @@
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Chat History Panel -->
+    <div class="chat-history-panel" id="chat-history-panel">
+        <div class="chat-history-header">
+            <div class="chat-history-title">Chat History</div>
+            <button class="chat-history-close" id="chat-history-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-history-list" id="chat-history-list">
+            <!-- Chat history items will be dynamically added here -->
+        </div>
+        <div class="chat-history-actions">
+            <button class="btn btn-primary" id="clear-chat-history" style="width: 100%;">
+                <i class="fas fa-trash"></i>
+                Clear All History
+            </button>
         </div>
     </div>
 
@@ -2785,6 +2893,12 @@
         const chatInput = document.getElementById('chat-input');
         const chatSend = document.getElementById('chat-send');
         const welcomeTime = document.getElementById('welcome-time');
+        const chatHistoryToggle = document.getElementById('chat-history-toggle');
+        const newChatBtn = document.getElementById('new-chat-btn');
+        const chatHistoryPanel = document.getElementById('chat-history-panel');
+        const chatHistoryClose = document.getElementById('chat-history-close');
+        const chatHistoryList = document.getElementById('chat-history-list');
+        const clearChatHistory = document.getElementById('clear-chat-history');
 
         // Subject Popup Elements
         const subjectPopup = document.getElementById('subject-popup');
@@ -2960,6 +3074,10 @@
         let currentPdfTool = 'merge-pdf';
         let todos = JSON.parse(localStorage.getItem('studydisk_todos')) || {};
         let currentUser = JSON.parse(localStorage.getItem('studydisk_currentUser')) || null;
+        
+        // Chat History
+        let chatHistory = JSON.parse(localStorage.getItem('studydisk_chatHistory')) || [];
+        let currentChatId = null;
 
         // Set initial language
         updateLanguage();
@@ -3015,6 +3133,10 @@
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendChatMessage();
         });
+        chatHistoryToggle.addEventListener('click', toggleChatHistory);
+        newChatBtn.addEventListener('click', startNewChat);
+        chatHistoryClose.addEventListener('click', closeChatHistory);
+        clearChatHistory.addEventListener('click', clearAllChatHistory);
 
         // Subject Popup Event Listeners
         subjectPopupClose.addEventListener('click', closeSubjectPopup);
@@ -3273,6 +3395,7 @@
             studyPartnerChat.style.display = 'block'; // Show chat on dashboard
             renderSubjects();
             renderNotes();
+            renderChatHistory();
         }
 
         function switchTab(tabId) {
@@ -3884,11 +4007,14 @@
                 localStorage.removeItem('studydisk_notes');
                 localStorage.removeItem('studydisk_todos');
                 localStorage.removeItem('studydisk_darkmode');
+                localStorage.removeItem('studydisk_chatHistory');
                 subjects = [];
                 notes = [];
                 todos = {};
+                chatHistory = [];
                 renderSubjects();
                 renderNotes();
+                renderChatHistory();
                 if (currentSubjectId) {
                     closeSubjectPopup();
                 }
@@ -3902,11 +4028,45 @@
 
         function closeChat() {
             chatContainer.classList.remove('active');
+            chatHistoryPanel.classList.remove('active');
+        }
+
+        function toggleChatHistory() {
+            chatHistoryPanel.classList.toggle('active');
+        }
+
+        function closeChatHistory() {
+            chatHistoryPanel.classList.remove('active');
+        }
+
+        function startNewChat() {
+            currentChatId = Date.now();
+            chatMessages.innerHTML = '';
+            
+            // Add welcome message
+            const welcomeMessage = document.createElement('div');
+            welcomeMessage.className = 'message bot';
+            welcomeMessage.innerHTML = `
+                Hello! I'm your Study Partner. I can help you analyze your study data and answer questions about your subjects, progress, and exams. How can I assist you today?
+                <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+            `;
+            chatMessages.appendChild(welcomeMessage);
+            
+            // Save current chat
+            saveChatHistory();
+            
+            // Update chat history
+            renderChatHistory();
         }
 
         function sendChatMessage() {
             const message = chatInput.value.trim();
             if (!message) return;
+            
+            // If no current chat, start a new one
+            if (!currentChatId) {
+                startNewChat();
+            }
             
             // Add user message
             addChatMessage(message, 'user');
@@ -3916,6 +4076,10 @@
             setTimeout(() => {
                 const response = generateBotResponse(message);
                 addChatMessage(response, 'bot');
+                
+                // Save chat history after bot response
+                saveChatHistory();
+                renderChatHistory();
             }, 1000);
         }
 
@@ -3932,6 +4096,103 @@
             
             chatMessages.appendChild(messageElement);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function saveChatHistory() {
+            if (!currentChatId) return;
+            
+            const messages = Array.from(chatMessages.querySelectorAll('.message')).map(msg => ({
+                text: msg.textContent.replace(msg.querySelector('.message-time').textContent, '').trim(),
+                sender: msg.classList.contains('user') ? 'user' : 'bot',
+                time: msg.querySelector('.message-time').textContent
+            }));
+            
+            // Find existing chat or create new one
+            const existingChatIndex = chatHistory.findIndex(chat => chat.id === currentChatId);
+            
+            if (existingChatIndex !== -1) {
+                // Update existing chat
+                chatHistory[existingChatIndex].messages = messages;
+                chatHistory[existingChatIndex].lastUpdated = new Date().toISOString();
+            } else {
+                // Create new chat
+                const firstUserMessage = messages.find(msg => msg.sender === 'user');
+                const chatName = firstUserMessage ? firstUserMessage.text.substring(0, 30) + (firstUserMessage.text.length > 30 ? '...' : '') : 'New Chat';
+                
+                chatHistory.unshift({
+                    id: currentChatId,
+                    name: chatName,
+                    messages: messages,
+                    createdAt: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString()
+                });
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('studydisk_chatHistory', JSON.stringify(chatHistory));
+        }
+
+        function renderChatHistory() {
+            chatHistoryList.innerHTML = '';
+            
+            if (chatHistory.length === 0) {
+                chatHistoryList.innerHTML = '<p class="text-center" style="padding: 20px; opacity: 0.7;">No chat history yet</p>';
+                return;
+            }
+            
+            chatHistory.forEach(chat => {
+                const chatItem = document.createElement('div');
+                chatItem.className = `chat-history-item ${chat.id === currentChatId ? 'active' : ''}`;
+                chatItem.innerHTML = `
+                    <div class="chat-history-name">${chat.name}</div>
+                    <div class="chat-history-preview">${chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].text : 'No messages'}</div>
+                    <div class="chat-history-date">${new Date(chat.lastUpdated).toLocaleDateString()}</div>
+                `;
+                
+                chatItem.addEventListener('click', () => {
+                    loadChat(chat.id);
+                    chatHistoryPanel.classList.remove('active');
+                });
+                
+                chatHistoryList.appendChild(chatItem);
+            });
+        }
+
+        function loadChat(chatId) {
+            const chat = chatHistory.find(c => c.id === chatId);
+            if (!chat) return;
+            
+            currentChatId = chatId;
+            chatMessages.innerHTML = '';
+            
+            // Add all messages from the chat
+            chat.messages.forEach(msg => {
+                addChatMessage(msg.text, msg.sender);
+            });
+            
+            // Update chat history display
+            renderChatHistory();
+        }
+
+        function clearAllChatHistory() {
+            if (confirm('Are you sure you want to clear all chat history? This action cannot be undone.')) {
+                chatHistory = [];
+                localStorage.removeItem('studydisk_chatHistory');
+                renderChatHistory();
+                
+                // Clear current chat
+                currentChatId = null;
+                chatMessages.innerHTML = '';
+                
+                // Add welcome message
+                const welcomeMessage = document.createElement('div');
+                welcomeMessage.className = 'message bot';
+                welcomeMessage.innerHTML = `
+                    Hello! I'm your Study Partner. I can help you analyze your study data and answer questions about your subjects, progress, and exams. How can I assist you today?
+                    <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                `;
+                chatMessages.appendChild(welcomeMessage);
+            }
         }
 
         function generateBotResponse(message) {
