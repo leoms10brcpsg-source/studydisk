@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="icon" type="image/x-icon" sizes="16x16" href="images/studydisk16.png">
- <link rel="icon" type="image/x-icon" sizes="32x32" href="images/studydisk32.png">
- <link rel="icon" type="image/x-icon" sizes="48x48" href="images/studydisk48.png">
- <link rel="icon" type="image/x-icon" sizes="64x64" href="images/studydisk64.png">
- <link rel="icon" type="image/x-icon" sizes="192x192" href="images/studydisk192.png">
- <link rel="apple-touch-icon" sizes="180x180" href="images/studydisk180.png">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="images/studydisk32.png">
+    <link rel="icon" type="image/x-icon" sizes="48x48" href="images/studydisk48.png">
+    <link rel="icon" type="image/x-icon" sizes="64x64" href="images/studydisk64.png">
+    <link rel="icon" type="image/x-icon" sizes="192x192" href="images/studydisk192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/studydisk180.png">
 
     <style>
         :root {
@@ -781,10 +781,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .exam-date {
             font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .days-left {
@@ -794,6 +798,7 @@
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .chapters-progress {
@@ -1378,7 +1383,7 @@
             height: 600px;
             background: var(--primary-bg);
             border-radius: var(--card-radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             z-index: 3000;
             display: none;
             flex-direction: column;
@@ -1477,7 +1482,7 @@
         }
 
         .message {
-            padding: 10px 15px;
+            padding: 12px 16px;
             border-radius: 18px;
             max-width: 85%;
             word-wrap: break-word;
@@ -1860,6 +1865,11 @@
             .tools-grid {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             }
+            
+            .chat-container {
+                width: 380px;
+                height: 550px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1899,7 +1909,6 @@
             .header-controls {
                 width: 100%;
                 justify-content: space-between;
-                flex-wrap: wrap;
             }
             
             .nav-tabs {
@@ -1963,22 +1972,23 @@
 
             /* Improved mobile chat */
             .chat-container {
-                width: calc(100% - 40px);
+                width: calc(100vw - 40px);
                 height: 70vh;
                 bottom: 80px;
                 right: 20px;
                 left: 20px;
             }
 
-            /* Mobile Header Layout - Updated */
+            /* Mobile Header Layout */
             .header {
-                flex-direction: column;
-                gap: 15px;
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
             }
             
             .dashboard-logo {
-                width: 100%;
-                justify-content: space-between;
+                flex-grow: 1;
+                align-items: center;
             }
             
             .logo-text {
@@ -1992,18 +2002,13 @@
             }
             
             .header-controls {
-                width: 100%;
-                justify-content: space-between;
+                justify-content: flex-end;
+                width: auto;
                 flex-wrap: wrap;
-                gap: 10px;
             }
             
             .user-profile {
-                order: 1;
-            }
-            
-            .dark-mode-toggle, .export-pdf {
-                order: 2;
+                position: static;
             }
             
             .profile-toggle {
@@ -2026,10 +2031,8 @@
                 font-size: 0.9rem;
             }
             
-            /* Exam date input improvement */
-            .input-field[type="date"] {
-                font-size: 0.9rem;
-                padding: 14px 12px;
+            .dark-mode-toggle, .export-pdf {
+                display: none;
             }
         }
 
@@ -2092,9 +2095,12 @@
                 font-size: 1rem;
             }
             
-            /* Improved exam date input */
-            .input-field[type="date"] {
-                font-size: 0.85rem;
+            .chat-container {
+                width: calc(100vw - 30px);
+                height: 65vh;
+                bottom: 70px;
+                right: 15px;
+                left: 15px;
             }
         }
 
@@ -2164,9 +2170,6 @@
                     <span id="chat-title">Study Partner</span>
                 </div>
                 <div class="chat-controls">
-                    <button class="chat-control" id="chat-history-toggle">
-                        <i class="fas fa-history"></i>
-                    </button>
                     <button class="chat-control" id="chat-close">
                         <i class="fas fa-times"></i>
                     </button>
@@ -2432,24 +2435,6 @@
             <div class="dashboard-logo">
                 <div class="logo-image">SD</div>
                 <div class="logo-text">StudyDisk</div>
-                <!-- User Profile - Moved to be next to logo on mobile -->
-                <div class="user-profile mobile-profile">
-                    <button class="profile-toggle" id="profile-toggle">
-                        <div class="profile-img" id="profile-img">U</div>
-                        <span id="user-name">User</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="profile-dropdown" id="profile-dropdown">
-                        <div class="profile-item">
-                            <i class="fas fa-user"></i>
-                            <span id="my-account-text">My Account</span>
-                        </div>
-                        <div class="profile-item logout" id="logout-btn">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span id="logout-text">Log Out</span>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="header-controls">
                 <div class="flex items-center gap-10">
@@ -2461,21 +2446,21 @@
                         <i class="fas fa-file-pdf"></i>
                         <span id="export-pdf-text">Export PDF</span>
                     </button>
-                    <!-- User Profile - Desktop version -->
-                    <div class="user-profile desktop-profile">
-                        <button class="profile-toggle" id="profile-toggle-desktop">
-                            <div class="profile-img" id="profile-img-desktop">U</div>
-                            <span id="user-name-desktop">User</span>
+                    <!-- User Profile - Moved to header controls -->
+                    <div class="user-profile">
+                        <button class="profile-toggle" id="profile-toggle">
+                            <div class="profile-img" id="profile-img">U</div>
+                            <span id="user-name">User</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
-                        <div class="profile-dropdown" id="profile-dropdown-desktop">
+                        <div class="profile-dropdown" id="profile-dropdown">
                             <div class="profile-item">
                                 <i class="fas fa-user"></i>
-                                <span id="my-account-text-desktop">My Account</span>
+                                <span id="my-account-text">My Account</span>
                             </div>
-                            <div class="profile-item logout" id="logout-btn-desktop">
+                            <div class="profile-item logout" id="logout-btn">
                                 <i class="fas fa-sign-out-alt"></i>
-                                <span id="logout-text-desktop">Log Out</span>
+                                <span id="logout-text">Log Out</span>
                             </div>
                         </div>
                     </div>
@@ -2791,19 +2776,11 @@
         const profileImg = document.getElementById('profile-img');
         const userName = document.getElementById('user-name');
         const logoutBtn = document.getElementById('logout-btn');
-        
-        // Desktop profile elements
-        const profileToggleDesktop = document.getElementById('profile-toggle-desktop');
-        const profileDropdownDesktop = document.getElementById('profile-dropdown-desktop');
-        const profileImgDesktop = document.getElementById('profile-img-desktop');
-        const userNameDesktop = document.getElementById('user-name-desktop');
-        const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
 
         // Chat Elements
         const chatToggle = document.getElementById('chat-toggle');
         const chatContainer = document.getElementById('chat-container');
         const chatClose = document.getElementById('chat-close');
-        const chatHistoryToggle = document.getElementById('chat-history-toggle');
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSend = document.getElementById('chat-send');
@@ -2983,7 +2960,6 @@
         let currentPdfTool = 'merge-pdf';
         let todos = JSON.parse(localStorage.getItem('studydisk_todos')) || {};
         let currentUser = JSON.parse(localStorage.getItem('studydisk_currentUser')) || null;
-        let chatHistory = JSON.parse(localStorage.getItem('studydisk_chatHistory')) || [];
 
         // Set initial language
         updateLanguage();
@@ -3031,13 +3007,10 @@
         // User Profile Event Listeners
         profileToggle.addEventListener('click', toggleProfileDropdown);
         logoutBtn.addEventListener('click', handleLogout);
-        profileToggleDesktop.addEventListener('click', toggleProfileDropdownDesktop);
-        logoutBtnDesktop.addEventListener('click', handleLogout);
 
         // Chat Event Listeners
         chatToggle.addEventListener('click', toggleChat);
         chatClose.addEventListener('click', closeChat);
-        chatHistoryToggle.addEventListener('click', toggleChatHistory);
         chatSend.addEventListener('click', sendChatMessage);
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendChatMessage();
@@ -3253,20 +3226,14 @@
                 const userData = currentUser.user_metadata || {};
                 const name = userData.full_name || currentUser.email || 'User';
                 profileImg.textContent = name.charAt(0).toUpperCase();
-                profileImgDesktop.textContent = name.charAt(0).toUpperCase();
                 
                 // Update user name
                 userName.textContent = name;
-                userNameDesktop.textContent = name;
             }
         }
 
         function toggleProfileDropdown() {
             profileDropdown.classList.toggle('active');
-        }
-
-        function toggleProfileDropdownDesktop() {
-            profileDropdownDesktop.classList.toggle('active');
         }
 
         async function handleLogout() {
@@ -3291,7 +3258,6 @@
                 
                 // Close profile dropdown
                 profileDropdown.classList.remove('active');
-                profileDropdownDesktop.classList.remove('active');
                 
                 alert('You have been logged out');
             } catch (error) {
@@ -3918,11 +3884,9 @@
                 localStorage.removeItem('studydisk_notes');
                 localStorage.removeItem('studydisk_todos');
                 localStorage.removeItem('studydisk_darkmode');
-                localStorage.removeItem('studydisk_chatHistory');
                 subjects = [];
                 notes = [];
                 todos = {};
-                chatHistory = [];
                 renderSubjects();
                 renderNotes();
                 if (currentSubjectId) {
@@ -3940,22 +3904,6 @@
             chatContainer.classList.remove('active');
         }
 
-        function toggleChatHistory() {
-            // Clear current chat messages
-            chatMessages.innerHTML = '';
-            
-            if (chatHistory.length === 0) {
-                // If no history, show welcome message
-                addChatMessage(translations[language].welcomeMessage, 'bot', true);
-                return;
-            }
-            
-            // Show chat history
-            chatHistory.forEach(chat => {
-                addChatMessage(chat.message, chat.sender, true);
-            });
-        }
-
         function sendChatMessage() {
             const message = chatInput.value.trim();
             if (!message) return;
@@ -3964,30 +3912,14 @@
             addChatMessage(message, 'user');
             chatInput.value = '';
             
-            // Save to history
-            chatHistory.push({
-                message: message,
-                sender: 'user',
-                timestamp: new Date().toISOString()
-            });
-            saveChatHistory();
-            
             // Generate bot response
             setTimeout(() => {
                 const response = generateBotResponse(message);
                 addChatMessage(response, 'bot');
-                
-                // Save bot response to history
-                chatHistory.push({
-                    message: response,
-                    sender: 'bot',
-                    timestamp: new Date().toISOString()
-                });
-                saveChatHistory();
             }, 1000);
         }
 
-        function addChatMessage(text, sender, fromHistory = false) {
+        function addChatMessage(text, sender) {
             const messageElement = document.createElement('div');
             messageElement.className = `message ${sender}`;
             
@@ -3999,10 +3931,7 @@
             messageElement.appendChild(timeElement);
             
             chatMessages.appendChild(messageElement);
-            
-            if (!fromHistory) {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
         function generateBotResponse(message) {
@@ -4048,10 +3977,10 @@
             });
             
             // Response logic based on message content
-            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-                return "Hello! I'm your Study Partner. I can help you analyze your study data and answer questions about your subjects, progress, and exams. How can I assist you today?";
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                return "Hello! How can I help you with your studies today?";
             }
-            else if (lowerMessage.includes('progress') || lowerMessage.includes('how am i doing')) {
+            else if (lowerMessage.includes('progress')) {
                 const bestSubject = subjectWithBestProgress ? subjectWithBestProgress.name : "None";
                 const bestProgress = subjectWithBestProgress ? 
                     Math.round((subjectWithBestProgress.chapters.filter(ch => ch.studied).length / subjectWithBestProgress.chapters.length) * 100) : 0;
@@ -4068,7 +3997,7 @@
                     return "You haven't added any subjects yet. Start by adding your first subject in the Study Planner!";
                 }
             }
-            else if (lowerMessage.includes('exam') || lowerMessage.includes('exams') || lowerMessage.includes('test')) {
+            else if (lowerMessage.includes('exam')) {
                 if (upcomingExams.length > 0) {
                     const nextExam = upcomingExams[0];
                     const examDate = new Date(nextExam.examDate);
@@ -4079,63 +4008,66 @@
                     
                     return `Your next exam is for "${nextExam.name}" in ${daysLeft} days (${examDate.toLocaleDateString()}). You've completed ${studiedInExam}/${totalInExam} chapters (${examProgress}%).`;
                 } else {
-                    return "You don't have any upcoming exams scheduled. You can add exam dates to your subjects in the Study Planner.";
+                    return "You don't have any upcoming exams scheduled.";
                 }
             }
-            else if (lowerMessage.includes('neglect') || lowerMessage.includes('ignore') || lowerMessage.includes('behind')) {
+            else if (lowerMessage.includes('neglect') || lowerMessage.includes('ignore')) {
                 if (neglectedSubjects.length > 0) {
                     const neglectedNames = neglectedSubjects.map(s => s.name).join(', ');
-                    return `You have ${neglectedSubjects.length} subjects with no progress: ${neglectedNames}. Consider starting with these subjects to maintain a balanced study routine!`;
+                    return `You have ${neglectedSubjects.length} subjects with no progress: ${neglectedNames}. Consider starting with these subjects!`;
                 } else {
-                    return "Great job! You've made progress in all your subjects. Keep up the good work!";
+                    return "Great job! You've made progress in all your subjects.";
                 }
             }
-            else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
-                return "I can help you with: checking your study progress, finding subjects with most chapters, upcoming exams, neglected subjects, and general study advice. I can also help you create study schedules and analyze your progress. Just ask me anything about your studies!";
+            else if (lowerMessage.includes('help')) {
+                return "I can help you with: checking your progress, finding subjects with most chapters, upcoming exams, neglected subjects, and general study advice. Just ask!";
             }
-            else if (lowerMessage.includes('study plan') || lowerMessage.includes('schedule') || lowerMessage.includes('timetable')) {
+            else if (lowerMessage.includes('study plan')) {
                 if (upcomingExams.length > 0) {
                     const nextExam = upcomingExams[0];
                     const daysLeft = Math.ceil((new Date(nextExam.examDate) - new Date()) / (1000 * 3600 * 24));
                     const chaptersLeft = nextExam.chapters.length - nextExam.chapters.filter(ch => ch.studied).length;
                     const dailyChapters = Math.ceil(chaptersLeft / Math.max(daysLeft, 1));
                     
-                    return `For "${nextExam.name}", you need to study ${dailyChapters} chapters per day to complete all ${chaptersLeft} remaining chapters before the exam in ${daysLeft} days. I recommend focusing on this subject first if it's your most urgent exam.`;
+                    return `For "${nextExam.name}", you need to study ${dailyChapters} chapters per day to complete all ${chaptersLeft} remaining chapters before the exam in ${daysLeft} days.`;
                 } else {
-                    return "I can create a study plan for you once you add exam dates to your subjects. Go to the Study Planner and add exam dates to get personalized study recommendations.";
+                    return "I can create a study plan for you once you add exam dates to your subjects.";
                 }
             }
-            else if (lowerMessage.includes('motivation') || lowerMessage.includes('motivate') || lowerMessage.includes('encouragement')) {
+            else if (lowerMessage.includes('motivation') || lowerMessage.includes('encourage')) {
                 const motivationalQuotes = [
-                    "The secret of getting ahead is getting started. - Mark Twain",
-                    "Don't watch the clock; do what it does. Keep going. - Sam Levenson",
-                    "The expert in anything was once a beginner. - Helen Hayes",
-                    "You don't have to be great to start, but you have to start to be great. - Zig Ziglar",
-                    "Education is the most powerful weapon which you can use to change the world. - Nelson Mandela",
-                    "The beautiful thing about learning is that no one can take it away from you. - B.B. King",
-                    "Believe you can and you're halfway there. - Theodore Roosevelt"
+                    "The secret of getting ahead is getting started.",
+                    "Don't let what you cannot do interfere with what you can do.",
+                    "Success is the sum of small efforts, repeated day in and day out.",
+                    "The expert in anything was once a beginner.",
+                    "You don't have to be great to start, but you have to start to be great.",
+                    "The only way to do great work is to love what you do.",
+                    "Believe you can and you're halfway there.",
+                    "It's not about having time, it's about making time."
                 ];
-                return motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+                const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+                return `Here's some motivation for you: "${randomQuote}" Keep up the good work!`;
             }
-            else if (lowerMessage.includes('study tip') || lowerMessage.includes('advice') || lowerMessage.includes('tip')) {
+            else if (lowerMessage.includes('study tip') || lowerMessage.includes('advice')) {
                 const studyTips = [
-                    "Try the Pomodoro Technique: Study for 25 minutes, then take a 5-minute break.",
+                    "Try the Pomodoro technique: 25 minutes of focused study followed by a 5-minute break.",
                     "Create a dedicated study space free from distractions.",
-                    "Teach what you've learned to someone else - it reinforces your understanding.",
-                    "Use active recall instead of passive rereading for better retention.",
-                    "Connect new information to things you already know.",
+                    "Teach what you've learned to someone else - it's one of the best ways to reinforce knowledge.",
+                    "Use active recall instead of passive rereading - test yourself on the material.",
+                    "Space out your study sessions over time rather than cramming.",
+                    "Connect new information to what you already know to improve retention.",
                     "Get enough sleep - it's crucial for memory consolidation.",
-                    "Vary your study locations to create multiple memory associations."
+                    "Stay hydrated and take regular breaks to maintain focus."
                 ];
-                return studyTips[Math.floor(Math.random() * studyTips.length)];
+                const randomTip = studyTips[Math.floor(Math.random() * studyTips.length)];
+                return `Here's a study tip for you: ${randomTip}`;
+            }
+            else if (lowerMessage.includes('time management') || lowerMessage.includes('schedule')) {
+                return "For better time management, try these strategies:\n1. Prioritize tasks based on importance and urgency\n2. Break large tasks into smaller, manageable chunks\n3. Set specific, measurable goals for each study session\n4. Use a planner or digital calendar to schedule study time\n5. Eliminate distractions during focused study periods\n6. Review and adjust your schedule regularly";
             }
             else {
-                return "I'm not sure how to help with that. Try asking about your progress, subjects, upcoming exams, study plans, or study tips. You can also ask for motivation if you need some encouragement!";
+                return "I'm not sure how to help with that. Try asking about your progress, subjects, upcoming exams, study plans, motivation, or study tips.";
             }
-        }
-
-        function saveChatHistory() {
-            localStorage.setItem('studydisk_chatHistory', JSON.stringify(chatHistory));
         }
 
         // PDF Tools Functions
