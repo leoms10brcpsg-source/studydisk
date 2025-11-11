@@ -2312,6 +2312,55 @@
         padding: 4px 6px;
     }
 }
+@media (max-width: 768px) {
+    /* تقليل حجم زر إضافة المادة */
+    #add-subject {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+    
+    /* تقليل حجم حاوية إدخال البيانات */
+    .subject-input {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .input-field {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+    
+    /* إخفاء النص في الزر وإظهار الأيقونة فقط */
+    #add-subject-text {
+        display: none;
+    }
+    
+    #add-subject i {
+        margin: 0;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* تصغير أكثر للشاشات الصغيرة */
+    #add-subject {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+    }
+    
+    .input-field {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .neumorphic-card {
+        padding: 20px;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+    }
+}
     </style>
 </head>
 <body>
