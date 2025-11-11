@@ -1372,17 +1372,18 @@
 
         .chat-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            bottom: 90px;
+            right: 20px;
+            width: 400px;
+            height: 600px;
             background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             z-index: 3000;
             display: none;
             flex-direction: column;
             overflow: hidden;
-            border-radius: 0;
-            border: none;
+            border: 1px solid var(--dark-shadow);
         }
 
         .chat-container.active {
@@ -1482,6 +1483,8 @@
             word-wrap: break-word;
             position: relative;
             animation: messageAppear 0.3s ease;
+            font-size: 0.95rem;
+            line-height: 1.4;
         }
 
         @keyframes messageAppear {
@@ -1896,6 +1899,7 @@
             .header-controls {
                 width: 100%;
                 justify-content: space-between;
+                flex-wrap: wrap;
             }
             
             .nav-tabs {
@@ -1959,20 +1963,22 @@
 
             /* Improved mobile chat */
             .chat-container {
-                width: 100%;
-                height: 100%;
-                border-radius: 0;
+                width: calc(100% - 40px);
+                height: 70vh;
+                bottom: 80px;
+                right: 20px;
+                left: 20px;
             }
 
-            /* Mobile Header Layout */
+            /* Mobile Header Layout - Updated */
             .header {
-                flex-direction: row;
-                align-items: center;
-                gap: 10px;
+                flex-direction: column;
+                gap: 15px;
             }
             
             .dashboard-logo {
-                flex-grow: 1;
+                width: 100%;
+                justify-content: space-between;
             }
             
             .logo-text {
@@ -1986,12 +1992,18 @@
             }
             
             .header-controls {
-                justify-content: flex-end;
-                width: auto;
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 10px;
             }
             
             .user-profile {
-                position: static;
+                order: 1;
+            }
+            
+            .dark-mode-toggle, .export-pdf {
+                order: 2;
             }
             
             .profile-toggle {
@@ -2014,8 +2026,10 @@
                 font-size: 0.9rem;
             }
             
-            .dark-mode-toggle, .export-pdf {
-                display: none;
+            /* Exam date input improvement */
+            .input-field[type="date"] {
+                font-size: 0.9rem;
+                padding: 14px 12px;
             }
         }
 
@@ -2076,6 +2090,11 @@
                 width: 35px;
                 height: 35px;
                 font-size: 1rem;
+            }
+            
+            /* Improved exam date input */
+            .input-field[type="date"] {
+                font-size: 0.85rem;
             }
         }
 
@@ -2145,6 +2164,9 @@
                     <span id="chat-title">Study Partner</span>
                 </div>
                 <div class="chat-controls">
+                    <button class="chat-control" id="chat-history-toggle">
+                        <i class="fas fa-history"></i>
+                    </button>
                     <button class="chat-control" id="chat-close">
                         <i class="fas fa-times"></i>
                     </button>
@@ -2410,6 +2432,24 @@
             <div class="dashboard-logo">
                 <div class="logo-image">SD</div>
                 <div class="logo-text">StudyDisk</div>
+                <!-- User Profile - Moved to be next to logo on mobile -->
+                <div class="user-profile mobile-profile">
+                    <button class="profile-toggle" id="profile-toggle">
+                        <div class="profile-img" id="profile-img">U</div>
+                        <span id="user-name">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="profile-item">
+                            <i class="fas fa-user"></i>
+                            <span id="my-account-text">My Account</span>
+                        </div>
+                        <div class="profile-item logout" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span id="logout-text">Log Out</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="header-controls">
                 <div class="flex items-center gap-10">
@@ -2421,21 +2461,21 @@
                         <i class="fas fa-file-pdf"></i>
                         <span id="export-pdf-text">Export PDF</span>
                     </button>
-                    <!-- User Profile - Moved to header controls -->
-                    <div class="user-profile">
-                        <button class="profile-toggle" id="profile-toggle">
-                            <div class="profile-img" id="profile-img">U</div>
-                            <span id="user-name">User</span>
+                    <!-- User Profile - Desktop version -->
+                    <div class="user-profile desktop-profile">
+                        <button class="profile-toggle" id="profile-toggle-desktop">
+                            <div class="profile-img" id="profile-img-desktop">U</div>
+                            <span id="user-name-desktop">User</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
-                        <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="profile-dropdown" id="profile-dropdown-desktop">
                             <div class="profile-item">
                                 <i class="fas fa-user"></i>
-                                <span id="my-account-text">My Account</span>
+                                <span id="my-account-text-desktop">My Account</span>
                             </div>
-                            <div class="profile-item logout" id="logout-btn">
+                            <div class="profile-item logout" id="logout-btn-desktop">
                                 <i class="fas fa-sign-out-alt"></i>
-                                <span id="logout-text">Log Out</span>
+                                <span id="logout-text-desktop">Log Out</span>
                             </div>
                         </div>
                     </div>
@@ -2751,11 +2791,19 @@
         const profileImg = document.getElementById('profile-img');
         const userName = document.getElementById('user-name');
         const logoutBtn = document.getElementById('logout-btn');
+        
+        // Desktop profile elements
+        const profileToggleDesktop = document.getElementById('profile-toggle-desktop');
+        const profileDropdownDesktop = document.getElementById('profile-dropdown-desktop');
+        const profileImgDesktop = document.getElementById('profile-img-desktop');
+        const userNameDesktop = document.getElementById('user-name-desktop');
+        const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
 
         // Chat Elements
         const chatToggle = document.getElementById('chat-toggle');
         const chatContainer = document.getElementById('chat-container');
         const chatClose = document.getElementById('chat-close');
+        const chatHistoryToggle = document.getElementById('chat-history-toggle');
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSend = document.getElementById('chat-send');
@@ -2935,6 +2983,7 @@
         let currentPdfTool = 'merge-pdf';
         let todos = JSON.parse(localStorage.getItem('studydisk_todos')) || {};
         let currentUser = JSON.parse(localStorage.getItem('studydisk_currentUser')) || null;
+        let chatHistory = JSON.parse(localStorage.getItem('studydisk_chatHistory')) || [];
 
         // Set initial language
         updateLanguage();
@@ -2982,10 +3031,13 @@
         // User Profile Event Listeners
         profileToggle.addEventListener('click', toggleProfileDropdown);
         logoutBtn.addEventListener('click', handleLogout);
+        profileToggleDesktop.addEventListener('click', toggleProfileDropdownDesktop);
+        logoutBtnDesktop.addEventListener('click', handleLogout);
 
         // Chat Event Listeners
         chatToggle.addEventListener('click', toggleChat);
         chatClose.addEventListener('click', closeChat);
+        chatHistoryToggle.addEventListener('click', toggleChatHistory);
         chatSend.addEventListener('click', sendChatMessage);
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendChatMessage();
@@ -3201,14 +3253,20 @@
                 const userData = currentUser.user_metadata || {};
                 const name = userData.full_name || currentUser.email || 'User';
                 profileImg.textContent = name.charAt(0).toUpperCase();
+                profileImgDesktop.textContent = name.charAt(0).toUpperCase();
                 
                 // Update user name
                 userName.textContent = name;
+                userNameDesktop.textContent = name;
             }
         }
 
         function toggleProfileDropdown() {
             profileDropdown.classList.toggle('active');
+        }
+
+        function toggleProfileDropdownDesktop() {
+            profileDropdownDesktop.classList.toggle('active');
         }
 
         async function handleLogout() {
@@ -3233,6 +3291,7 @@
                 
                 // Close profile dropdown
                 profileDropdown.classList.remove('active');
+                profileDropdownDesktop.classList.remove('active');
                 
                 alert('You have been logged out');
             } catch (error) {
@@ -3859,9 +3918,11 @@
                 localStorage.removeItem('studydisk_notes');
                 localStorage.removeItem('studydisk_todos');
                 localStorage.removeItem('studydisk_darkmode');
+                localStorage.removeItem('studydisk_chatHistory');
                 subjects = [];
                 notes = [];
                 todos = {};
+                chatHistory = [];
                 renderSubjects();
                 renderNotes();
                 if (currentSubjectId) {
@@ -3879,6 +3940,22 @@
             chatContainer.classList.remove('active');
         }
 
+        function toggleChatHistory() {
+            // Clear current chat messages
+            chatMessages.innerHTML = '';
+            
+            if (chatHistory.length === 0) {
+                // If no history, show welcome message
+                addChatMessage(translations[language].welcomeMessage, 'bot', true);
+                return;
+            }
+            
+            // Show chat history
+            chatHistory.forEach(chat => {
+                addChatMessage(chat.message, chat.sender, true);
+            });
+        }
+
         function sendChatMessage() {
             const message = chatInput.value.trim();
             if (!message) return;
@@ -3887,14 +3964,30 @@
             addChatMessage(message, 'user');
             chatInput.value = '';
             
+            // Save to history
+            chatHistory.push({
+                message: message,
+                sender: 'user',
+                timestamp: new Date().toISOString()
+            });
+            saveChatHistory();
+            
             // Generate bot response
             setTimeout(() => {
                 const response = generateBotResponse(message);
                 addChatMessage(response, 'bot');
+                
+                // Save bot response to history
+                chatHistory.push({
+                    message: response,
+                    sender: 'bot',
+                    timestamp: new Date().toISOString()
+                });
+                saveChatHistory();
             }, 1000);
         }
 
-        function addChatMessage(text, sender) {
+        function addChatMessage(text, sender, fromHistory = false) {
             const messageElement = document.createElement('div');
             messageElement.className = `message ${sender}`;
             
@@ -3906,7 +3999,10 @@
             messageElement.appendChild(timeElement);
             
             chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            if (!fromHistory) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         }
 
         function generateBotResponse(message) {
@@ -3952,10 +4048,10 @@
             });
             
             // Response logic based on message content
-            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-                return "Hello! How can I help you with your studies today?";
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+                return "Hello! I'm your Study Partner. I can help you analyze your study data and answer questions about your subjects, progress, and exams. How can I assist you today?";
             }
-            else if (lowerMessage.includes('progress')) {
+            else if (lowerMessage.includes('progress') || lowerMessage.includes('how am i doing')) {
                 const bestSubject = subjectWithBestProgress ? subjectWithBestProgress.name : "None";
                 const bestProgress = subjectWithBestProgress ? 
                     Math.round((subjectWithBestProgress.chapters.filter(ch => ch.studied).length / subjectWithBestProgress.chapters.length) * 100) : 0;
@@ -3972,7 +4068,7 @@
                     return "You haven't added any subjects yet. Start by adding your first subject in the Study Planner!";
                 }
             }
-            else if (lowerMessage.includes('exam')) {
+            else if (lowerMessage.includes('exam') || lowerMessage.includes('exams') || lowerMessage.includes('test')) {
                 if (upcomingExams.length > 0) {
                     const nextExam = upcomingExams[0];
                     const examDate = new Date(nextExam.examDate);
@@ -3983,35 +4079,63 @@
                     
                     return `Your next exam is for "${nextExam.name}" in ${daysLeft} days (${examDate.toLocaleDateString()}). You've completed ${studiedInExam}/${totalInExam} chapters (${examProgress}%).`;
                 } else {
-                    return "You don't have any upcoming exams scheduled.";
+                    return "You don't have any upcoming exams scheduled. You can add exam dates to your subjects in the Study Planner.";
                 }
             }
-            else if (lowerMessage.includes('neglect') || lowerMessage.includes('ignore')) {
+            else if (lowerMessage.includes('neglect') || lowerMessage.includes('ignore') || lowerMessage.includes('behind')) {
                 if (neglectedSubjects.length > 0) {
                     const neglectedNames = neglectedSubjects.map(s => s.name).join(', ');
-                    return `You have ${neglectedSubjects.length} subjects with no progress: ${neglectedNames}. Consider starting with these subjects!`;
+                    return `You have ${neglectedSubjects.length} subjects with no progress: ${neglectedNames}. Consider starting with these subjects to maintain a balanced study routine!`;
                 } else {
-                    return "Great job! You've made progress in all your subjects.";
+                    return "Great job! You've made progress in all your subjects. Keep up the good work!";
                 }
             }
-            else if (lowerMessage.includes('help')) {
-                return "I can help you with: checking your progress, finding subjects with most chapters, upcoming exams, neglected subjects, and general study advice. Just ask!";
+            else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
+                return "I can help you with: checking your study progress, finding subjects with most chapters, upcoming exams, neglected subjects, and general study advice. I can also help you create study schedules and analyze your progress. Just ask me anything about your studies!";
             }
-            else if (lowerMessage.includes('study plan')) {
+            else if (lowerMessage.includes('study plan') || lowerMessage.includes('schedule') || lowerMessage.includes('timetable')) {
                 if (upcomingExams.length > 0) {
                     const nextExam = upcomingExams[0];
                     const daysLeft = Math.ceil((new Date(nextExam.examDate) - new Date()) / (1000 * 3600 * 24));
                     const chaptersLeft = nextExam.chapters.length - nextExam.chapters.filter(ch => ch.studied).length;
                     const dailyChapters = Math.ceil(chaptersLeft / Math.max(daysLeft, 1));
                     
-                    return `For "${nextExam.name}", you need to study ${dailyChapters} chapters per day to complete all ${chaptersLeft} remaining chapters before the exam in ${daysLeft} days.`;
+                    return `For "${nextExam.name}", you need to study ${dailyChapters} chapters per day to complete all ${chaptersLeft} remaining chapters before the exam in ${daysLeft} days. I recommend focusing on this subject first if it's your most urgent exam.`;
                 } else {
-                    return "I can create a study plan for you once you add exam dates to your subjects.";
+                    return "I can create a study plan for you once you add exam dates to your subjects. Go to the Study Planner and add exam dates to get personalized study recommendations.";
                 }
             }
-            else {
-                return "I'm not sure how to help with that. Try asking about your progress, subjects, upcoming exams, or study plans.";
+            else if (lowerMessage.includes('motivation') || lowerMessage.includes('motivate') || lowerMessage.includes('encouragement')) {
+                const motivationalQuotes = [
+                    "The secret of getting ahead is getting started. - Mark Twain",
+                    "Don't watch the clock; do what it does. Keep going. - Sam Levenson",
+                    "The expert in anything was once a beginner. - Helen Hayes",
+                    "You don't have to be great to start, but you have to start to be great. - Zig Ziglar",
+                    "Education is the most powerful weapon which you can use to change the world. - Nelson Mandela",
+                    "The beautiful thing about learning is that no one can take it away from you. - B.B. King",
+                    "Believe you can and you're halfway there. - Theodore Roosevelt"
+                ];
+                return motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
             }
+            else if (lowerMessage.includes('study tip') || lowerMessage.includes('advice') || lowerMessage.includes('tip')) {
+                const studyTips = [
+                    "Try the Pomodoro Technique: Study for 25 minutes, then take a 5-minute break.",
+                    "Create a dedicated study space free from distractions.",
+                    "Teach what you've learned to someone else - it reinforces your understanding.",
+                    "Use active recall instead of passive rereading for better retention.",
+                    "Connect new information to things you already know.",
+                    "Get enough sleep - it's crucial for memory consolidation.",
+                    "Vary your study locations to create multiple memory associations."
+                ];
+                return studyTips[Math.floor(Math.random() * studyTips.length)];
+            }
+            else {
+                return "I'm not sure how to help with that. Try asking about your progress, subjects, upcoming exams, study plans, or study tips. You can also ask for motivation if you need some encouragement!";
+            }
+        }
+
+        function saveChatHistory() {
+            localStorage.setItem('studydisk_chatHistory', JSON.stringify(chatHistory));
         }
 
         // PDF Tools Functions
