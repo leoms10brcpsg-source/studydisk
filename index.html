@@ -829,7 +829,7 @@
             position: relative;
         }
 
-        /* Subject Details Popup - Improved for Mobile */
+        /* Subject Details Popup - Improved for Both Mobile and Desktop */
         .subject-popup {
             display: none;
             position: fixed;
@@ -841,23 +841,23 @@
             z-index: 2000;
             justify-content: center;
             align-items: center;
-            padding: 10px;
+            padding: 20px;
         }
 
         .subject-popup-content {
             background: var(--primary-bg);
             border-radius: var(--card-radius);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            height: 100%;
-            max-height: 100vh;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 90vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
         .subject-popup-header {
-            padding: 20px;
+            padding: 25px 30px;
             border-bottom: 1px solid var(--dark-shadow);
             display: flex;
             justify-content: space-between;
@@ -866,7 +866,7 @@
         }
 
         .subject-popup-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--accent-purple);
         }
@@ -891,42 +891,44 @@
         }
 
         .subject-popup-body {
-            padding: 20px;
+            padding: 30px;
             flex-grow: 1;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
 
+        /* Chapters Container - Improved for Desktop */
         .chapters-container {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .chapter-card {
             background: var(--primary-bg);
             border-radius: var(--card-radius);
-            padding: 15px;
+            padding: 20px;
             box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
             transition: var(--transition);
         }
 
         .chapter-card:hover {
             transform: translateY(-3px);
+            box-shadow: 8px 8px 16px var(--dark-shadow), -8px -8px 16px var(--light-shadow);
         }
 
         .chapter-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .chapter-name {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--accent-purple);
         }
 
@@ -936,9 +938,9 @@
         }
 
         .status-badge {
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 12px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 500;
         }
 
@@ -1331,7 +1333,7 @@
             transform: translateX(26px);
         }
 
-        /* Study Partner Chat - Completely Redesigned */
+        /* Study Partner Chat - Completely Redesigned for Desktop */
         .study-partner-chat {
             position: fixed;
             bottom: 20px;
@@ -1379,6 +1381,7 @@
             transform: translateX(100%);
         }
 
+        /* Chat Container - Full Screen Like DeepSeek/ChatGPT */
         .chat-container {
             position: fixed;
             top: 0;
@@ -1390,18 +1393,10 @@
             display: none;
             flex-direction: column;
             overflow: hidden;
-            border-radius: 0;
-            border: none;
         }
 
         .chat-container.active {
             display: flex;
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
 
         .chat-header {
@@ -1476,24 +1471,37 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
+        .chat-main {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .chat-messages-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
         .chat-messages {
             flex-grow: 1;
-            padding: 15px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
 
         .message {
-            padding: 12px 16px;
+            padding: 15px 20px;
             border-radius: 18px;
-            max-width: 85%;
+            max-width: 80%;
             word-wrap: break-word;
             position: relative;
             animation: messageAppear 0.3s ease;
-            font-size: 0.95rem;
-            line-height: 1.4;
+            font-size: 1rem;
+            line-height: 1.5;
             white-space: pre-line;
         }
 
@@ -1517,17 +1525,17 @@
         }
 
         .message-time {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             opacity: 0.7;
             margin-top: 5px;
             text-align: right;
         }
 
-        .chat-input {
-            padding: 15px;
+        .chat-input-container {
+            padding: 20px;
             border-top: 1px solid var(--dark-shadow);
             display: flex;
-            gap: 10px;
+            gap: 15px;
             align-items: center;
             flex-shrink: 0;
         }
@@ -1536,11 +1544,14 @@
             flex-grow: 1;
             background: var(--primary-bg);
             border: none;
-            padding: 12px 15px;
+            padding: 15px 20px;
             border-radius: 25px;
             box-shadow: inset 4px 4px 8px var(--dark-shadow), inset -4px -4px 8px var(--light-shadow);
             color: var(--text-color);
-            font-size: 0.95rem;
+            font-size: 1rem;
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
         }
 
         .chat-input-field:focus {
@@ -1552,8 +1563,8 @@
             background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -1561,6 +1572,7 @@
             justify-content: center;
             box-shadow: 4px 4px 8px var(--dark-shadow), -4px -4px 8px var(--light-shadow);
             transition: var(--transition);
+            flex-shrink: 0;
         }
 
         .chat-send:hover {
@@ -1568,32 +1580,25 @@
             box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
         }
 
-        /* Chat History Panel - Improved for Desktop */
+        /* Chat History Panel - Always Visible on Desktop */
         .chat-history-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 300px;
-            height: 100%;
+            width: 350px;
             background: var(--primary-bg);
-            z-index: 3001;
-            display: none;
-            flex-direction: column;
-            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
             border-right: 1px solid var(--dark-shadow);
-        }
-
-        .chat-history-panel.active {
             display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
         .chat-history-header {
-            padding: 15px 20px;
+            padding: 20px;
             background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .chat-history-title {
@@ -1607,6 +1612,7 @@
             color: white;
             font-size: 1.2rem;
             cursor: pointer;
+            display: none;
         }
 
         .chat-history-list {
@@ -1616,7 +1622,7 @@
         }
 
         .chat-history-item {
-            padding: 12px 20px;
+            padding: 15px 20px;
             border-bottom: 1px solid var(--dark-shadow);
             cursor: pointer;
             transition: var(--transition);
@@ -1633,6 +1639,7 @@
         .chat-history-name {
             font-weight: 500;
             margin-bottom: 5px;
+            font-size: 1rem;
         }
 
         .chat-history-preview {
@@ -1652,6 +1659,7 @@
         .chat-history-actions {
             padding: 15px 20px;
             border-top: 1px solid var(--dark-shadow);
+            flex-shrink: 0;
         }
 
         /* New Features Styles */
@@ -1988,7 +1996,7 @@
             font-weight: 300;
         }
 
-        /* Responsive Design - Improved for Mobile */
+        /* Responsive Design - Improved for Both Mobile and Desktop */
         @media (max-width: 1200px) {
             .subject-input {
                 grid-template-columns: 1fr 1fr;
@@ -2097,15 +2105,31 @@
                 flex-direction: column;
             }
 
-            /* Improved mobile chat */
-            .chat-container {
-                width: 100%;
-                height: 100%;
-                border-radius: 0;
+            /* Mobile Chat Layout */
+            .chat-main {
+                flex-direction: column;
             }
-
+            
             .chat-history-panel {
                 width: 100%;
+                display: none;
+            }
+            
+            .chat-history-panel.active {
+                display: flex;
+            }
+            
+            .chat-history-close {
+                display: block;
+            }
+            
+            .chat-messages {
+                padding: 15px;
+            }
+            
+            .message {
+                max-width: 85%;
+                padding: 12px 16px;
             }
 
             /* Mobile Header Layout */
@@ -2234,6 +2258,74 @@
             }
         }
 
+        /* Desktop Specific Styles */
+        @media (min-width: 769px) {
+            .chapters-container {
+                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+                gap: 25px;
+            }
+            
+            .chapter-card {
+                padding: 25px;
+            }
+            
+            .chapter-name {
+                font-size: 1.3rem;
+            }
+            
+            .chapter-actions {
+                gap: 15px;
+            }
+            
+            .btn-sm {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            /* Desktop Chat - Full Screen Like Professional AI */
+            .chat-container {
+                width: 100%;
+                height: 100%;
+            }
+            
+            .chat-main {
+                flex-direction: row;
+            }
+            
+            .chat-history-panel {
+                width: 350px;
+                display: flex;
+            }
+            
+            .chat-messages-container {
+                flex-grow: 1;
+            }
+            
+            .chat-messages {
+                padding: 30px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            
+            .message {
+                max-width: 70%;
+                padding: 18px 24px;
+                font-size: 1.05rem;
+            }
+            
+            .chat-input-container {
+                padding: 25px 30px;
+                max-width: 1200px;
+                margin: 0 auto;
+                width: 100%;
+            }
+            
+            .chat-input-field {
+                padding: 18px 24px;
+                font-size: 1.05rem;
+            }
+        }
+
         /* Utility Classes */
         .hidden {
             display: none;
@@ -2285,155 +2377,131 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent-purple-dark);
         }
-         /* تحسين تخطيط الهيدر للجوال */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .dashboard-logo {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .header-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    
-    .user-profile {
-        position: static;
-    }
-    
-    .profile-toggle {
-        padding: 6px 8px;
-        gap: 5px;
-    }
-    
-    .profile-img {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
-    }
-    
-    #user-name {
-        display: none;
-    }
-    
-    .btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-    }
-    
-    .btn span {
-        display: none;
-    }
-    
-    .btn i {
-        margin: 0;
-    }
-}
+        
+        /* تحسين تخطيط الهيدر للجوال */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .dashboard-logo {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .header-controls {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .user-profile {
+                position: static;
+            }
+            
+            .profile-toggle {
+                padding: 6px 8px;
+                gap: 5px;
+            }
+            
+            .profile-img {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+            
+            #user-name {
+                display: none;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .btn span {
+                display: none;
+            }
+            
+            .btn i {
+                margin: 0;
+            }
+        }
 
-@media (max-width: 480px) {
-    .logo-text {
-        font-size: 1.2rem;
-    }
-    
-    .logo-image {
-        width: 30px;
-        height: 30px;
-        font-size: 0.8rem;
-    }
-    
-    .profile-img {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .profile-toggle {
-        padding: 4px 6px;
-    }
-}
-@media (max-width: 768px) {
-    /* تقليل حجم زر إضافة المادة */
-    #add-subject {
-        padding: 12px 20px;
-        font-size: 0.9rem;
-    }
-    
-    /* تقليل حجم حاوية إدخال البيانات */
-    .subject-input {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .input-field {
-        padding: 12px 15px;
-        font-size: 0.9rem;
-    }
-    
-    /* إخفاء النص في الزر وإظهار الأيقونة فقط */
-    #add-subject-text {
-        display: none;
-    }
-    
-    #add-subject i {
-        margin: 0;
-        font-size: 1rem;
-    }
-}
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 1.2rem;
+            }
+            
+            .logo-image {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            
+            .profile-img {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .profile-toggle {
+                padding: 4px 6px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            /* تقليل حجم زر إضافة المادة */
+            #add-subject {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+            
+            /* تقليل حجم حاوية إدخال البيانات */
+            .subject-input {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .input-field {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            /* إخفاء النص في الزر وإظهار الأيقونة فقط */
+            #add-subject-text {
+                display: none;
+            }
+            
+            #add-subject i {
+                margin: 0;
+                font-size: 1rem;
+            }
+        }
 
-@media (max-width: 480px) {
-    /* تصغير أكثر للشاشات الصغيرة */
-    #add-subject {
-        padding: 10px 16px;
-        font-size: 0.8rem;
-    }
-    
-    .input-field {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-    }
-    
-    .neumorphic-card {
-        padding: 20px;
-    }
-    
-    .section-title {
-        font-size: 1.3rem;
-    }
-}
-
-/* Desktop Chat Layout */
-@media (min-width: 769px) {
-    .chat-container {
-        width: 80%;
-        height: 80%;
-        max-width: 1200px;
-        max-height: 800px;
-        border-radius: var(--card-radius);
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    
-    .chat-history-panel {
-        width: 350px;
-    }
-    
-    .chat-messages {
-        padding: 20px;
-    }
-    
-    .message {
-        max-width: 70%;
-    }
-}
+        @media (max-width: 480px) {
+            /* تصغير أكثر للشاشات الصغيرة */
+            #add-subject {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+            
+            .input-field {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .neumorphic-card {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2460,37 +2528,39 @@
                     </button>
                 </div>
             </div>
-            <div class="chat-messages" id="chat-messages">
-                <div class="message bot" id="welcome-message">
-                    Hello! I'm your Study Partner. I can help you analyze your study data and answer questions about your subjects, progress, and exams. How can I assist you today?
-                    <div class="message-time" id="welcome-time"></div>
+            <div class="chat-main">
+                <div class="chat-history-panel" id="chat-history-panel">
+                    <div class="chat-history-header">
+                        <div class="chat-history-title">Chat History</div>
+                        <button class="chat-history-close" id="chat-history-close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="chat-history-list" id="chat-history-list">
+                        <!-- Chat history items will be dynamically added here -->
+                    </div>
+                    <div class="chat-history-actions">
+                        <button class="btn btn-primary" id="clear-chat-history" style="width: 100%;">
+                            <i class="fas fa-trash"></i>
+                            Clear All History
+                        </button>
+                    </div>
+                </div>
+                <div class="chat-messages-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message bot" id="welcome-message">
+                            Hello! I'm your Study Partner. I can help you analyze your study data and answer questions about your subjects, progress, and exams. How can I assist you today?
+                            <div class="message-time" id="welcome-time"></div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <textarea class="chat-input-field" id="chat-input" placeholder="Ask me about your studies..." rows="1"></textarea>
+                        <button class="chat-send" id="chat-send">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="chat-input">
-                <input type="text" class="chat-input-field" id="chat-input" placeholder="Ask me about your studies...">
-                <button class="chat-send" id="chat-send">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chat History Panel -->
-    <div class="chat-history-panel" id="chat-history-panel">
-        <div class="chat-history-header">
-            <div class="chat-history-title">Chat History</div>
-            <button class="chat-history-close" id="chat-history-close">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="chat-history-list" id="chat-history-list">
-            <!-- Chat history items will be dynamically added here -->
-        </div>
-        <div class="chat-history-actions">
-            <button class="btn btn-primary" id="clear-chat-history" style="width: 100%;">
-                <i class="fas fa-trash"></i>
-                Clear All History
-            </button>
         </div>
     </div>
 
@@ -3358,8 +3428,18 @@
         chatClose.addEventListener('click', closeChat);
         chatSend.addEventListener('click', sendChatMessage);
         chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChatMessage();
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChatMessage();
+            }
         });
+        
+        // Auto-resize textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
         chatHistoryToggle.addEventListener('click', toggleChatHistory);
         newChatBtn.addEventListener('click', startNewChat);
         chatHistoryClose.addEventListener('click', closeChatHistory);
@@ -3620,9 +3700,135 @@
             authOptions.style.display = 'none';
             dashboard.style.display = 'block';
             studyPartnerChat.style.display = 'block'; // Show chat on dashboard
+            
+            // Load user data from Supabase
+            loadUserData();
+            
             renderSubjects();
             renderNotes();
             renderChatHistory();
+        }
+
+        // NEW FUNCTION: Load user data from Supabase
+        async function loadUserData() {
+            if (!currentUser) return;
+            
+            try {
+                // Load subjects
+                const { data: subjectsData, error: subjectsError } = await supabase
+                    .from('subjects')
+                    .select('*')
+                    .eq('user_id', currentUser.id);
+                
+                if (!subjectsError && subjectsData) {
+                    subjects = subjectsData;
+                    localStorage.setItem('studydisk_subjects', JSON.stringify(subjects));
+                }
+                
+                // Load notes
+                const { data: notesData, error: notesError } = await supabase
+                    .from('notes')
+                    .select('*')
+                    .eq('user_id', currentUser.id);
+                
+                if (!notesError && notesData) {
+                    notes = notesData;
+                    localStorage.setItem('studydisk_notes', JSON.stringify(notes));
+                }
+                
+                // Load todos
+                const { data: todosData, error: todosError } = await supabase
+                    .from('todos')
+                    .select('*')
+                    .eq('user_id', currentUser.id);
+                
+                if (!todosError && todosData) {
+                    // Convert array to object format
+                    todos = {};
+                    todosData.forEach(todo => {
+                        if (!todos[todo.subject_id]) {
+                            todos[todo.subject_id] = [];
+                        }
+                        todos[todo.subject_id].push({
+                            id: todo.id,
+                            text: todo.text,
+                            completed: todo.completed
+                        });
+                    });
+                    localStorage.setItem('studydisk_todos', JSON.stringify(todos));
+                }
+                
+                // Load chat history
+                const { data: chatData, error: chatError } = await supabase
+                    .from('chat_history')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('last_updated', { ascending: false });
+                
+                if (!chatError && chatData) {
+                    chatHistory = chatData;
+                    localStorage.setItem('studydisk_chatHistory', JSON.stringify(chatHistory));
+                }
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // NEW FUNCTION: Save user data to Supabase
+        async function saveUserData() {
+            if (!currentUser) return;
+            
+            try {
+                // Save subjects
+                await supabase
+                    .from('subjects')
+                    .upsert(
+                        subjects.map(subject => ({
+                            ...subject,
+                            user_id: currentUser.id
+                        }))
+                    );
+                
+                // Save notes
+                await supabase
+                    .from('notes')
+                    .upsert(
+                        notes.map(note => ({
+                            ...note,
+                            user_id: currentUser.id
+                        }))
+                    );
+                
+                // Save todos (flatten the object structure)
+                const todosArray = [];
+                Object.keys(todos).forEach(subjectId => {
+                    todos[subjectId].forEach(todo => {
+                        todosArray.push({
+                            ...todo,
+                            subject_id: subjectId,
+                            user_id: currentUser.id
+                        });
+                    });
+                });
+                
+                await supabase
+                    .from('todos')
+                    .upsert(todosArray);
+                
+                // Save chat history
+                await supabase
+                    .from('chat_history')
+                    .upsert(
+                        chatHistory.map(chat => ({
+                            ...chat,
+                            user_id: currentUser.id
+                        }))
+                    );
+                
+            } catch (error) {
+                console.error('Error saving user data:', error);
+            }
         }
 
         function switchTab(tabId) {
@@ -3717,6 +3923,7 @@
             
             subjects.push(subject);
             saveSubjects();
+            saveUserData(); // Save to Supabase
             renderSubjects();
             
             // Clear inputs
@@ -3878,6 +4085,7 @@
             if (newName && newName.trim() !== '') {
                 chapter.name = newName.trim();
                 saveSubjects();
+                saveUserData(); // Save to Supabase
                 renderSubjectPopup(subjectId);
             }
         }
@@ -3898,6 +4106,7 @@
             }
             
             saveSubjects();
+            saveUserData(); // Save to Supabase
             renderSubjectPopup(subjectId);
             renderSubjects();
         }
@@ -3914,6 +4123,7 @@
             if (confirm('Are you sure you want to delete this subject?')) {
                 subjects = subjects.filter(s => s.id !== subjectId);
                 saveSubjects();
+                saveUserData(); // Save to Supabase
                 renderSubjects();
                 if (currentSubjectId === subjectId) {
                     closeSubjectPopup();
@@ -3938,6 +4148,7 @@
             
             todos[currentSubjectId].push(todo);
             saveTodos();
+            saveUserData(); // Save to Supabase
             renderTodos(currentSubjectId);
             todoInput.value = '';
         }
@@ -3969,6 +4180,7 @@
             if (todo) {
                 todo.completed = !todo.completed;
                 saveTodos();
+                saveUserData(); // Save to Supabase
                 renderTodos(subjectId);
             }
         }
@@ -3976,6 +4188,7 @@
         function deleteTodo(subjectId, todoId) {
             todos[subjectId] = todos[subjectId].filter(t => t.id !== todoId);
             saveTodos();
+            saveUserData(); // Save to Supabase
             renderTodos(subjectId);
         }
 
@@ -3983,6 +4196,7 @@
             if (confirm('Are you sure you want to clear all tasks?')) {
                 todos[currentSubjectId] = [];
                 saveTodos();
+                saveUserData(); // Save to Supabase
                 renderTodos(currentSubjectId);
             }
         }
@@ -4184,6 +4398,7 @@
             }
             
             saveNotes();
+            saveUserData(); // Save to Supabase
             renderNotes();
             closeNotePopup();
             
@@ -4264,6 +4479,7 @@
             if (confirm('Are you sure you want to delete this note?')) {
                 notes = notes.filter(n => n.id !== noteId);
                 saveNotes();
+                saveUserData(); // Save to Supabase
                 renderNotes();
             }
         }
@@ -4279,12 +4495,30 @@
                 notes = [];
                 todos = {};
                 chatHistory = [];
+                
+                // Clear data from Supabase as well
+                if (currentUser) {
+                    clearSupabaseData();
+                }
+                
                 renderSubjects();
                 renderNotes();
                 renderChatHistory();
                 if (currentSubjectId) {
                     closeSubjectPopup();
                 }
+            }
+        }
+
+        // NEW FUNCTION: Clear data from Supabase
+        async function clearSupabaseData() {
+            try {
+                await supabase.from('subjects').delete().eq('user_id', currentUser.id);
+                await supabase.from('notes').delete().eq('user_id', currentUser.id);
+                await supabase.from('todos').delete().eq('user_id', currentUser.id);
+                await supabase.from('chat_history').delete().eq('user_id', currentUser.id);
+            } catch (error) {
+                console.error('Error clearing Supabase data:', error);
             }
         }
 
@@ -4295,15 +4529,24 @@
 
         function closeChat() {
             chatContainer.classList.remove('active');
-            chatHistoryPanel.classList.remove('active');
+            // On mobile, also close the history panel
+            if (window.innerWidth <= 768) {
+                chatHistoryPanel.classList.remove('active');
+            }
         }
 
         function toggleChatHistory() {
-            chatHistoryPanel.classList.toggle('active');
+            // On desktop, history is always visible, so this only affects mobile
+            if (window.innerWidth <= 768) {
+                chatHistoryPanel.classList.toggle('active');
+            }
         }
 
         function closeChatHistory() {
-            chatHistoryPanel.classList.remove('active');
+            // Only close on mobile
+            if (window.innerWidth <= 768) {
+                chatHistoryPanel.classList.remove('active');
+            }
         }
 
         function startNewChat() {
@@ -4338,6 +4581,7 @@
             // Add user message
             addChatMessage(message, 'user');
             chatInput.value = '';
+            chatInput.style.height = 'auto';
             
             // Generate bot response
             setTimeout(() => {
@@ -4346,6 +4590,7 @@
                 
                 // Save chat history after bot response
                 saveChatHistory();
+                saveUserData(); // Save to Supabase
                 renderChatHistory();
             }, 1000);
         }
@@ -4418,7 +4663,10 @@
                 
                 chatItem.addEventListener('click', () => {
                     loadChat(chat.id);
-                    chatHistoryPanel.classList.remove('active');
+                    // On mobile, close the history panel after selection
+                    if (window.innerWidth <= 768) {
+                        chatHistoryPanel.classList.remove('active');
+                    }
                 });
                 
                 chatHistoryList.appendChild(chatItem);
@@ -4445,6 +4693,12 @@
             if (confirm('Are you sure you want to clear all chat history? This action cannot be undone.')) {
                 chatHistory = [];
                 localStorage.removeItem('studydisk_chatHistory');
+                
+                // Clear from Supabase
+                if (currentUser) {
+                    supabase.from('chat_history').delete().eq('user_id', currentUser.id);
+                }
+                
                 renderChatHistory();
                 
                 // Clear current chat
