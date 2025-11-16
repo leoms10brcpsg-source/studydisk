@@ -829,7 +829,7 @@
             position: relative;
         }
 
-        /* Subject Details Popup */
+        /* Subject Details Popup - Improved for Mobile */
         .subject-popup {
             display: none;
             position: fixed;
@@ -841,31 +841,32 @@
             z-index: 2000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
         }
 
         .subject-popup-content {
             background: var(--primary-bg);
             border-radius: var(--card-radius);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            width: 95%;
-            max-width: 1000px;
-            max-height: 90vh;
+            width: 100%;
+            height: 100%;
+            max-height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
         .subject-popup-header {
-            padding: 25px 30px;
+            padding: 20px;
             border-bottom: 1px solid var(--dark-shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .subject-popup-title {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--accent-purple);
         }
@@ -890,22 +891,24 @@
         }
 
         .subject-popup-body {
-            padding: 30px;
+            padding: 20px;
             flex-grow: 1;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .chapters-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .chapter-card {
             background: var(--primary-bg);
             border-radius: var(--card-radius);
-            padding: 20px;
+            padding: 15px;
             box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
             transition: var(--transition);
         }
@@ -918,7 +921,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .chapter-name {
@@ -953,6 +956,7 @@
             display: flex;
             gap: 10px;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
 
         /* PDF Tools Styles */
@@ -1327,7 +1331,7 @@
             transform: translateX(26px);
         }
 
-        /* Study Partner Chat - Improved Design */
+        /* Study Partner Chat - Completely Redesigned */
         .study-partner-chat {
             position: fixed;
             bottom: 20px;
@@ -1407,6 +1411,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .chat-title {
@@ -1489,6 +1494,7 @@
             animation: messageAppear 0.3s ease;
             font-size: 0.95rem;
             line-height: 1.4;
+            white-space: pre-line;
         }
 
         @keyframes messageAppear {
@@ -1523,6 +1529,7 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .chat-input-field {
@@ -1561,7 +1568,7 @@
             box-shadow: 6px 6px 12px var(--dark-shadow), -6px -6px 12px var(--light-shadow);
         }
 
-        /* Chat History Panel */
+        /* Chat History Panel - Improved for Desktop */
         .chat-history-panel {
             position: fixed;
             top: 0;
@@ -1648,6 +1655,46 @@
         }
 
         /* New Features Styles */
+
+        /* Days Selection Styles */
+        .days-selection {
+            margin-top: 15px;
+        }
+
+        .days-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+            margin-bottom: 10px;
+        }
+
+        .days-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .day-checkbox {
+            display: none;
+        }
+
+        .day-label {
+            padding: 8px 12px;
+            background: var(--primary-bg);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 3px 3px 6px var(--dark-shadow), -3px -3px 6px var(--light-shadow);
+            font-size: 0.9rem;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .day-checkbox:checked + .day-label {
+            background: var(--accent-purple);
+            color: white;
+            box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
 
         /* Export Progress Styles */
         .export-progress {
@@ -2361,6 +2408,32 @@
         font-size: 1.3rem;
     }
 }
+
+/* Desktop Chat Layout */
+@media (min-width: 769px) {
+    .chat-container {
+        width: 80%;
+        height: 80%;
+        max-width: 1200px;
+        max-height: 800px;
+        border-radius: var(--card-radius);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    .chat-history-panel {
+        width: 350px;
+    }
+    
+    .chat-messages {
+        padding: 20px;
+    }
+    
+    .message {
+        max-width: 70%;
+    }
+}
     </style>
 </head>
 <body>
@@ -2738,6 +2811,33 @@
                         <div class="input-label" id="exam-date-label">Exam Date</div>
                         <input type="date" class="input-field" id="exam-date">
                     </div>
+                    <div class="input-group">
+                        <div class="input-label" id="study-days-label">Study Days</div>
+                        <div class="days-selection">
+                            <div class="days-container">
+                                <input type="checkbox" id="day-sun" class="day-checkbox" value="sunday">
+                                <label for="day-sun" class="day-label">Sun</label>
+                                
+                                <input type="checkbox" id="day-mon" class="day-checkbox" value="monday">
+                                <label for="day-mon" class="day-label">Mon</label>
+                                
+                                <input type="checkbox" id="day-tue" class="day-checkbox" value="tuesday">
+                                <label for="day-tue" class="day-label">Tue</label>
+                                
+                                <input type="checkbox" id="day-wed" class="day-checkbox" value="wednesday">
+                                <label for="day-wed" class="day-label">Wed</label>
+                                
+                                <input type="checkbox" id="day-thu" class="day-checkbox" value="thursday">
+                                <label for="day-thu" class="day-label">Thu</label>
+                                
+                                <input type="checkbox" id="day-fri" class="day-checkbox" value="friday">
+                                <label for="day-fri" class="day-label">Fri</label>
+                                
+                                <input type="checkbox" id="day-sat" class="day-checkbox" value="saturday">
+                                <label for="day-sat" class="day-label">Sat</label>
+                            </div>
+                        </div>
+                    </div>
                     <button class="btn btn-primary" id="add-subject">
                         <i class="fas fa-plus"></i>
                         <span id="add-subject-text">Add Subject</span>
@@ -3057,6 +3157,9 @@
         const analyzeProgressBtn = document.getElementById('analyze-progress');
         const exportProgressBtn = document.getElementById('export-progress');
 
+        // Days Selection Elements
+        const dayCheckboxes = document.querySelectorAll('.day-checkbox');
+
         // Language texts
         const translations = {
             en: {
@@ -3106,6 +3209,7 @@
                 subjectNameLabel: "Subject Name",
                 chaptersCountLabel: "Number of Chapters",
                 examDateLabel: "Exam Date",
+                studyDaysLabel: "Study Days",
                 addSubjectText: "Add Subject",
                 yourSubjectsTitle: "Your Subjects",
                 noSubjects: "No subjects added yet. Add your first subject above!",
@@ -3581,6 +3685,14 @@
             const chaptersCount = parseInt(chaptersCountInput.value);
             const examDate = examDateInput.value;
             
+            // Get selected days
+            const selectedDays = [];
+            dayCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedDays.push(checkbox.value);
+                }
+            });
+            
             if (!name || isNaN(chaptersCount) || chaptersCount < 1) {
                 alert('Please enter a valid subject name and number of chapters');
                 return;
@@ -3591,6 +3703,7 @@
                 name: name,
                 chaptersCount: chaptersCount,
                 examDate: examDate,
+                studyDays: selectedDays,
                 chapters: Array(chaptersCount).fill().map((_, i) => ({
                     id: i + 1,
                     name: `Chapter ${i + 1}`,
@@ -3610,6 +3723,9 @@
             subjectNameInput.value = '';
             chaptersCountInput.value = '';
             examDateInput.value = '';
+            dayCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
             
             alert(`${name} has been added to your study planner!`);
         }
@@ -3660,6 +3776,15 @@
                             ${daysLeft > 0 ? `${daysLeft} ${translations[language].daysLeft}` : translations[language].examPassed}
                         </div>
                         ` : ''}
+                    </div>
+                    ` : ''}
+                    
+                    ${subject.studyDays && subject.studyDays.length > 0 ? `
+                    <div class="exam-info">
+                        <div class="exam-date">
+                            <i class="fas fa-calendar-day"></i>
+                            Study Days: ${subject.studyDays.map(day => day.charAt(0).toUpperCase() + day.slice(1)).join(', ')}
+                        </div>
                     </div>
                     ` : ''}
                     
@@ -3912,7 +4037,9 @@
                     name: subject.name,
                     progress: progress,
                     studiedCount: studiedCount,
-                    totalChapters: subject.chapters.length
+                    totalChapters: subject.chapters.length,
+                    examDate: subject.examDate,
+                    studyDays: subject.studyDays
                 };
             }).sort((a, b) => a.progress - b.progress);
             
@@ -3953,6 +4080,17 @@
                 });
             }
             
+            // Study days analysis
+            analysis += '\n📅 Study Days Analysis:\n';
+            const subjectsWithStudyDays = subjects.filter(subject => subject.studyDays && subject.studyDays.length > 0);
+            if (subjectsWithStudyDays.length > 0) {
+                subjectsWithStudyDays.forEach(subject => {
+                    analysis += `   - ${subject.name}: ${subject.studyDays.map(day => day.charAt(0).toUpperCase() + day.slice(1)).join(', ')}\n`;
+                });
+            } else {
+                analysis += '   No study days specified for any subjects.\n';
+            }
+            
             alert(analysis);
         }
 
@@ -3973,7 +4111,13 @@
                 progressTable += `📚 ${subject.name}\n`;
                 progressTable += `   - Progress: ${Math.round(progress)}%\n`;
                 progressTable += `   - Chapters: ${studiedCount}/${subject.chapters.length} studied\n`;
-                progressTable += `   - Problems: ${solvedCount}/${subject.chapters.length} solved\n\n`;
+                progressTable += `   - Problems: ${solvedCount}/${subject.chapters.length} solved\n`;
+                
+                if (subject.studyDays && subject.studyDays.length > 0) {
+                    progressTable += `   - Study Days: ${subject.studyDays.map(day => day.charAt(0).toUpperCase() + day.slice(1)).join(', ')}\n`;
+                }
+                
+                progressTable += '\n';
             });
             
             // In a real implementation, this would generate an image or PDF
@@ -4361,10 +4505,22 @@
             });
             
             // Response logic based on message content
-            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
                 return "Hello! How can I help you with your studies today?";
             }
-            else if (lowerMessage.includes('progress')) {
+            else if (lowerMessage.includes('good morning') || lowerMessage.includes('morning')) {
+                return "Good morning! Ready to start a productive day of studying?";
+            }
+            else if (lowerMessage.includes('good afternoon')) {
+                return "Good afternoon! Hope your studies are going well.";
+            }
+            else if (lowerMessage.includes('good evening') || lowerMessage.includes('evening')) {
+                return "Good evening! Time to review what you've learned today.";
+            }
+            else if (lowerMessage.includes('thank') || lowerMessage.includes('thanks')) {
+                return "You're welcome! I'm here to help you succeed in your studies.";
+            }
+            else if (lowerMessage.includes('progress') || lowerMessage.includes('how am i doing')) {
                 const bestSubject = subjectWithBestProgress ? subjectWithBestProgress.name : "None";
                 const bestProgress = subjectWithBestProgress ? 
                     Math.round((subjectWithBestProgress.chapters.filter(ch => ch.studied).length / subjectWithBestProgress.chapters.length) * 100) : 0;
@@ -4381,7 +4537,7 @@
                     return "You haven't added any subjects yet. Start by adding your first subject in the Study Planner!";
                 }
             }
-            else if (lowerMessage.includes('exam')) {
+            else if (lowerMessage.includes('exam') || lowerMessage.includes('test')) {
                 if (upcomingExams.length > 0) {
                     const nextExam = upcomingExams[0];
                     const examDate = new Date(nextExam.examDate);
@@ -4395,7 +4551,7 @@
                     return "You don't have any upcoming exams scheduled.";
                 }
             }
-            else if (lowerMessage.includes('neglect') || lowerMessage.includes('ignore')) {
+            else if (lowerMessage.includes('neglect') || lowerMessage.includes('ignore') || lowerMessage.includes('behind')) {
                 if (neglectedSubjects.length > 0) {
                     const neglectedNames = neglectedSubjects.map(s => s.name).join(', ');
                     return `You have ${neglectedSubjects.length} subjects with no progress: ${neglectedNames}. Consider starting with these subjects!`;
@@ -4403,10 +4559,10 @@
                     return "Great job! You've made progress in all your subjects.";
                 }
             }
-            else if (lowerMessage.includes('help')) {
+            else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
                 return "I can help you with: checking your progress, finding subjects with most chapters, upcoming exams, neglected subjects, and general study advice. Just ask!";
             }
-            else if (lowerMessage.includes('study plan')) {
+            else if (lowerMessage.includes('study plan') || lowerMessage.includes('schedule')) {
                 if (upcomingExams.length > 0) {
                     const nextExam = upcomingExams[0];
                     const daysLeft = Math.ceil((new Date(nextExam.examDate) - new Date()) / (1000 * 3600 * 24));
@@ -4418,7 +4574,7 @@
                     return "I can create a study plan for you once you add exam dates to your subjects.";
                 }
             }
-            else if (lowerMessage.includes('motivation') || lowerMessage.includes('encourage')) {
+            else if (lowerMessage.includes('motivation') || lowerMessage.includes('encourage') || lowerMessage.includes('tired')) {
                 const motivationalQuotes = [
                     "The secret of getting ahead is getting started.",
                     "Don't let what you cannot do interfere with what you can do.",
@@ -4432,7 +4588,7 @@
                 const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
                 return `Here's some motivation for you: "${randomQuote}" Keep up the good work!`;
             }
-            else if (lowerMessage.includes('study tip') || lowerMessage.includes('advice')) {
+            else if (lowerMessage.includes('study tip') || lowerMessage.includes('advice') || lowerMessage.includes('how to study')) {
                 const studyTips = [
                     "Try the Pomodoro technique: 25 minutes of focused study followed by a 5-minute break.",
                     "Create a dedicated study space free from distractions.",
@@ -4448,6 +4604,30 @@
             }
             else if (lowerMessage.includes('time management') || lowerMessage.includes('schedule')) {
                 return "For better time management, try these strategies:\n1. Prioritize tasks based on importance and urgency\n2. Break large tasks into smaller, manageable chunks\n3. Set specific, measurable goals for each study session\n4. Use a planner or digital calendar to schedule study time\n5. Eliminate distractions during focused study periods\n6. Review and adjust your schedule regularly";
+            }
+            else if (lowerMessage.includes('chapter') || lowerMessage.includes('chapters')) {
+                if (subjects.length > 0) {
+                    let response = "Here's your chapter progress:\n";
+                    subjects.forEach(subject => {
+                        const studiedCount = subject.chapters.filter(ch => ch.studied).length;
+                        response += `- ${subject.name}: ${studiedCount}/${subject.chapters.length} chapters studied\n`;
+                    });
+                    return response;
+                } else {
+                    return "You haven't added any subjects yet. Start by adding your first subject in the Study Planner!";
+                }
+            }
+            else if (lowerMessage.includes('day') || lowerMessage.includes('study day')) {
+                const subjectsWithStudyDays = subjects.filter(subject => subject.studyDays && subject.studyDays.length > 0);
+                if (subjectsWithStudyDays.length > 0) {
+                    let response = "Here are your scheduled study days:\n";
+                    subjectsWithStudyDays.forEach(subject => {
+                        response += `- ${subject.name}: ${subject.studyDays.map(day => day.charAt(0).toUpperCase() + day.slice(1)).join(', ')}\n`;
+                    });
+                    return response;
+                } else {
+                    return "You haven't set study days for any subjects. You can add study days when creating or editing a subject.";
+                }
             }
             else {
                 return "I'm not sure how to help with that. Try asking about your progress, subjects, upcoming exams, study plans, motivation, or study tips.";
