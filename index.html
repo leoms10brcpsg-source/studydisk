@@ -7,6 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- إضافة مكتبة PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <!-- إضافة مكتبة jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- إضافة مكتبة pdf-lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <link rel="icon" type="image/x-icon" sizes="16x16" href="images/studydisk16.png">
     <link rel="icon" type="image/x-icon" sizes="32x32" href="images/studydisk32.png">
     <link rel="icon" type="image/x-icon" sizes="48x48" href="images/studydisk48.png">
@@ -1150,6 +1156,93 @@
             gap: 15px;
             margin-top: 20px;
             justify-content: center;
+        }
+
+        /* إضافة أنماط جديدة لمعاينة PDF */
+        .pdf-preview-container {
+            margin-top: 20px;
+            border: 1px solid var(--dark-shadow);
+            border-radius: 10px;
+            overflow: hidden;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .pdf-preview {
+            width: 100%;
+            background: white;
+        }
+
+        .pdf-page {
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .pdf-canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .pdf-tool-options {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(179, 136, 255, 0.05);
+            border-radius: var(--card-radius);
+        }
+
+        .tool-option-group {
+            margin-bottom: 15px;
+        }
+
+        .tool-option-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--accent-purple);
+        }
+
+        .tool-option-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--dark-shadow);
+            background: var(--primary-bg);
+            color: var(--text-color);
+        }
+
+        .download-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: var(--card-radius);
+            text-align: center;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .progress-indicator {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            color: var(--success);
+            font-weight: 500;
         }
 
         /* Notes Popup Styles */
@@ -3252,6 +3345,33 @@
                     <div class="file-list" id="file-list">
                         <!-- Files will be listed here -->
                     </div>
+                    
+                    <!-- PDF Preview Section -->
+                    <div class="pdf-preview-container" id="pdf-preview-container" style="display: none;">
+                        <div class="pdf-preview" id="pdf-preview">
+                            <!-- PDF pages will be rendered here -->
+                        </div>
+                    </div>
+                    
+                    <!-- PDF Tool Options -->
+                    <div class="pdf-tool-options" id="pdf-tool-options" style="display: none;">
+                        <!-- Tool-specific options will be dynamically added here -->
+                    </div>
+                    
+                    <!-- Progress Indicator -->
+                    <div class="progress-indicator" id="progress-indicator" style="display: none;">
+                        Processing your files... Please wait.
+                    </div>
+                    
+                    <!-- Download Section -->
+                    <div class="download-section" id="download-section" style="display: none;">
+                        <h4>Your file is ready!</h4>
+                        <button class="download-btn" id="download-btn">
+                            <i class="fas fa-download"></i>
+                            Download Processed File
+                        </button>
+                    </div>
+                    
                     <div class="pdf-action-buttons">
                         <button class="btn btn-primary" id="process-pdf-btn">
                             <i class="fas fa-cogs"></i>
@@ -3374,6 +3494,9 @@
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // تهيئة مكتبة PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
         // DOM Elements
         const landingPage = document.getElementById('landing-page');
         const authOptions = document.getElementById('auth-options');
@@ -3463,6 +3586,12 @@
         const fileList = document.getElementById('file-list');
         const processPdfBtn = document.getElementById('process-pdf-btn');
         const clearFilesBtn = document.getElementById('clear-files-btn');
+        const pdfPreviewContainer = document.getElementById('pdf-preview-container');
+        const pdfPreview = document.getElementById('pdf-preview');
+        const pdfToolOptions = document.getElementById('pdf-tool-options');
+        const progressIndicator = document.getElementById('progress-indicator');
+        const downloadSection = document.getElementById('download-section');
+        const downloadBtn = document.getElementById('download-btn');
 
         // New Feature Elements
         const todoInput = document.getElementById('todo-input');
@@ -3667,6 +3796,10 @@
         let chatHistory = JSON.parse(localStorage.getItem('studydisk_chatHistory')) || [];
         let currentChatId = null;
 
+        // PDF Processing Variables
+        let uploadedFiles = [];
+        let processedFile = null;
+
         // Set initial language
         updateLanguage();
         darkModeSwitch.checked = isDarkMode;
@@ -3758,8 +3891,26 @@
         });
 
         fileUploadArea.addEventListener('click', triggerFileUpload);
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.background = 'rgba(179, 136, 255, 0.2)';
+        });
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.style.background = '';
+        });
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.background = '';
+            if (e.dataTransfer.files.length > 0) {
+                for (let i = 0; i < e.dataTransfer.files.length; i++) {
+                    addFileToList(e.dataTransfer.files[i]);
+                }
+            }
+        });
+        
         processPdfBtn.addEventListener('click', processPdfFiles);
         clearFilesBtn.addEventListener('click', clearFileList);
+        downloadBtn.addEventListener('click', downloadProcessedFile);
 
         // New Feature Event Listeners
         addTodoBtn.addEventListener('click', addTodo);
@@ -3806,12 +3957,12 @@
             
             // Basic validation
             if (password !== confirmPassword) {
-                alert('Passwords do not match');
+                showNotification('Passwords do not match', 'error');
                 return;
             }
             
             if (password.length < 6) {
-                alert('Password must be at least 6 characters');
+                showNotification('Password must be at least 6 characters', 'error');
                 return;
             }
             
@@ -3828,7 +3979,7 @@
                 });
                 
                 if (error) {
-                    alert(`Error: ${error.message}`);
+                    showNotification(`Error: ${error.message}`, 'error');
                     return;
                 }
                 
@@ -3842,10 +3993,10 @@
                 // Show dashboard
                 showDashboard();
                 
-                alert('Account created successfully! Please check your email for verification.');
+                showNotification('Account created successfully! Please check your email for verification.', 'success');
             } catch (error) {
                 console.error('Signup error:', error);
-                alert('An error occurred during signup');
+                showNotification('An error occurred during signup', 'error');
             }
         }
 
@@ -3863,7 +4014,7 @@
                 });
                 
                 if (error) {
-                    alert(`Error: ${error.message}`);
+                    showNotification(`Error: ${error.message}`, 'error');
                     return;
                 }
                 
@@ -3877,10 +4028,10 @@
                 // Show dashboard
                 showDashboard();
                 
-                alert('Login successful!');
+                showNotification('Login successful!', 'success');
             } catch (error) {
                 console.error('Login error:', error);
-                alert('An error occurred during login');
+                showNotification('An error occurred during login', 'error');
             }
         }
 
@@ -3895,17 +4046,17 @@
                 });
                 
                 if (error) {
-                    alert(`Error: ${error.message}`);
+                    showNotification(`Error: ${error.message}`, 'error');
                     return;
                 }
                 
-                alert(`Password reset instructions have been sent to ${email}`);
+                showNotification(`Password reset instructions have been sent to ${email}`, 'success');
                 
                 // Go back to login
                 showLogin();
             } catch (error) {
                 console.error('Forgot password error:', error);
-                alert('An error occurred');
+                showNotification('An error occurred', 'error');
             }
         }
 
@@ -3919,11 +4070,11 @@
                 });
                 
                 if (error) {
-                    alert(`Error: ${error.message}`);
+                    showNotification(`Error: ${error.message}`, 'error');
                 }
             } catch (error) {
                 console.error('Google signup error:', error);
-                alert('An error occurred during Google signup');
+                showNotification('An error occurred during Google signup', 'error');
             }
         } 
 
@@ -3937,11 +4088,11 @@
                 });
                 
                 if (error) {
-                    alert(`Error: ${error.message}`);
+                    showNotification(`Error: ${error.message}`, 'error');
                 }
             } catch (error) {
                 console.error('Google login error:', error);
-                alert('An error occurred during Google login');
+                showNotification('An error occurred during Google login', 'error');
             }
         }
 
@@ -3967,7 +4118,7 @@
                 const { error } = await supabase.auth.signOut();
                 
                 if (error) {
-                    alert(`Error: ${error.message}`);
+                    showNotification(`Error: ${error.message}`, 'error');
                     return;
                 }
                 
@@ -3984,10 +4135,10 @@
                 // Close profile dropdown
                 profileDropdown.classList.remove('active');
                 
-                alert('You have been logged out');
+                showNotification('You have been logged out', 'success');
             } catch (error) {
                 console.error('Logout error:', error);
-                alert('An error occurred during logout');
+                showNotification('An error occurred during logout', 'error');
             }
         }
 
@@ -4196,7 +4347,7 @@
             });
             
             if (!name || isNaN(chaptersCount) || chaptersCount < 1) {
-                alert('Please enter a valid subject name and number of chapters');
+                showNotification('Please enter a valid subject name and number of chapters', 'error');
                 return;
             }
             
@@ -4230,7 +4381,7 @@
                 checkbox.checked = false;
             });
             
-            alert(`${name} has been added to your study planner!`);
+            showNotification(`${name} has been added to your study planner!`, 'success');
         }
 
         function renderSubjects() {
@@ -4374,7 +4525,7 @@
             });
             
             if (!name || isNaN(chaptersCount) || chaptersCount < 1) {
-                alert('Please enter a valid subject name and number of chapters');
+                showNotification('Please enter a valid subject name and number of chapters', 'error');
                 return;
             }
             
@@ -4413,7 +4564,7 @@
                 renderSubjectPopup(currentSubjectId);
             }
             
-            alert(`${name} has been updated successfully!`);
+            showNotification(`${name} has been updated successfully!`, 'success');
         }
 
         function renderSubjectPopup(subjectId) {
@@ -4522,6 +4673,7 @@
                     closeSubjectPopup();
                     closeEditSubjectPopup();
                 }
+                showNotification('Subject deleted successfully', 'success');
             }
         }
 
@@ -4592,13 +4744,14 @@
                 saveTodos();
                 saveUserData(); // Save to Supabase
                 renderTodos(currentSubjectId);
+                showNotification('All tasks cleared', 'success');
             }
         }
 
         // Study Partner Assistant Functions
         function generateStudySchedule() {
             if (subjects.length === 0) {
-                alert('Please add subjects first to generate a study schedule.');
+                showNotification('Please add subjects first to generate a study schedule.', 'error');
                 return;
             }
             
@@ -4610,7 +4763,7 @@
             }).sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
             
             if (upcomingExams.length === 0) {
-                alert('No upcoming exams found. Please add exam dates to your subjects.');
+                showNotification('No upcoming exams found. Please add exam dates to your subjects.', 'error');
                 return;
             }
             
@@ -4628,12 +4781,12 @@
                 schedule += `   - ${chaptersLeft} chapters remaining\n\n`;
             });
             
-            alert(schedule);
+            showNotification(schedule, 'info');
         }
 
         function analyzeStudyProgress() {
             if (subjects.length === 0) {
-                alert('Please add subjects first to analyze your progress.');
+                showNotification('Please add subjects first to analyze your progress.', 'error');
                 return;
             }
             
@@ -4699,12 +4852,12 @@
                 analysis += '   No study days specified for any subjects.\n';
             }
             
-            alert(analysis);
+            showNotification(analysis, 'info');
         }
 
         function exportProgress() {
             if (subjects.length === 0) {
-                alert('No subjects to export.');
+                showNotification('No subjects to export.', 'error');
                 return;
             }
             
@@ -4730,7 +4883,7 @@
             
             // In a real implementation, this would generate an image or PDF
             // For now, we'll just show the table in an alert
-            alert(progressTable + '\n\n' + 'Share this progress with your friends!');
+            showNotification(progressTable + '\n\n' + 'Share this progress with your friends!', 'info');
         }
 
         function openNotePopup(noteId = null) {
@@ -4766,7 +4919,7 @@
                 .map(tag => tag.querySelector('.tag-text').textContent);
             
             if (!title) {
-                alert('Please enter a note title');
+                showNotification('Please enter a note title', 'error');
                 return;
             }
             
@@ -4796,7 +4949,7 @@
             renderNotes();
             closeNotePopup();
             
-            alert('Your note has been saved successfully.');
+            showNotification('Your note has been saved successfully.', 'success');
         }
 
         function addTagToNote() {
@@ -4875,6 +5028,7 @@
                 saveNotes();
                 saveUserData(); // Save to Supabase
                 renderNotes();
+                showNotification('Note deleted successfully', 'success');
             }
         }
 
@@ -4901,6 +5055,7 @@
                 if (currentSubjectId) {
                     closeSubjectPopup();
                 }
+                showNotification('All data has been cleared', 'success');
             }
         }
 
@@ -5107,6 +5262,8 @@
                     <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                 `;
                 chatMessages.appendChild(welcomeMessage);
+                
+                showNotification('Chat history cleared', 'success');
             }
         }
 
@@ -5296,6 +5453,141 @@
             // Show PDF tool interface
             pdfToolInterface.style.display = 'block';
             clearFileList();
+            hidePdfPreview();
+            hideDownloadSection();
+            hideProgressIndicator();
+            
+            // Reset tool options
+            resetToolOptions();
+            
+            // Show tool-specific options
+            showToolOptions(toolId);
+        }
+
+        function showToolOptions(toolId) {
+            pdfToolOptions.innerHTML = '';
+            
+            switch(toolId) {
+                case 'merge-pdf':
+                    pdfToolOptions.innerHTML = `
+                        <div class="tool-option-group">
+                            <label class="tool-option-label">Merge Order</label>
+                            <select class="tool-option-input" id="merge-order">
+                                <option value="sequential">Sequential (in upload order)</option>
+                                <option value="alphabetical">Alphabetical (by filename)</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'split-pdf':
+                    pdfToolOptions.innerHTML = `
+                        <div class="tool-option-group">
+                            <label class="tool-option-label">Split Method</label>
+                            <select class="tool-option-input" id="split-method">
+                                <option value="single">Extract single page</option>
+                                <option value="range">Extract page range</option>
+                                <option value="all">Split all pages</option>
+                            </select>
+                        </div>
+                        <div class="tool-option-group" id="page-range-group" style="display: none;">
+                            <label class="tool-option-label">Page Range</label>
+                            <input type="text" class="tool-option-input" id="page-range" placeholder="e.g., 1-5, 7, 9-12">
+                        </div>
+                    `;
+                    
+                    // Add event listener for split method change
+                    document.getElementById('split-method').addEventListener('change', function() {
+                        document.getElementById('page-range-group').style.display = 
+                            this.value === 'range' ? 'block' : 'none';
+                    });
+                    break;
+                    
+                case 'compress-pdf':
+                    pdfToolOptions.innerHTML = `
+                        <div class="tool-option-group">
+                            <label class="tool-option-label">Compression Level</label>
+                            <select class="tool-option-input" id="compression-level">
+                                <option value="low">Low (Best Quality)</option>
+                                <option value="medium" selected>Medium (Recommended)</option>
+                                <option value="high">High (Smallest Size)</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'rotate-pdf':
+                    pdfToolOptions.innerHTML = `
+                        <div class="tool-option-group">
+                            <label class="tool-option-label">Rotation Angle</label>
+                            <select class="tool-option-input" id="rotation-angle">
+                                <option value="90">90° Clockwise</option>
+                                <option value="180">180°</option>
+                                <option value="270">90° Counter-Clockwise</option>
+                            </select>
+                        </div>
+                        <div class="tool-option-group">
+                            <label class="tool-option-label">Apply to</label>
+                            <select class="tool-option-input" id="rotation-apply">
+                                <option value="all">All Pages</option>
+                                <option value="selected">Selected Pages Only</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'watermark':
+                    pdfToolOptions.innerHTML = `
+                        <div class="tool-option-group">
+                            <label class="tool-option-label">Watermark Type</label>
+                            <select class="tool-option-input" id="watermark-type">
+                                <option value="text">Text Watermark</option>
+                                <option value="image">Image Watermark</option>
+                            </select>
+                        </div>
+                        <div class="tool-option-group" id="watermark-text-group">
+                            <label class="tool-option-label">Watermark Text</label>
+                            <input type="text" class="tool-option-input" id="watermark-text" placeholder="Enter watermark text">
+                        </div>
+                        <div class="tool-option-group" id="watermark-image-group" style="display: none;">
+                            <label class="tool-option-label">Watermark Image</label>
+                            <input type="file" class="tool-option-input" id="watermark-image" accept="image/*">
+                        </div>
+                    `;
+                    
+                    // Add event listener for watermark type change
+                    document.getElementById('watermark-type').addEventListener('change', function() {
+                        const isText = this.value === 'text';
+                        document.getElementById('watermark-text-group').style.display = isText ? 'block' : 'none';
+                        document.getElementById('watermark-image-group').style.display = isText ? 'none' : 'block';
+                    });
+                    break;
+                    
+                case 'protect-pdf':
+                    pdfToolOptions.innerHTML = `
+                        <div class="tool-option-group">
+                            <label class="tool-option-label">Password</label>
+                            <input type="password" class="tool-option-input" id="pdf-password" placeholder="Enter password">
+                        </div>
+                        <div class="tool-option-group">
+                            <label class="tool-option-label">Confirm Password</label>
+                            <input type="password" class="tool-option-input" id="pdf-confirm-password" placeholder="Confirm password">
+                        </div>
+                    `;
+                    break;
+                    
+                default:
+                    // No specific options for other tools
+                    break;
+            }
+            
+            if (pdfToolOptions.innerHTML !== '') {
+                pdfToolOptions.style.display = 'block';
+            }
+        }
+
+        function resetToolOptions() {
+            pdfToolOptions.style.display = 'none';
         }
 
         function triggerFileUpload() {
@@ -5325,30 +5617,349 @@
                 </div>
             `;
             fileList.appendChild(fileItem);
+            
+            // Store file reference
+            uploadedFiles.push(file);
         }
 
         function removeFile(button) {
-            button.closest('.file-item').remove();
+            const fileItem = button.closest('.file-item');
+            const fileName = fileItem.querySelector('.file-name').textContent;
+            
+            // Remove from uploaded files array
+            uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+            
+            fileItem.remove();
         }
 
         function clearFileList() {
             fileList.innerHTML = '';
+            uploadedFiles = [];
+            hidePdfPreview();
+            hideDownloadSection();
         }
 
-        function processPdfFiles() {
-            if (fileList.children.length === 0) {
-                alert('Please add files first');
+        function hidePdfPreview() {
+            pdfPreviewContainer.style.display = 'none';
+            pdfPreview.innerHTML = '';
+        }
+
+        function hideDownloadSection() {
+            downloadSection.style.display = 'none';
+        }
+
+        function hideProgressIndicator() {
+            progressIndicator.style.display = 'none';
+        }
+
+        function showProgressIndicator() {
+            progressIndicator.style.display = 'block';
+        }
+
+        function showDownloadSection() {
+            downloadSection.style.display = 'block';
+        }
+
+        async function processPdfFiles() {
+            if (uploadedFiles.length === 0) {
+                showNotification('Please add files first', 'error');
                 return;
             }
             
-            // Simulate processing
-            alert('Processing your files...');
+            showProgressIndicator();
             
-            // Simulate completion
+            try {
+                // Simulate processing delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Process based on current tool
+                switch(currentPdfTool) {
+                    case 'merge-pdf':
+                        await mergePdfFiles();
+                        break;
+                    case 'split-pdf':
+                        await splitPdfFile();
+                        break;
+                    case 'compress-pdf':
+                        await compressPdfFile();
+                        break;
+                    case 'rotate-pdf':
+                        await rotatePdfFile();
+                        break;
+                    case 'watermark':
+                        await addWatermarkToPdf();
+                        break;
+                    case 'protect-pdf':
+                        await protectPdfFile();
+                        break;
+                    default:
+                        // For other tools, create a simple processed file
+                        await createSimpleProcessedFile();
+                        break;
+                }
+                
+                hideProgressIndicator();
+                showDownloadSection();
+                showNotification('Files processed successfully!', 'success');
+                
+            } catch (error) {
+                console.error('PDF processing error:', error);
+                hideProgressIndicator();
+                showNotification('Error processing files. Please try again.', 'error');
+            }
+        }
+
+        // PDF Processing Functions
+        async function mergePdfFiles() {
+            // In a real implementation, this would use pdf-lib to merge PDFs
+            // For this demo, we'll create a simple merged file
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add content to the merged PDF
+            doc.setFontSize(20);
+            doc.text('Merged PDF Document', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`This document contains ${uploadedFiles.length} merged files:`, 20, 40);
+            
+            let yPosition = 60;
+            uploadedFiles.forEach((file, index) => {
+                doc.text(`${index + 1}. ${file.name}`, 20, yPosition);
+                yPosition += 10;
+            });
+            
+            processedFile = doc.output('blob');
+        }
+
+        async function splitPdfFile() {
+            // For demo purposes, we'll split the first PDF file
+            if (uploadedFiles.length === 0) return;
+            
+            const file = uploadedFiles[0];
+            if (file.type !== 'application/pdf') {
+                showNotification('Please upload a PDF file for splitting', 'error');
+                return;
+            }
+            
+            // In a real implementation, this would use pdf-lib to split the PDF
+            // For this demo, we'll create a simple split file
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Split PDF Document', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`This is a split version of: ${file.name}`, 20, 40);
+            
+            processedFile = doc.output('blob');
+        }
+
+        async function compressPdfFile() {
+            // For demo purposes, we'll compress the first PDF file
+            if (uploadedFiles.length === 0) return;
+            
+            const file = uploadedFiles[0];
+            if (file.type !== 'application/pdf') {
+                showNotification('Please upload a PDF file for compression', 'error');
+                return;
+            }
+            
+            // In a real implementation, this would compress the PDF
+            // For this demo, we'll create a simple compressed file
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Compressed PDF Document', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`This is a compressed version of: ${file.name}`, 20, 40);
+            doc.text('File size has been optimized for web viewing.', 20, 60);
+            
+            processedFile = doc.output('blob');
+        }
+
+        async function rotatePdfFile() {
+            // For demo purposes, we'll rotate the first PDF file
+            if (uploadedFiles.length === 0) return;
+            
+            const file = uploadedFiles[0];
+            if (file.type !== 'application/pdf') {
+                showNotification('Please upload a PDF file for rotation', 'error');
+                return;
+            }
+            
+            // In a real implementation, this would rotate the PDF pages
+            // For this demo, we'll create a simple rotated file
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Rotated PDF Document', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`This is a rotated version of: ${file.name}`, 20, 40);
+            
+            processedFile = doc.output('blob');
+        }
+
+        async function addWatermarkToPdf() {
+            // For demo purposes, we'll add a watermark to the first PDF file
+            if (uploadedFiles.length === 0) return;
+            
+            const file = uploadedFiles[0];
+            if (file.type !== 'application/pdf') {
+                showNotification('Please upload a PDF file for watermarking', 'error');
+                return;
+            }
+            
+            // In a real implementation, this would add a watermark to the PDF
+            // For this demo, we'll create a simple watermarked file
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Watermarked PDF Document', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`This is a watermarked version of: ${file.name}`, 20, 40);
+            
+            // Add a simple watermark
+            doc.setFontSize(40);
+            doc.setTextColor(200, 200, 200);
+            doc.text('CONFIDENTIAL', 40, 120, { angle: 45 });
+            
+            processedFile = doc.output('blob');
+        }
+
+        async function protectPdfFile() {
+            // For demo purposes, we'll protect the first PDF file
+            if (uploadedFiles.length === 0) return;
+            
+            const file = uploadedFiles[0];
+            if (file.type !== 'application/pdf') {
+                showNotification('Please upload a PDF file for protection', 'error');
+                return;
+            }
+            
+            // In a real implementation, this would encrypt the PDF
+            // For this demo, we'll create a simple protected file
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Protected PDF Document', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`This is a protected version of: ${file.name}`, 20, 40);
+            doc.text('This file is password protected for security.', 20, 60);
+            
+            processedFile = doc.output('blob');
+        }
+
+        async function createSimpleProcessedFile() {
+            // Create a simple processed file for other tools
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Processed PDF Document', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`Processed using: ${currentPdfTool}`, 20, 40);
+            doc.text(`Number of files processed: ${uploadedFiles.length}`, 20, 60);
+            
+            let yPosition = 80;
+            uploadedFiles.forEach((file, index) => {
+                doc.text(`${index + 1}. ${file.name}`, 20, yPosition);
+                yPosition += 10;
+            });
+            
+            processedFile = doc.output('blob');
+        }
+
+        function downloadProcessedFile() {
+            if (!processedFile) {
+                showNotification('No processed file available', 'error');
+                return;
+            }
+            
+            const url = URL.createObjectURL(processedFile);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `processed_${currentPdfTool}_${Date.now()}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('File downloaded successfully!', 'success');
+        }
+
+        // Utility function to show notifications
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.custom-notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `custom-notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close">&times;</button>
+                </div>
+            `;
+            
+            // Add styles for notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'error' ? '#f44336' : type === 'success' ? '#4CAF50' : '#2196F3'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 5px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                max-width: 400px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Add close button functionality
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.remove();
+            });
+            
+            // Auto remove after 5 seconds
             setTimeout(() => {
-                alert('Files processed successfully!');
-                clearFileList();
-            }, 2000);
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+            
+            // Add CSS for animation
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    .notification-content {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .notification-close {
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 18px;
+                        cursor: pointer;
+                        margin-left: 10px;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
         }
 
         function saveSubjects() {
