@@ -961,6 +961,76 @@
             flex-wrap: wrap;
         }
 
+        /* Edit Subject Popup */
+        .edit-subject-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .edit-subject-popup-content {
+            background: var(--primary-bg);
+            border-radius: var(--card-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .edit-subject-popup-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--dark-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .edit-subject-popup-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+        }
+
+        .edit-subject-popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .edit-subject-popup-close:hover {
+            background: rgba(179, 136, 255, 0.1);
+        }
+
+        .edit-subject-popup-body {
+            padding: 30px;
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         /* PDF Tools Styles */
         .tools-grid {
             display: grid;
@@ -2609,6 +2679,67 @@
         </div>
     </div>
 
+    <!-- Edit Subject Popup -->
+    <div class="edit-subject-popup" id="edit-subject-popup">
+        <div class="edit-subject-popup-content">
+            <div class="edit-subject-popup-header">
+                <div class="edit-subject-popup-title" id="edit-subject-popup-title">Edit Subject</div>
+                <button class="edit-subject-popup-close" id="edit-subject-popup-close">&times;</button>
+            </div>
+            <div class="edit-subject-popup-body">
+                <div class="input-group">
+                    <div class="input-label" id="edit-subject-name-label">Subject Name</div>
+                    <input type="text" class="input-field" id="edit-subject-name" placeholder="Enter subject name">
+                </div>
+                <div class="input-group">
+                    <div class="input-label" id="edit-chapters-count-label">Number of Chapters</div>
+                    <input type="number" class="input-field" id="edit-chapters-count" placeholder="Number of chapters" min="1">
+                </div>
+                <div class="input-group">
+                    <div class="input-label" id="edit-exam-date-label">Exam Date</div>
+                    <input type="date" class="input-field" id="edit-exam-date">
+                </div>
+                <div class="input-group">
+                    <div class="input-label" id="edit-study-days-label">Study Days</div>
+                    <div class="days-selection">
+                        <div class="days-container">
+                            <input type="checkbox" id="edit-day-sun" class="day-checkbox" value="sunday">
+                            <label for="edit-day-sun" class="day-label">Sun</label>
+                            
+                            <input type="checkbox" id="edit-day-mon" class="day-checkbox" value="monday">
+                            <label for="edit-day-mon" class="day-label">Mon</label>
+                            
+                            <input type="checkbox" id="edit-day-tue" class="day-checkbox" value="tuesday">
+                            <label for="edit-day-tue" class="day-label">Tue</label>
+                            
+                            <input type="checkbox" id="edit-day-wed" class="day-checkbox" value="wednesday">
+                            <label for="edit-day-wed" class="day-label">Wed</label>
+                            
+                            <input type="checkbox" id="edit-day-thu" class="day-checkbox" value="thursday">
+                            <label for="edit-day-thu" class="day-label">Thu</label>
+                            
+                            <input type="checkbox" id="edit-day-fri" class="day-checkbox" value="friday">
+                            <label for="edit-day-fri" class="day-label">Fri</label>
+                            
+                            <input type="checkbox" id="edit-day-sat" class="day-checkbox" value="saturday">
+                            <label for="edit-day-sat" class="day-label">Sat</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between">
+                    <button class="btn btn-danger" id="delete-subject-btn">
+                        <i class="fas fa-trash"></i>
+                        <span id="delete-subject-text">Delete Subject</span>
+                    </button>
+                    <button class="btn btn-primary" id="save-subject-btn">
+                        <i class="fas fa-save"></i>
+                        <span id="save-subject-text">Save Changes</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Notes Popup -->
     <div class="notes-popup" id="notes-popup">
         <div class="notes-popup-content">
@@ -2976,30 +3107,135 @@
                         <div class="tool-name" id="merge-pdf-name">Merge PDFs</div>
                         <div class="tool-desc" id="merge-pdf-desc">Combine multiple PDF files into a single document</div>
                     </div>
-                    <div class="tool-card" id="convert-pdf">
-                        <div class="tool-icon">🔄</div>
-                        <div class="tool-name" id="convert-pdf-name">Convert Files</div>
-                        <div class="tool-desc" id="convert-pdf-desc">Convert between Word, Image, PPT and PDF formats</div>
+                    <div class="tool-card" id="split-pdf">
+                        <div class="tool-icon">✂️</div>
+                        <div class="tool-name" id="split-pdf-name">Split PDF</div>
+                        <div class="tool-desc" id="split-pdf-desc">Separate one page or a whole set for easy conversion into independent PDF files</div>
                     </div>
                     <div class="tool-card" id="compress-pdf">
                         <div class="tool-icon">🗜️</div>
                         <div class="tool-name" id="compress-pdf-name">Compress PDF</div>
-                        <div class="tool-desc" id="compress-pdf-desc">Reduce PDF file size while maintaining quality</div>
+                        <div class="tool-desc" id="compress-pdf-desc">Reduce file size while optimizing for maximal PDF quality</div>
+                    </div>
+                    <div class="tool-card" id="pdf-to-word">
+                        <div class="tool-icon">📄➡️📝</div>
+                        <div class="tool-name" id="pdf-to-word-name">PDF to Word</div>
+                        <div class="tool-desc" id="pdf-to-word-desc">Easily convert your PDF files into easy to edit DOC and DOCX documents</div>
+                    </div>
+                    <div class="tool-card" id="pdf-to-powerpoint">
+                        <div class="tool-icon">📄➡️📊</div>
+                        <div class="tool-name" id="pdf-to-powerpoint-name">PDF to PowerPoint</div>
+                        <div class="tool-desc" id="pdf-to-powerpoint-desc">Turn your PDF files into easy to edit PPT and PPTX slideshows</div>
+                    </div>
+                    <div class="tool-card" id="pdf-to-excel">
+                        <div class="tool-icon">📄➡️📊</div>
+                        <div class="tool-name" id="pdf-to-excel-name">PDF to Excel</div>
+                        <div class="tool-desc" id="pdf-to-excel-desc">Pull data straight from PDFs into Excel spreadsheets in a few short seconds</div>
+                    </div>
+                    <div class="tool-card" id="word-to-pdf">
+                        <div class="tool-icon">📝➡️📄</div>
+                        <div class="tool-name" id="word-to-pdf-name">Word to PDF</div>
+                        <div class="tool-desc" id="word-to-pdf-desc">Make DOC and DOCX files easy to read by converting them to PDF</div>
+                    </div>
+                    <div class="tool-card" id="powerpoint-to-pdf">
+                        <div class="tool-icon">📊➡️📄</div>
+                        <div class="tool-name" id="powerpoint-to-pdf-name">PowerPoint to PDF</div>
+                        <div class="tool-desc" id="powerpoint-to-pdf-desc">Make PPT and PPTX slideshows easy to view by converting them to PDF</div>
+                    </div>
+                    <div class="tool-card" id="excel-to-pdf">
+                        <div class="tool-icon">📊➡️📄</div>
+                        <div class="tool-name" id="excel-to-pdf-name">Excel to PDF</div>
+                        <div class="tool-desc" id="excel-to-pdf-desc">Make EXCEL spreadsheets easy to read by converting them to PDF</div>
+                    </div>
+                    <div class="tool-card" id="edit-pdf">
+                        <div class="tool-icon">✏️</div>
+                        <div class="tool-name" id="edit-pdf-name">Edit PDF</div>
+                        <div class="tool-desc" id="edit-pdf-desc">Add text, images, shapes or freehand annotations to a PDF document</div>
+                    </div>
+                    <div class="tool-card" id="pdf-to-jpg">
+                        <div class="tool-icon">📄➡️🖼️</div>
+                        <div class="tool-name" id="pdf-to-jpg-name">PDF to JPG</div>
+                        <div class="tool-desc" id="pdf-to-jpg-desc">Convert each PDF page into a JPG or extract all images contained in a PDF</div>
+                    </div>
+                    <div class="tool-card" id="jpg-to-pdf">
+                        <div class="tool-icon">🖼️➡️📄</div>
+                        <div class="tool-name" id="jpg-to-pdf-name">JPG to PDF</div>
+                        <div class="tool-desc" id="jpg-to-pdf-desc">Convert JPG images to PDF in seconds. Easily adjust orientation and margins</div>
+                    </div>
+                    <div class="tool-card" id="sign-pdf">
+                        <div class="tool-icon">✍️</div>
+                        <div class="tool-name" id="sign-pdf-name">Sign PDF</div>
+                        <div class="tool-desc" id="sign-pdf-desc">Sign yourself or request electronic signatures from others</div>
+                    </div>
+                    <div class="tool-card" id="watermark">
+                        <div class="tool-icon">💧</div>
+                        <div class="tool-name" id="watermark-name">Watermark</div>
+                        <div class="tool-desc" id="watermark-desc">Stamp an image or text over your PDF in seconds</div>
+                    </div>
+                    <div class="tool-card" id="rotate-pdf">
+                        <div class="tool-icon">🔄</div>
+                        <div class="tool-name" id="rotate-pdf-name">Rotate PDF</div>
+                        <div class="tool-desc" id="rotate-pdf-desc">Rotate your PDFs the way you need them</div>
+                    </div>
+                    <div class="tool-card" id="html-to-pdf">
+                        <div class="tool-icon">🌐➡️📄</div>
+                        <div class="tool-name" id="html-to-pdf-name">HTML to PDF</div>
+                        <div class="tool-desc" id="html-to-pdf-desc">Convert webpages in HTML to PDF with a click</div>
+                    </div>
+                    <div class="tool-card" id="unlock-pdf">
+                        <div class="tool-icon">🔓</div>
+                        <div class="tool-name" id="unlock-pdf-name">Unlock PDF</div>
+                        <div class="tool-desc" id="unlock-pdf-desc">Remove PDF password security, giving you the freedom to use your PDFs as you want</div>
+                    </div>
+                    <div class="tool-card" id="protect-pdf">
+                        <div class="tool-icon">🔒</div>
+                        <div class="tool-name" id="protect-pdf-name">Protect PDF</div>
+                        <div class="tool-desc" id="protect-pdf-desc">Protect PDF files with a password. Encrypt PDF documents to prevent unauthorized access</div>
+                    </div>
+                    <div class="tool-card" id="organize-pdf">
+                        <div class="tool-icon">📑</div>
+                        <div class="tool-name" id="organize-pdf-name">Organize PDF</div>
+                        <div class="tool-desc" id="organize-pdf-desc">Sort pages of your PDF file however you like</div>
+                    </div>
+                    <div class="tool-card" id="pdf-to-pdfa">
+                        <div class="tool-icon">📄➡️📄A</div>
+                        <div class="tool-name" id="pdf-to-pdfa-name">PDF to PDF/A</div>
+                        <div class="tool-desc" id="pdf-to-pdfa-desc">Transform your PDF to PDF/A, the ISO-standardized version of PDF for long-term archiving</div>
+                    </div>
+                    <div class="tool-card" id="repair-pdf">
+                        <div class="tool-icon">🔧</div>
+                        <div class="tool-name" id="repair-pdf-name">Repair PDF</div>
+                        <div class="tool-desc" id="repair-pdf-desc">Repair a damaged PDF and recover data from corrupt PDF</div>
+                    </div>
+                    <div class="tool-card" id="page-numbers">
+                        <div class="tool-icon">🔢</div>
+                        <div class="tool-name" id="page-numbers-name">Page Numbers</div>
+                        <div class="tool-desc" id="page-numbers-desc">Add page numbers into PDFs with ease</div>
+                    </div>
+                    <div class="tool-card" id="scan-to-pdf">
+                        <div class="tool-icon">📱➡️📄</div>
+                        <div class="tool-name" id="scan-to-pdf-name">Scan to PDF</div>
+                        <div class="tool-desc" id="scan-to-pdf-desc">Capture document scans from your mobile device and send them instantly to your browser</div>
                     </div>
                     <div class="tool-card" id="ocr-pdf">
                         <div class="tool-icon">🧠</div>
-                        <div class="tool-name" id="ocr-pdf-name">OCR Scan</div>
-                        <div class="tool-desc" id="ocr-pdf-desc">Extract text from images and scanned documents</div>
+                        <div class="tool-name" id="ocr-pdf-name">OCR PDF</div>
+                        <div class="tool-desc" id="ocr-pdf-desc">Easily convert scanned PDF into searchable and selectable documents</div>
                     </div>
-                    <div class="tool-card" id="create-pdf">
-                        <div class="tool-icon">🖋️</div>
-                        <div class="tool-name" id="create-pdf-name">Create PDF</div>
-                        <div class="tool-desc" id="create-pdf-desc">Create new PDF documents from text and images</div>
+                    <div class="tool-card" id="compare-pdf">
+                        <div class="tool-icon">📊</div>
+                        <div class="tool-name" id="compare-pdf-name">Compare PDF</div>
+                        <div class="tool-desc" id="compare-pdf-desc">Show a side-by-side document comparison and easily spot changes between different file versions</div>
                     </div>
-                    <div class="tool-card" id="split-pdf">
+                    <div class="tool-card" id="redact-pdf">
+                        <div class="tool-icon">🚫</div>
+                        <div class="tool-name" id="redact-pdf-name">Redact PDF</div>
+                        <div class="tool-desc" id="redact-pdf-desc">Redact text and graphics to permanently remove sensitive information from a PDF</div>
+                    </div>
+                    <div class="tool-card" id="crop-pdf">
                         <div class="tool-icon">✂️</div>
-                        <div class="tool-name" id="split-pdf-name">Split PDF</div>
-                        <div class="tool-desc" id="split-pdf-desc">Split a PDF into multiple documents</div>
+                        <div class="tool-name" id="crop-pdf-name">Crop PDF</div>
+                        <div class="tool-desc" id="crop-pdf-desc">Crop margins of PDF documents or select specific areas, then apply the changes to one page or the whole document</div>
                     </div>
                 </div>
 
@@ -3201,6 +3437,16 @@
         const subjectProgressFill = document.getElementById('subject-progress-fill');
         const subjectProgressText = document.getElementById('subject-progress-text');
 
+        // Edit Subject Popup Elements
+        const editSubjectPopup = document.getElementById('edit-subject-popup');
+        const editSubjectPopupClose = document.getElementById('edit-subject-popup-close');
+        const editSubjectNameInput = document.getElementById('edit-subject-name');
+        const editChaptersCountInput = document.getElementById('edit-chapters-count');
+        const editExamDateInput = document.getElementById('edit-exam-date');
+        const editDayCheckboxes = document.querySelectorAll('#edit-subject-popup .day-checkbox');
+        const deleteSubjectBtn = document.getElementById('delete-subject-btn');
+        const saveSubjectBtn = document.getElementById('save-subject-btn');
+
         // Notes Popup Elements
         const notesPopup = document.getElementById('notes-popup');
         const notesPopupClose = document.getElementById('notes-popup-close');
@@ -3289,6 +3535,7 @@
                 chaptersStudied: "chapters studied",
                 chaptersSolved: "chapters solved",
                 delete: "Delete",
+                edit: "Edit",
                 markStudied: "Mark Studied",
                 markSolved: "Mark Solved",
                 studied: "Studied",
@@ -3299,16 +3546,58 @@
                 pdfToolsTitle: "PDF Tools",
                 mergePdfName: "Merge PDFs",
                 mergePdfDesc: "Combine multiple PDF files into a single document",
-                convertPdfName: "Convert Files",
-                convertPdfDesc: "Convert between Word, Image, PPT and PDF formats",
-                compressPdfName: "Compress PDF",
-                compressPdfDesc: "Reduce PDF file size while maintaining quality",
-                ocrPdfName: "OCR Scan",
-                ocrPdfDesc: "Extract text from images and scanned documents",
-                createPdfName: "Create PDF",
-                createPdfDesc: "Create new PDF documents from text and images",
                 splitPdfName: "Split PDF",
-                splitPdfDesc: "Split a PDF into multiple documents",
+                splitPdfDesc: "Separate one page or a whole set for easy conversion into independent PDF files",
+                compressPdfName: "Compress PDF",
+                compressPdfDesc: "Reduce file size while optimizing for maximal PDF quality",
+                pdfToWordName: "PDF to Word",
+                pdfToWordDesc: "Easily convert your PDF files into easy to edit DOC and DOCX documents",
+                pdfToPowerpointName: "PDF to PowerPoint",
+                pdfToPowerpointDesc: "Turn your PDF files into easy to edit PPT and PPTX slideshows",
+                pdfToExcelName: "PDF to Excel",
+                pdfToExcelDesc: "Pull data straight from PDFs into Excel spreadsheets in a few short seconds",
+                wordToPdfName: "Word to PDF",
+                wordToPdfDesc: "Make DOC and DOCX files easy to read by converting them to PDF",
+                powerpointToPdfName: "PowerPoint to PDF",
+                powerpointToPdfDesc: "Make PPT and PPTX slideshows easy to view by converting them to PDF",
+                excelToPdfName: "Excel to PDF",
+                excelToPdfDesc: "Make EXCEL spreadsheets easy to read by converting them to PDF",
+                editPdfName: "Edit PDF",
+                editPdfDesc: "Add text, images, shapes or freehand annotations to a PDF document",
+                pdfToJpgName: "PDF to JPG",
+                pdfToJpgDesc: "Convert each PDF page into a JPG or extract all images contained in a PDF",
+                jpgToPdfName: "JPG to PDF",
+                jpgToPdfDesc: "Convert JPG images to PDF in seconds. Easily adjust orientation and margins",
+                signPdfName: "Sign PDF",
+                signPdfDesc: "Sign yourself or request electronic signatures from others",
+                watermarkName: "Watermark",
+                watermarkDesc: "Stamp an image or text over your PDF in seconds",
+                rotatePdfName: "Rotate PDF",
+                rotatePdfDesc: "Rotate your PDFs the way you need them",
+                htmlToPdfName: "HTML to PDF",
+                htmlToPdfDesc: "Convert webpages in HTML to PDF with a click",
+                unlockPdfName: "Unlock PDF",
+                unlockPdfDesc: "Remove PDF password security, giving you the freedom to use your PDFs as you want",
+                protectPdfName: "Protect PDF",
+                protectPdfDesc: "Protect PDF files with a password. Encrypt PDF documents to prevent unauthorized access",
+                organizePdfName: "Organize PDF",
+                organizePdfDesc: "Sort pages of your PDF file however you like",
+                pdfToPdfaName: "PDF to PDF/A",
+                pdfToPdfaDesc: "Transform your PDF to PDF/A, the ISO-standardized version of PDF for long-term archiving",
+                repairPdfName: "Repair PDF",
+                repairPdfDesc: "Repair a damaged PDF and recover data from corrupt PDF",
+                pageNumbersName: "Page Numbers",
+                pageNumbersDesc: "Add page numbers into PDFs with ease",
+                scanToPdfName: "Scan to PDF",
+                scanToPdfDesc: "Capture document scans from your mobile device and send them instantly to your browser",
+                ocrPdfName: "OCR PDF",
+                ocrPdfDesc: "Easily convert scanned PDF into searchable and selectable documents",
+                comparePdfName: "Compare PDF",
+                comparePdfDesc: "Show a side-by-side document comparison and easily spot changes between different file versions",
+                redactPdfName: "Redact PDF",
+                redactPdfDesc: "Redact text and graphics to permanently remove sensitive information from a PDF",
+                cropPdfName: "Crop PDF",
+                cropPdfDesc: "Crop margins of PDF documents or select specific areas, then apply the changes to one page or the whole document",
                 pdfToolActiveTitle: "Merge PDF Files",
                 fileUploadText: "Drag & Drop files here or click to browse",
                 fileUploadSubtext: "Supported formats: PDF, DOC, DOCX, PPT, PPTX, JPG, PNG",
@@ -3357,7 +3646,9 @@
                 exportProgressDesc: "Share your study progress with friends via image or PDF.",
                 todoTitle: "To-Do List",
                 addTodoText: "Add",
-                clearTodosText: "Clear All"
+                clearTodosText: "Clear All",
+                deleteSubjectText: "Delete Subject",
+                saveSubjectText: "Save Changes"
             }
         };
 
@@ -3447,6 +3738,11 @@
 
         // Subject Popup Event Listeners
         subjectPopupClose.addEventListener('click', closeSubjectPopup);
+
+        // Edit Subject Popup Event Listeners
+        editSubjectPopupClose.addEventListener('click', closeEditSubjectPopup);
+        saveSubjectBtn.addEventListener('click', saveSubjectChanges);
+        deleteSubjectBtn.addEventListener('click', deleteSubject);
 
         // Notes Popup Event Listeners
         notesPopupClose.addEventListener('click', closeNotePopup);
@@ -3965,6 +4261,10 @@
                     <div class="subject-header">
                         <div class="subject-name">${subject.name}</div>
                         <div class="subject-actions">
+                            <button class="btn btn-info btn-sm" onclick="editSubject(${subject.id})">
+                                <i class="fas fa-edit"></i>
+                                ${translations[language].edit}
+                            </button>
                             <button class="btn btn-danger btn-sm" onclick="deleteSubject(${subject.id})">
                                 <i class="fas fa-trash"></i>
                                 ${translations[language].delete}
@@ -4021,6 +4321,99 @@
         function closeSubjectPopup() {
             subjectPopup.style.display = 'none';
             currentSubjectId = null;
+        }
+
+        function editSubject(subjectId) {
+            currentSubjectId = subjectId;
+            const subject = subjects.find(s => s.id === subjectId);
+            if (!subject) return;
+            
+            // Fill the edit form with current subject data
+            editSubjectNameInput.value = subject.name;
+            editChaptersCountInput.value = subject.chaptersCount;
+            editExamDateInput.value = subject.examDate;
+            
+            // Clear all checkboxes first
+            editDayCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Check the days that are selected
+            if (subject.studyDays) {
+                subject.studyDays.forEach(day => {
+                    const checkbox = document.getElementById(`edit-day-${day.substring(0, 3).toLowerCase()}`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+            
+            // Show the edit popup
+            editSubjectPopup.style.display = 'flex';
+        }
+
+        function closeEditSubjectPopup() {
+            editSubjectPopup.style.display = 'none';
+            currentSubjectId = null;
+        }
+
+        function saveSubjectChanges() {
+            const subject = subjects.find(s => s.id === currentSubjectId);
+            if (!subject) return;
+            
+            const name = editSubjectNameInput.value.trim();
+            const chaptersCount = parseInt(editChaptersCountInput.value);
+            const examDate = editExamDateInput.value;
+            
+            // Get selected days
+            const selectedDays = [];
+            editDayCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedDays.push(checkbox.value);
+                }
+            });
+            
+            if (!name || isNaN(chaptersCount) || chaptersCount < 1) {
+                alert('Please enter a valid subject name and number of chapters');
+                return;
+            }
+            
+            // Update subject properties
+            subject.name = name;
+            subject.examDate = examDate;
+            subject.studyDays = selectedDays;
+            
+            // Handle chapters count change
+            if (chaptersCount !== subject.chapters.length) {
+                if (chaptersCount > subject.chapters.length) {
+                    // Add new chapters
+                    for (let i = subject.chapters.length; i < chaptersCount; i++) {
+                        subject.chapters.push({
+                            id: i + 1,
+                            name: `Chapter ${i + 1}`,
+                            studied: false,
+                            solved: false,
+                            lastAccessed: null
+                        });
+                    }
+                } else {
+                    // Remove chapters (but keep the ones that are already studied/solved)
+                    subject.chapters = subject.chapters.slice(0, chaptersCount);
+                }
+                subject.chaptersCount = chaptersCount;
+            }
+            
+            saveSubjects();
+            saveUserData(); // Save to Supabase
+            renderSubjects();
+            closeEditSubjectPopup();
+            
+            // If the subject popup is open, update it
+            if (subjectPopup.style.display === 'flex') {
+                renderSubjectPopup(currentSubjectId);
+            }
+            
+            alert(`${name} has been updated successfully!`);
         }
 
         function renderSubjectPopup(subjectId) {
@@ -4127,6 +4520,7 @@
                 renderSubjects();
                 if (currentSubjectId === subjectId) {
                     closeSubjectPopup();
+                    closeEditSubjectPopup();
                 }
             }
         }
@@ -4990,4 +5384,4 @@
         updateDarkMode();
     </script>
 </body>
-</html> 
+</html>
